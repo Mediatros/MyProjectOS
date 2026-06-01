@@ -3,7 +3,7 @@ projet: ProjectOS
 type: Code
 statut: en conception
 derniere_maj: 2026-06-01
-prochaine_action: Brancher la veille mensuelle (routine cloud) sur le repo project-os-ai
+prochaine_action: Construire le squelette du système (templates, script init), puis enforcement par hooks et skill assistant ; Unjque = premier banc d'essai
 prochaine_echeance:
 ---
 
@@ -43,12 +43,12 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 - Volet Code : gate de validation de stack avec compatibilité vérifiée et sourcée avant tout code ; IMPACT_ANALYSIS avant modif ; conseil de séquençage.
 - Intégrations MCP (Calendar, Gmail, Drive) : reportées en ROADMAP.
 - Colonne vertébrale Code = Harness (exécuté côté Mac/Claude Code). On emprunte à Spec Kit, sous forme de documents Markdown figés, la constitution (principes projet) et le réflexe clarify. Un seul outil exécuté, aucune couture entre deux moteurs. Deux modes : complet / allégé. Raison : suit Claude Code, garde-fous déterministes natifs, surfaces HTML non-dev, charge minimale pour un non-développeur. État réel juin 2026 : garde-fous natifs Go, 5 verbes (setup/plan/work/review/release), surfaces HTML Plan Brief / Progress Tracker / Acceptance Demo, MIT, Claude Code v2.1+.
-- Veille mensuelle upstream = routine planifiée Claude Code (cloud Anthropic), déclenchée le 1er du mois. Elle compare l'état des deux repos avec un état mémorisé et écrit un rapport dans le repo GitHub (`docs/veille/VEILLE-OUTILS.md`) avec verdict à intégrer / à surveiller / à ignorer. Elle propose, n'intègre jamais seule. Prérequis : projet sur GitHub. VPS (instance Claude Code) = plan B.
+- Veille mensuelle upstream = routine planifiée Claude Code (cloud Anthropic), déclenchée le 1er du mois. Elle compare l'état des deux repos avec un état mémorisé et écrit un rapport dans le repo GitHub (`docs/veille/VEILLE-OUTILS.md`) avec verdict à intégrer / à surveiller / à ignorer. Elle propose, n'intègre jamais seule. Prérequis : projet sur GitHub. VPS (instance Claude Code) = plan B. Routine active : `veille-outils-upstream` (id `trig_01UTxP1TgxFUVUsap7KkY6Ta`), cron `0 8 1 * *` (1er du mois 08h UTC), modèle sonnet-4-6, écriture directe sur `main`. Socle dans `docs/veille/` (`_consigne.md`, `_etat-upstream.md`, `VEILLE-OUTILS.md`). Gestion : https://claude.ai/code/routines. Premier passage réel : 2026-07-01.
 - Repo unique privé `project-os-ai` sur GitHub (compte Mediatros, `gh` connecté). Contient Core + extension Life + extension Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub (email perso en mode privé).
 
 ## Travail en cours
 
-- Branchement de la veille mensuelle (routine cloud) sur le repo GitHub.
+- Construction du squelette du système (templates Core/Life/Code, script d'initialisation). Unjque pressenti comme premier banc d'essai une fois le squelette prêt.
 - Définition du modèle d'enforcement par hooks (mise à jour PROGRESS, placement des fichiers, nommage).
 - Cadrage de la skill assistant (modes complet / allégé, aiguillage selon la taille de la feature).
 
@@ -67,11 +67,11 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 
 ## Prochaines étapes
 
-1. Brancher la veille mensuelle (routine cloud) sur le repo.
-2. Définir le modèle d'enforcement par hooks.
-3. Cadrer la skill assistant (modes complet / allégé, aiguillage).
-4. Figer `constitution` (template), gate `STACK_VALIDATION`, `docs/NAMING-CONVENTIONS.md`.
-5. Construire le squelette et les templates.
+1. Définir le modèle d'enforcement par hooks.
+2. Cadrer la skill assistant (modes complet / allégé, aiguillage).
+3. Figer `constitution` (template), gate `STACK_VALIDATION`, `docs/NAMING-CONVENTIONS.md`.
+4. Construire le squelette et les templates.
+5. Onboarder Unjque comme premier banc d'essai une fois le squelette prêt.
 
 ## Références utiles
 
