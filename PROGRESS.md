@@ -1,9 +1,9 @@
 ---
 projet: ProjectOS
 type: Code
-statut: en conception
+statut: en construction
 derniere_maj: 2026-06-01
-prochaine_action: Démarrer la construction en suivant TASKS.md à partir de la Phase 1 (squelette + templates Core)
+prochaine_action: Démarrer la Phase 6 (banc d'essai Unjque : onboarder via init-project.sh en profil Code, relever les frictions, ajuster templates/skill/hooks)
 prochaine_echeance:
 ---
 
@@ -30,7 +30,7 @@ Concevoir et construire `project-os-ai` : une méthodologie unifiée d'organisat
 
 ## État actuel
 
-Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet central s'est déplacé de la structure vers la gouvernance : faire respecter les règles automatiquement, pas seulement les écrire.
+Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`, templates Core, docs de gouvernance, structure Core). Extensions livrées : templates Life (`PREUVES`, `ECHEANCES`, `CORRESPONDANCES`) et Code (`AGENTS`, `CONSTITUTION`, `STACK_VALIDATION`, `ARCHITECTURE`, `SPECS`, `TEST_PLAN`, `IMPACT_ANALYSIS`, `RELEASE`), structures `life-tree`/`code-tree`, plus la valeur ajoutée maison : gate `STACK_VALIDATION` sourcé (`docs/stack-validation-gate.md`) et concept « kit de rails » avec format de recette (`docs/kit-de-rails.md`). Phase 3 : skill assistant livrée sous forme installable (`skills/project-os/SKILL.md`, frontmatter + 4 modes reprise/orientation/explication/clôture + aiguillage Code complet/allégé + initialisation), cadrée dans `agents/meta-skill.md`, fiches d'agent `claude-code.md` et `hermes.md`. Phase 4 : couche enforcement déterministe livrée et testée (`docs/enforcement.md`, `scripts/hooks/` + `scripts/init-project.sh`). Phase 5 : colonne vertébrale Code branchée. `docs/harness.md` documente installation/usage de Harness (faits sourcés sur le dépôt upstream le 2026-06-01 : install via plugin marketplace, 5 verbes `/harness-setup|plan|work|review|release`, artefacts `spec.md`/`Plans.md`, MIT, v4.13.3, Claude Code v2.1+) et la correspondance avec les fichiers sacrés. Emprunts Spec Kit en Markdown figé : `templates/code/CONSTITUTION.md` (principes projet) et `docs/clarify.md` (réflexe clarify). Constitution câblée dans `code-tree` et `AGENTS`. Reste : banc d'essai Unjque (Phase 6).
 
 ## Décisions actées
 
@@ -39,7 +39,8 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 - Règle immuable : PROGRESS et son bloc d'en-tête toujours à jour, garanti par un hook de fin de session.
 - Frontière fichiers sacrés : PROGRESS = photo de l'instant ; CHANGELOG = registre daté (`CHG-YYYYMMDD-HHMM`) ; DECISIONS = pourquoi (`DEC-XXXX` reliés aux CHG).
 - PROGRESS aligné sur le CLAUDE.md global. `anatomy.md` abandonné.
-- Skill assistant : pièce centrale, pas un bonus. Modes reprise / orientation / explication / clôture.
+- Skill assistant : pièce centrale, pas un bonus. Modes reprise / orientation / explication / clôture. Livrée comme skill Claude Code installable (`skills/project-os/SKILL.md`), pas comme simple spec Markdown, pour être dogfoodable. Nouveau dossier `skills/` ajouté au repo.
+- Enforcement : hooks en `sh` POSIX (portables Mac/VPS, dégradation silencieuse si python3/jq absents), portée **par projet** (scripts dans le repo méthode, câblés dans le `.claude/settings.json` posé par `init-project.sh`, config globale non touchée), fermeté **hybride** (bloque nommage espaces/accents et placement document à la racine ; avertit sans bloquer sur la fraîcheur de PROGRESS via le signal git).
 - Volet Code : gate de validation de stack avec compatibilité vérifiée et sourcée avant tout code ; IMPACT_ANALYSIS avant modif ; conseil de séquençage.
 - Intégrations MCP (Calendar, Gmail, Drive) : reportées en ROADMAP.
 - Colonne vertébrale Code = Harness (exécuté côté Mac/Claude Code). On emprunte à Spec Kit, sous forme de documents Markdown figés, la constitution (principes projet) et le réflexe clarify. Un seul outil exécuté, aucune couture entre deux moteurs. Deux modes : complet / allégé. Raison : suit Claude Code, garde-fous déterministes natifs, surfaces HTML non-dev, charge minimale pour un non-développeur. État réel juin 2026 : garde-fous natifs Go, 5 verbes (setup/plan/work/review/release), surfaces HTML Plan Brief / Progress Tracker / Acceptance Demo, MIT, Claude Code v2.1+.
@@ -48,7 +49,7 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 
 ## Travail en cours
 
-- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). À démarrer par la Phase 1.
+- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). Phases 1 à 5 faites, Phase 6 (banc d'essai Unjque) à démarrer.
 
 ## Besoins Code identifiés (trois couches)
 
@@ -66,11 +67,11 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 ## Prochaines étapes
 
 Détail dans `TASKS.md`. Vue macro :
-1. Phase 1 : squelette + templates Core.
-2. Phase 2 : extensions Life et Code.
-3. Phase 3 : skill assistant (le cœur).
-4. Phase 4 : hooks d'enforcement + script d'init.
-5. Phase 5 : intégration Harness + emprunts Spec Kit.
+1. Phase 1 : squelette + templates Core. **Faite.**
+2. Phase 2 : extensions Life et Code. **Faite.**
+3. Phase 3 : skill assistant (le cœur). **Faite.**
+4. Phase 4 : hooks d'enforcement + script d'init. **Faite.**
+5. Phase 5 : intégration Harness + emprunts Spec Kit. **Faite.**
 6. Phase 6 : banc d'essai Unjque.
 7. Phase 7 (ROADMAP) : portabilité Hermès.
 
