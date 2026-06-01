@@ -3,7 +3,7 @@ projet: ProjectOS
 type: Code
 statut: en conception
 derniere_maj: 2026-06-01
-prochaine_action: Construire le squelette du système (templates, script init), puis enforcement par hooks et skill assistant ; Unjque = premier banc d'essai
+prochaine_action: Démarrer la construction en suivant TASKS.md à partir de la Phase 1 (squelette + templates Core)
 prochaine_echeance:
 ---
 
@@ -48,9 +48,7 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 
 ## Travail en cours
 
-- Construction du squelette du système (templates Core/Life/Code, script d'initialisation). Unjque pressenti comme premier banc d'essai une fois le squelette prêt.
-- Définition du modèle d'enforcement par hooks (mise à jour PROGRESS, placement des fichiers, nommage).
-- Cadrage de la skill assistant (modes complet / allégé, aiguillage selon la taille de la feature).
+- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). À démarrer par la Phase 1.
 
 ## Besoins Code identifiés (trois couches)
 
@@ -67,14 +65,18 @@ Phase de conception. `CLAUDE.md`, deux plans et ce PROGRESS rédigés. Le sujet 
 
 ## Prochaines étapes
 
-1. Définir le modèle d'enforcement par hooks.
-2. Cadrer la skill assistant (modes complet / allégé, aiguillage).
-3. Figer `constitution` (template), gate `STACK_VALIDATION`, `docs/NAMING-CONVENTIONS.md`.
-4. Construire le squelette et les templates.
-5. Onboarder Unjque comme premier banc d'essai une fois le squelette prêt.
+Détail dans `TASKS.md`. Vue macro :
+1. Phase 1 : squelette + templates Core.
+2. Phase 2 : extensions Life et Code.
+3. Phase 3 : skill assistant (le cœur).
+4. Phase 4 : hooks d'enforcement + script d'init.
+5. Phase 5 : intégration Harness + emprunts Spec Kit.
+6. Phase 6 : banc d'essai Unjque.
+7. Phase 7 (ROADMAP) : portabilité Hermès.
 
 ## Références utiles
 
+- `TASKS.md` : plan de construction détaillé (source pour la reprise après `/clear`).
 - `HANDOFF.md`, `CLAUDE.md`, `PLAN_PROJECT_OS_AI.md`, `PLAN_PROPOSITION_AMELIORATION.md`.
 - `Unjque_Projet/docs/NAMING-CONVENTIONS.md`, `Unjque_Projet/docs/INDEX.md`, `Unjque_Projet/PROGRESS.md`.
 
