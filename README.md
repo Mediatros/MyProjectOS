@@ -22,12 +22,13 @@ Les projets **Code** ajoutent : *la stack est-elle validée, et quels fichiers s
 ## Architecture
 
 ```
-Core Project OS         commun à tous les projets
-├── Extension Life      projets personnels, administratifs, juridiques
-└── Extension Code      projets logiciels
+Core Project OS             commun à tous les projets
+├── Extension Life          projets personnels, administratifs, juridiques
+├── Extension Code          projets logiciels
+└── Extension Knowledge     documentation dense, navigation par niveaux, dépendances transverses
 ```
 
-Un projet est de type **Life**, **Code** ou **Hybrid** (les deux extensions à la fois). Le type est déclaré dans `PROJECT.md`.
+Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré dans `PROJECT.md`. Les extensions sont activées selon le besoin : Life, Code et/ou Knowledge.
 
 ## À qui ça s'adresse
 
@@ -35,9 +36,10 @@ Un projet est de type **Life**, **Code** ou **Hybrid** (les deux extensions à l
 
 ## Comment l'utiliser
 
-1. Créer un projet à partir des templates de `templates/core/` (plus tard : `scripts/init-project.sh`).
-2. Choisir le type dans `PROJECT.md` et ajouter l'extension correspondante.
-3. À chaque session, suivre les rituels de `docs/governance.md` : lire les fichiers sacrés au démarrage, les mettre à jour pendant et en clôture.
+1. Créer un projet à partir des templates de `templates/core/` avec `scripts/init-project.sh`.
+2. Choisir le type dans `PROJECT.md` et ajouter les extensions nécessaires (`--life`, `--code`, `--knowledge`).
+3. Activer l'extension `knowledge` si le projet accumule assez de documentation pour nécessiter une navigation par niveaux (`docs/INDEX.md`, `kb_governance.md`, `01_global/`, `02_domains/`, `03_details/`).
+4. À chaque session, suivre les rituels de `docs/governance.md` : lire les fichiers sacrés au démarrage, les mettre à jour pendant et en clôture.
 
 ## Structure du repository
 
@@ -48,8 +50,9 @@ project-os-ai/
 ├── templates/
 │   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS
 │   ├── life/          # PREUVES, ECHEANCES, CORRESPONDANCES
-│   └── code/          # AGENTS, STACK_VALIDATION, ARCHITECTURE, etc.
-├── structures/        # core-tree, life-tree, code-tree
+│   ├── code/          # AGENTS, STACK_VALIDATION, ARCHITECTURE, etc.
+│   └── knowledge/     # docs/INDEX, kb_governance, niveaux, plans, runbooks
+├── structures/        # core-tree, life-tree, code-tree, knowledge-tree
 ├── agents/            # claude-code, hermes, meta-skill
 ├── examples/          # projets d'exemple Life et Code
 └── scripts/           # init-project.sh

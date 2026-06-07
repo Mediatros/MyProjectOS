@@ -7,7 +7,8 @@ De la création à l'archivage, les étapes par lesquelles passe un projet.
 Un projet naît à partir des templates. On choisit son **type** (Life, Code ou Hybrid), ce qui détermine les extensions activées.
 
 - On copie les cinq fichiers sacrés Core depuis `templates/core/`.
-- On ajoute les templates de l'extension choisie (Life, Code, ou les deux pour Hybrid).
+- On ajoute les templates des extensions choisies (Life, Code, ou les deux pour Hybrid).
+- On active l'extension `knowledge` seulement si le projet a assez de documentation pour justifier une navigation par niveaux et une analyse transverse.
 - On crée les dossiers numérotés à la demande, au moment où ils servent.
 - On renseigne `PROJECT.md` (pourquoi, périmètre, objectifs, critères de réussite).
 
@@ -34,3 +35,9 @@ Quand un projet est clôturé, son statut passe à `clôturé` dans l'en-tête d
 ## Le cas Hybrid
 
 Un projet **Hybrid** active simultanément les extensions Life et Code. Cas typique : un sujet à la fois réel et logiciel, par exemple un litige qui débouche sur un outil, ou une activité administrative pilotée par un logiciel. Les fichiers des deux extensions cohabitent à la racine ; aucun ne se substitue à un fichier sacré Core.
+
+## Le cas Knowledge
+
+L'extension **Knowledge** est optionnelle et transverse : elle peut s'ajouter à Life, Code ou Hybrid quand la documentation devient assez dense pour nécessiter `docs/INDEX.md`, `docs/kb_governance.md`, des niveaux `01_global/`, `02_domains/`, `03_details/`, des runbooks et des plans.
+
+Elle sert à naviguer, analyser les dépendances et limiter la dérive documentaire. Elle ne remplace pas les fichiers sacrés Core et ne transforme pas le projet en wiki généraliste.

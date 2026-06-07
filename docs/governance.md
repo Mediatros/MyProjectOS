@@ -62,6 +62,20 @@ Puis produire : **État actuel / Dernière action / Prochaine action / Points de
 
 L'agent propose et explique ; l'humain tranche.
 
+## Extension Knowledge
+
+L'extension `knowledge` ajoute une couche documentaire progressive dans `docs/` quand un projet devient trop dense pour être repris uniquement par les fichiers sacrés.
+
+Règles :
+
+- `docs/INDEX.md` est le point d'entrée documentaire.
+- `docs/kb_governance.md` définit les niveaux, la navigation et les règles anti-dérive.
+- Le niveau global est lu avant les domaines ; les détails sont lus uniquement si l'action l'exige.
+- Avant modification, l'agent liste les composants impactés, les composants explicitement non impactés, les dépendances transverses et les documents à mettre à jour.
+- Understand-Anything et les graphes sont des aides de visualisation, jamais des sources de vérité.
+
+Structure de référence : `structures/knowledge-tree.md`. Templates : `templates/knowledge/`.
+
 ## Synchronisation Mac / VPS
 
 Le dossier des projets est synchronisé par **Syncthing** (marqueurs `.stfolder` / `.stignore`). Le projet courant est le dossier de travail contenant un `PROJECT.md`. Lancé à la racine du dossier de projets, l'agent liste les projets et demande lequel reprendre.

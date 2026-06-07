@@ -37,3 +37,11 @@ L'agent propose, l'humain tranche sur tout ce qui est irréversible ou engageant
 ## 9. Les règles non négociables sont automatiques
 
 Une règle qui dépend de la mémoire de l'agent finit par être appliquée de façon inégale. Les garde-fous critiques passent par des hooks déterministes, pas par de simples consignes.
+
+## 10. Contexte progressif
+
+Un agent ne doit pas tout lire par défaut. Il commence par les fichiers sacrés et les index, puis descend dans les niveaux documentaires seulement si le besoin l'exige.
+
+## 11. Dépendances transverses avant action
+
+Une modification n'est jamais traitée comme isolée tant que ses dépendances amont, aval et documentaires n'ont pas été explicitées. Le système doit forcer la question : « qu'est-ce que cela touche aussi ? »

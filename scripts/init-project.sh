@@ -1,7 +1,7 @@
 #!/bin/sh
 # init-project.sh — pose un nouveau projet Project OS.
-# Usage : init-project.sh <chemin-projet> [--life] [--code]
-#   (aucun flag = Core seul ; --life + --code = Hybrid)
+# Usage : init-project.sh <chemin-projet> [--life] [--code] [--knowledge]
+#   (aucun flag = Core seul ; --life + --code = Hybrid ; --knowledge = extension documentaire transverse)
 # POSIX sh.
 
 set -eu
@@ -13,17 +13,19 @@ TODAY=$(date +%Y-%m-%d)
 TARGET=""
 WANT_LIFE=0
 WANT_CODE=0
+WANT_KNOWLEDGE=0
 for arg in "$@"; do
     case "$arg" in
         --life) WANT_LIFE=1 ;;
         --code) WANT_CODE=1 ;;
+        --knowledge) WANT_KNOWLEDGE=1 ;;
         -*) echo "Option inconnue : $arg" >&2; exit 1 ;;
         *) TARGET=$arg ;;
     esac
 done
 
 if [ -z "$TARGET" ]; then
-    echo "Usage : $0 <chemin-projet> [--life] [--code]" >&2
+    echo "Usage : $0 <chemin-projet> [--life] [--code] [--knowledge]" >&2
     exit 1
 fi
 
@@ -65,6 +67,20 @@ copy_template() {
     echo "  + $(basename -- "$2")"
 }
 
+copy_tree() {
+    # copy_tree <src-dir> <dst-dir> : copie récursive puis substitue les fichiers Markdown.
+    _src=$1
+    _dst=$2
+    mkdir -p "$_dst"
+    (cd "$_src" && find . -type d -exec mkdir -p "$_dst/{}" \;)
+    (cd "$_src" && find . -type f | while IFS= read -r _file; do
+        cp "$_src/$_file" "$_dst/$_file"
+        case "$_file" in
+            *.md) subst "$_dst/$_file" ;;
+        esac
+    done)
+}
+
 # --- Création ----------------------------------------------------------------
 mkdir -p "$TARGET"
 echo "Projet '$NAME' (type : $TYPE) dans $TARGET"
@@ -86,6 +102,12 @@ if [ "$WANT_CODE" -eq 1 ]; then
     for f in AGENTS STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
         copy_template "$REPO/templates/code/$f.md" "$TARGET/$f.md"
     done
+fi
+
+if [ "$WANT_KNOWLEDGE" -eq 1 ]; then
+    echo "Extension Knowledge :"
+    copy_tree "$REPO/templates/knowledge" "$TARGET"
+    echo "  + docs/ (INDEX, kb_governance, niveaux, runbooks, plans)"
 fi
 
 # Zone d'entrée. Les autres dossiers numérotés sont créés à la demande.
