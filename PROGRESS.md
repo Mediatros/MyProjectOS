@@ -3,7 +3,7 @@ projet: ProjectOS
 type: Code
 statut: en construction
 derniere_maj: 2026-06-07
-prochaine_action: Démarrer la Phase 6 (banc d'essai Unjque avec extension Knowledge disponible via init-project.sh --knowledge)
+prochaine_action: Relire/valider le plan EVOL Company OS puis décider l'intégration par lots
 prochaine_echeance:
 ---
 
@@ -22,7 +22,7 @@ Concevoir et construire `project-os-ai` : une méthodologie unifiée d'organisat
 - Profil utilisateur : non-développeur. Sait exprimer le besoin fonctionnel, pas toujours la stack ni les bonnes pratiques techniques. A besoin d'être guidé et protégé, surtout sur l'avant du pipeline Code.
 - Sync Mac/VPS : Syncthing. Détection projet : ouverture directe du dossier, profil Hermès isolé par projet.
 - Ce projet sert de pilote : on dogfoode la méthode sur lui-même.
-- Plans : `PLAN_PROJECT_OS_AI.md` (construction), `PLAN_PROPOSITION_AMELIORATION.md` (analyse et décisions).
+- Plans : `PLAN_PROJECT_OS_AI.md` (construction), `PLAN_PROPOSITION_AMELIORATION.md` (analyse et décisions), `docs/evol/` (plans d'évolution isolés avant intégration).
 - Inspiration : `Unjque_Projet` (naming, index, format PROGRESS, identifiants CHG).
 - Outils évalués (juin 2026) : Spec Kit (GitHub, MIT, amont spec→plan→tâches), Claude Code Harness (Chachamaru127, 2,4k★, plan→work→review→release + garde-fous Go, agnostique langage), mattpocock/skills (skills ciblées, ex `/grill-me`).
 - NowStack : boilerplate Codelynx LLC (codelynx.dev/nowstack, page fermée/waitlist), mono-stack TanStack Start + React + Convex + Expo + Cloudflare + Stripe, optimisée Claude Code/Cursor (« +40 règles », types stricts). Essence reproductible = les « rails » : architecture par domaine fonctionnel + conventions fortes + règles agent + recettes d'ajout de feature + gate qualité. Mantra : « pas du vibe coding, du AI Building, l'IA code comme un senior parce qu'on lui donne les bons rails ».
@@ -30,7 +30,7 @@ Concevoir et construire `project-os-ai` : une méthodologie unifiée d'organisat
 
 ## État actuel
 
-Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`, templates Core, docs de gouvernance, structure Core). Extensions livrées : templates Life (`PREUVES`, `ECHEANCES`, `CORRESPONDANCES`) et Code (`AGENTS`, `CONSTITUTION`, `STACK_VALIDATION`, `ARCHITECTURE`, `SPECS`, `TEST_PLAN`, `IMPACT_ANALYSIS`, `RELEASE`), structures `life-tree`/`code-tree`, plus la valeur ajoutée maison : gate `STACK_VALIDATION` sourcé (`docs/stack-validation-gate.md`) et concept « kit de rails » avec format de recette (`docs/kit-de-rails.md`). Extension Knowledge ajoutée et câblée le 2026-06-07 : `structures/knowledge-tree.md`, `templates/knowledge/`, `scripts/init-project.sh --knowledge`, skill assistant, règles de contexte progressif, dépendances transverses, `docs/INDEX.md`, `kb_governance.md`, plans et runbooks. Test réel validé : génération Core+Knowledge et Hybrid+Knowledge dans `/tmp`, fichiers attendus présents, substitution `<NomDuProjet>` absente, `sh -n` OK. Phase 3 : skill assistant livrée sous forme installable (`skills/project-os/SKILL.md`, frontmatter + 4 modes reprise/orientation/explication/clôture + aiguillage Code complet/allégé + initialisation), cadrée dans `agents/meta-skill.md`, fiches d'agent `claude-code.md` et `hermes.md`. Phase 4 : couche enforcement déterministe livrée et testée (`docs/enforcement.md`, `scripts/hooks/` + `scripts/init-project.sh`). Phase 5 : colonne vertébrale Code branchée. `docs/harness.md` documente installation/usage de Harness (faits sourcés sur le dépôt upstream le 2026-06-01 : install via plugin marketplace, 5 verbes `/harness-setup|plan|work|review|release`, artefacts `spec.md`/`Plans.md`, MIT, v4.13.3, Claude Code v2.1+) et la correspondance avec les fichiers sacrés. Emprunts Spec Kit en Markdown figé : `templates/code/CONSTITUTION.md` (principes projet) et `docs/clarify.md` (réflexe clarify). Constitution câblée dans `code-tree` et `AGENTS`. Reste : banc d'essai Unjque (Phase 6).
+Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`, templates Core, docs de gouvernance, structure Core). Extensions livrées : templates Life (`PREUVES`, `ECHEANCES`, `CORRESPONDANCES`) et Code (`AGENTS`, `CONSTITUTION`, `STACK_VALIDATION`, `ARCHITECTURE`, `SPECS`, `TEST_PLAN`, `IMPACT_ANALYSIS`, `RELEASE`), structures `life-tree`/`code-tree`, plus la valeur ajoutée maison : gate `STACK_VALIDATION` sourcé (`docs/stack-validation-gate.md`) et concept « kit de rails » avec format de recette (`docs/kit-de-rails.md`). Extension Knowledge ajoutée et câblée le 2026-06-07 : `structures/knowledge-tree.md`, `templates/knowledge/`, `scripts/init-project.sh --knowledge`, skill assistant, règles de contexte progressif, dépendances transverses, `docs/INDEX.md`, `kb_governance.md`, plans et runbooks. Zone EVOL ajoutée le 2026-06-07 : `docs/evol/README.md` isole les plans d'évolution, et `docs/evol/plans/2026-06-07-company-os-integration.md` documente l'analyse Company OS + proposition d'intégration (documentation comme interface IA, température contextuelle, maturité de l'information, isolation des contextes). Test réel validé : génération Core+Knowledge et Hybrid+Knowledge dans `/tmp`, fichiers attendus présents, substitution `<NomDuProjet>` absente, `sh -n` OK. Phase 3 : skill assistant livrée sous forme installable (`skills/project-os/SKILL.md`, frontmatter + 4 modes reprise/orientation/explication/clôture + aiguillage Code complet/allégé + initialisation), cadrée dans `agents/meta-skill.md`, fiches d'agent `claude-code.md` et `hermes.md`. Phase 4 : couche enforcement déterministe livrée et testée (`docs/enforcement.md`, `scripts/hooks/` + `scripts/init-project.sh`). Phase 5 : colonne vertébrale Code branchée. `docs/harness.md` documente installation/usage de Harness (faits sourcés sur le dépôt upstream le 2026-06-01 : install via plugin marketplace, 5 verbes `/harness-setup|plan|work|review|release`, artefacts `spec.md`/`Plans.md`, MIT, v4.13.3, Claude Code v2.1+) et la correspondance avec les fichiers sacrés. Emprunts Spec Kit en Markdown figé : `templates/code/CONSTITUTION.md` (principes projet) et `docs/clarify.md` (réflexe clarify). Constitution câblée dans `code-tree` et `AGENTS`. Reste : validation du plan Company OS puis banc d'essai Unjque (Phase 6).
 
 ## Décisions actées
 
@@ -50,7 +50,7 @@ Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`,
 
 ## Travail en cours
 
-- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). Phases 1 à 5 faites, Phase 6 (banc d'essai Unjque) à démarrer.
+- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). Phases 1 à 5 faites. Plan EVOL Company OS ajouté ; validation et intégration par lots à décider avant reprise du banc d'essai Unjque.
 
 ## Besoins Code identifiés (trois couches)
 
