@@ -18,11 +18,11 @@ Concevoir et construire `project-os-ai` : une méthodologie unifiée d'organisat
 
 ## Contexte utile
 
-- `HANDOFF.md` : base de travail initiale, non figée. Tout peut être remis en question.
+- `PLAN/HANDOFF.md` : base de travail initiale, non figée. Tout peut être remis en question.
 - Profil utilisateur : non-développeur. Sait exprimer le besoin fonctionnel, pas toujours la stack ni les bonnes pratiques techniques. A besoin d'être guidé et protégé, surtout sur l'avant du pipeline Code.
 - Sync Mac/VPS : Syncthing. Détection projet : ouverture directe du dossier, profil Hermès isolé par projet.
 - Ce projet sert de pilote : on dogfoode la méthode sur lui-même.
-- Plans : `PLAN_PROJECT_OS_AI.md` (construction), `PLAN_PROPOSITION_AMELIORATION.md` (analyse et décisions), `PLAN/` (plans d'évolution isolés avant intégration).
+- Plans : `PLAN/PLAN_PROJECT_OS_AI.md` (construction), `PLAN/PLAN_PROPOSITION_AMELIORATION.md` (analyse et décisions), `PLAN/` (plans et documents de travail isolés avant intégration).
 - Inspiration : `Unjque_Projet` (naming, index, format PROGRESS, identifiants CHG).
 - Outils évalués (juin 2026) : Spec Kit (GitHub, MIT, amont spec→plan→tâches), Claude Code Harness (Chachamaru127, 2,4k★, plan→work→review→release + garde-fous Go, agnostique langage), mattpocock/skills (skills ciblées, ex `/grill-me`).
 - NowStack : boilerplate Codelynx LLC (codelynx.dev/nowstack, page fermée/waitlist), mono-stack TanStack Start + React + Convex + Expo + Cloudflare + Stripe, optimisée Claude Code/Cursor (« +40 règles », types stricts). Essence reproductible = les « rails » : architecture par domaine fonctionnel + conventions fortes + règles agent + recettes d'ajout de feature + gate qualité. Mantra : « pas du vibe coding, du AI Building, l'IA code comme un senior parce qu'on lui donne les bons rails ».
@@ -79,7 +79,7 @@ Détail dans `TASKS.md`. Vue macro :
 ## Références utiles
 
 - `TASKS.md` : plan de construction détaillé (source pour la reprise après `/clear`).
-- `HANDOFF.md`, `CLAUDE.md`, `PLAN_PROJECT_OS_AI.md`, `PLAN_PROPOSITION_AMELIORATION.md`.
+- `PLAN/HANDOFF.md`, `CLAUDE.md`, `PLAN/PLAN_PROJECT_OS_AI.md`, `PLAN/PLAN_PROPOSITION_AMELIORATION.md`.
 - `Unjque_Projet/docs/NAMING-CONVENTIONS.md`, `Unjque_Projet/docs/INDEX.md`, `Unjque_Projet/PROGRESS.md`.
 
 ## Contraintes importantes / À ne pas faire

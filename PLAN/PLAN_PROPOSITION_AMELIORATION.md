@@ -1,6 +1,6 @@
 # PLAN PROPOSITION D'AMÉLIORATION
 
-Analyse critique du `HANDOFF.md` et propositions à étudier avant construction.
+Analyse critique de `PLAN/HANDOFF.md` et propositions à étudier avant construction.
 Dernière mise à jour : 2026-06-01.
 
 Chaque proposition suit le même format : problème observé, proposition, impact, effort, recommandation. Rien n'est tranché ici : ce document sert de base de décision.

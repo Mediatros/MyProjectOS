@@ -4,13 +4,14 @@
 
 ## Rôle
 
-`PLAN/` contient les propositions d'évolution avant intégration dans le système principal.
+`PLAN/` contient les plans et documents de travail avant intégration dans le système principal.
 
 Cette zone sert à :
 
 - documenter les inspirations externes ;
 - formuler les décisions candidates ;
 - préparer les lots d'intégration ;
+- conserver les handoffs et plans structurants hors de la documentation stable ;
 - garder les plans séparés de la documentation stable ;
 - éviter de polluer `docs/` avec des documents de travail.
 
@@ -31,9 +32,18 @@ Une évolution devient officielle seulement quand :
 ```text
 PLAN/
 ├── README.md
+├── HANDOFF.md
+├── PLAN_PROJECT_OS_AI.md
+├── PLAN_PROPOSITION_AMELIORATION.md
 └── plans/
     └── YYYY-MM-DD-sujet.md
 ```
+
+## Documents structurants
+
+- `HANDOFF.md` — base de travail initiale.
+- `PLAN_PROJECT_OS_AI.md` — plan de construction du système.
+- `PLAN_PROPOSITION_AMELIORATION.md` — analyse et propositions d'amélioration.
 
 ## Plans disponibles
 

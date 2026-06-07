@@ -1,7 +1,7 @@
 # PLAN PROJECT OS AI
 
 Plan de construction du repository `project-os-ai`.
-Source : `HANDOFF.md`. Dernière mise à jour : 2026-06-01.
+Source : `PLAN/HANDOFF.md`. Dernière mise à jour : 2026-06-01.
 
 ## 1. Objectif
 
@@ -31,7 +31,7 @@ Un projet est de type Life, Code ou Hybrid. Le type est déclaré dans `PROJECT.
 
 ## 4. État actuel du repository
 
-- `HANDOFF.md` : spécification complète de référence.
+- `PLAN/HANDOFF.md` : spécification complète de référence.
 - `CLAUDE.md` : règles d'opération pour Claude Code dans ce repo.
 - Aucune structure, aucun template, aucun exemple créés pour l'instant.
 
@@ -43,7 +43,7 @@ Chaque phase produit un livrable vérifiable. Les phases sont ordonnées pour li
 
 ### Phase 0 — Fondation et décisions structurantes
 
-Avant d'écrire des templates, trancher les questions qui conditionnent tout le reste (voir `PLAN_PROPOSITION_AMELIORATION.md`) :
+Avant d'écrire des templates, trancher les questions qui conditionnent tout le reste (voir `PLAN/PLAN_PROPOSITION_AMELIORATION.md`) :
 - mécanisme de synchronisation Mac et VPS ;
 - conventions de nommage des fichiers et dossiers ;
 - frontière exacte entre les fichiers sacrés (qui évite la redondance) ;
@@ -167,7 +167,7 @@ Livrable : création d'un nouveau projet en une commande.
 
 ## 8. Explicitement reporté
 
-Conformément au `HANDOFF.md`, ne pas intégrer pour l'instant : Spec Kit, Claude Code Harness, Matt Pocock Skills, boilerplates Melvynx. Une phase d'analyse comparative viendra après la fondation.
+Conformément à `PLAN/HANDOFF.md`, ne pas intégrer pour l'instant : Spec Kit, Claude Code Harness, Matt Pocock Skills, boilerplates Melvynx. Une phase d'analyse comparative viendra après la fondation.
 
 ## 9. Ordre de travail recommandé
 

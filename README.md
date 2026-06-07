@@ -46,6 +46,7 @@ Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré da
 ```
 project-os-ai/
 ├── README.md / ROADMAP.md / CHANGELOG.md
+├── PLAN/              # handoff, plans et documents de travail hors docs stables
 ├── docs/              # vision, principes, gouvernance, cycle de vie, glossaire, nommage
 ├── templates/
 │   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS
