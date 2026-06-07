@@ -1,10 +1,10 @@
-# EVOL — plans d'évolution
+# PLAN — plans d'évolution
 
 > Zone isolée pour les plans d'évolution du système Project OS AI.
 
 ## Rôle
 
-`docs/evol/` contient les propositions d'évolution avant intégration dans le système principal.
+`PLAN/` contient les propositions d'évolution avant intégration dans le système principal.
 
 Cette zone sert à :
 
@@ -16,7 +16,7 @@ Cette zone sert à :
 
 ## Statut des documents
 
-Un document dans `docs/evol/plans/` est un **plan de travail**, pas une décision appliquée.
+Un document dans `PLAN/plans/` est un **plan de travail**, pas une décision appliquée.
 
 Une évolution devient officielle seulement quand :
 
@@ -29,7 +29,7 @@ Une évolution devient officielle seulement quand :
 ## Structure
 
 ```text
-docs/evol/
+PLAN/
 ├── README.md
 └── plans/
     └── YYYY-MM-DD-sujet.md

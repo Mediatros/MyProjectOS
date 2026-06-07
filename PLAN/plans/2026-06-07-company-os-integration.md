@@ -2,7 +2,7 @@
 
 > **Statut :** plan de travail, non appliqué  
 > **Date :** 2026-06-07  
-> **Zone :** `docs/evol/plans/`  
+> **Zone :** `PLAN/plans/`  
 > **Sources étudiées :**
 > - Repo : `Workflowsio/company-os-starter-kit`
 > - Article : `https://workflows.io/blogs/how-to-build-a-company-os-on-github`

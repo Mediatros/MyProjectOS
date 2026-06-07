@@ -35,7 +35,7 @@
 
 ## En cours
 
-- [ ] **T-EVOL-1** Relire et valider le plan `docs/evol/plans/2026-06-07-company-os-integration.md` avant intégration dans les docs stables.
+- [ ] **T-PLAN-1** Relire et valider le plan `PLAN/plans/2026-06-07-company-os-integration.md` avant intégration dans les docs stables.
 
 ## À faire
 
