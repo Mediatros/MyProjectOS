@@ -99,7 +99,7 @@ fi
 
 if [ "$WANT_CODE" -eq 1 ]; then
     echo "Extension Code :"
-    for f in AGENTS STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
+    for f in AGENTS CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
         copy_template "$REPO/templates/extensions/code/$f.md" "$TARGET/$f.md"
     done
 fi

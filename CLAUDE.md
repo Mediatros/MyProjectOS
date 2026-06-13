@@ -47,7 +47,7 @@ MonProjet/
 
 Extension Life ajoute : `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md` + dossiers `05_correspondances/` à `08_modeles/`.
 
-Extension Code ajoute : `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md` + dossiers `05_specs/` à `src/`.
+Extension Code ajoute : `AGENTS.md`, `CONSTITUTION.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md` + dossiers `05_specs/` à `src/`.
 
 ## Structure cible du repository
 
