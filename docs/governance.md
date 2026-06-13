@@ -74,7 +74,7 @@ Règles :
 - Avant modification, l'agent liste les composants impactés, les composants explicitement non impactés, les dépendances transverses et les documents à mettre à jour.
 - Understand-Anything et les graphes sont des aides de visualisation, jamais des sources de vérité.
 
-Structure de référence : `structures/knowledge-tree.md`. Templates : `templates/knowledge/`.
+Structure de référence : `structures/knowledge-tree.md`. Templates : `templates/extensions/knowledge/`.
 
 ## Synchronisation Mac / VPS
 

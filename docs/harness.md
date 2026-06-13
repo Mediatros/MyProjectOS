@@ -12,7 +12,7 @@ Le volet Code a besoin d'une exécution encadrée (couche 2 du `docs/kit-de-rail
 - il expose des surfaces lisibles par un non-développeur ;
 - un seul outil exécuté, aucune couture entre deux moteurs.
 
-À Spec Kit, on n'emprunte que deux pièces, sous forme de documents Markdown figés : la **constitution** (principes du projet, `templates/code/CONSTITUTION.md`) et le **réflexe clarify** (`docs/clarify.md`). On ne fait pas tourner deux moteurs.
+À Spec Kit, on n'emprunte que deux pièces, sous forme de documents Markdown figés : la **constitution** (principes du projet, `templates/extensions/code/CONSTITUTION.md`) et le **réflexe clarify** (`docs/clarify.md`). On ne fait pas tourner deux moteurs.
 
 ## Prérequis
 
@@ -85,7 +85,7 @@ Harness apporte ses propres hooks et checks. Ils s'ajoutent aux hooks Project OS
 
 ## Voir aussi
 
-- `templates/code/CONSTITUTION.md` — principes du projet (emprunt Spec Kit), lus par l'agent et Harness.
+- `templates/extensions/code/CONSTITUTION.md` — principes du projet (emprunt Spec Kit), lus par l'agent et Harness.
 - `docs/clarify.md` — le réflexe de levée d'ambiguïté avant d'approuver un plan.
 - `docs/kit-de-rails.md` — architecture Agent First, recettes d'ajout de feature.
 - `docs/stack-validation-gate.md` — gate de compatibilité avant tout code.

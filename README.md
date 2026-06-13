@@ -49,10 +49,11 @@ project-os-ai/
 ├── PLAN/              # handoff, plans et documents de travail hors docs stables
 ├── docs/              # vision, principes, gouvernance, cycle de vie, glossaire, nommage
 ├── templates/
-│   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS
-│   ├── life/          # PREUVES, ECHEANCES, CORRESPONDANCES
-│   ├── code/          # AGENTS, STACK_VALIDATION, ARCHITECTURE, etc.
-│   └── knowledge/     # docs/INDEX, kb_governance, niveaux, plans, runbooks
+│   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS (socle)
+│   └── extensions/    # modules activables selon le type de projet
+│       ├── life/      # PREUVES, ECHEANCES, CORRESPONDANCES
+│       ├── code/      # AGENTS, STACK_VALIDATION, ARCHITECTURE, etc.
+│       └── knowledge/ # docs/INDEX, kb_governance, niveaux, plans, runbooks
 ├── structures/        # core-tree, life-tree, code-tree, knowledge-tree
 ├── agents/            # claude-code, hermes, meta-skill
 ├── examples/          # projets d'exemple Life et Code

@@ -31,4 +31,4 @@ Pour un porteur non-développeur, c'est aussi une protection : l'agent ne décid
 
 - `docs/harness.md` — le cycle Plan → Work → Review où s'insère clarify.
 - `docs/stack-validation-gate.md` — la levée d'ambiguïté sur la compatibilité de stack.
-- `templates/code/CONSTITUTION.md` — le cadre qui borne les réponses acceptables.
+- `templates/extensions/code/CONSTITUTION.md` — le cadre qui borne les réponses acceptables.

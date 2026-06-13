@@ -56,9 +56,11 @@ project-os-ai/
 ├── README.md / ROADMAP.md / CHANGELOG.md
 ├── docs/              # vision, principles, governance, lifecycle, glossary, enforcement
 ├── templates/
-│   ├── core/          # PROJECT.md, PROGRESS.md, CHANGELOG.md, TASKS.md, DECISIONS.md
-│   ├── life/          # PREUVES.md, ECHEANCES.md, CORRESPONDANCES.md
-│   └── code/          # AGENTS.md, STACK_VALIDATION.md, ARCHITECTURE.md, etc.
+│   ├── core/          # PROJECT.md, PROGRESS.md, CHANGELOG.md, TASKS.md, DECISIONS.md (socle)
+│   └── extensions/    # modules activables selon le type de projet
+│       ├── life/      # PREUVES.md, ECHEANCES.md, CORRESPONDANCES.md
+│       ├── code/      # AGENTS.md, STACK_VALIDATION.md, ARCHITECTURE.md, etc.
+│       └── knowledge/ # docs/INDEX.md, kb_governance.md, niveaux, plans, runbooks
 ├── structures/        # core-tree.md, life-tree.md, code-tree.md
 ├── agents/            # claude-code.md, hermes.md, meta-skill.md
 ├── skills/            # project-os/SKILL.md (skill assistant installable)

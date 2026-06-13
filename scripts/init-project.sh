@@ -93,20 +93,20 @@ done
 if [ "$WANT_LIFE" -eq 1 ]; then
     echo "Extension Life :"
     for f in PREUVES ECHEANCES CORRESPONDANCES; do
-        copy_template "$REPO/templates/life/$f.md" "$TARGET/$f.md"
+        copy_template "$REPO/templates/extensions/life/$f.md" "$TARGET/$f.md"
     done
 fi
 
 if [ "$WANT_CODE" -eq 1 ]; then
     echo "Extension Code :"
     for f in AGENTS STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
-        copy_template "$REPO/templates/code/$f.md" "$TARGET/$f.md"
+        copy_template "$REPO/templates/extensions/code/$f.md" "$TARGET/$f.md"
     done
 fi
 
 if [ "$WANT_KNOWLEDGE" -eq 1 ]; then
     echo "Extension Knowledge :"
-    copy_tree "$REPO/templates/knowledge" "$TARGET"
+    copy_tree "$REPO/templates/extensions/knowledge" "$TARGET"
     echo "  + docs/ (INDEX, kb_governance, niveaux, runbooks, plans)"
 fi
 
