@@ -2,7 +2,7 @@
 projet: ProjectOS
 type: Code
 statut: en construction
-derniere_maj: 2026-06-07
+derniere_maj: 2026-06-13
 prochaine_action: Relire/valider le plan Company OS dans PLAN puis décider l'intégration par lots
 prochaine_echeance:
 ---
@@ -34,19 +34,7 @@ Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`,
 
 ## Décisions actées
 
-- Structure : dossiers numérotés, rôles fixés par la gouvernance, créés à la demande (pas de squelette vide imposé). Archive = `99_archive/`.
-- Enforcement à 3 couches : documentation (règles), skill assistant (accompagnement), hooks (déterministe). Les non-négociables passent par des hooks.
-- Règle immuable : PROGRESS et son bloc d'en-tête toujours à jour, garanti par un hook de fin de session.
-- Frontière fichiers sacrés : PROGRESS = photo de l'instant ; CHANGELOG = registre daté (`CHG-YYYYMMDD-HHMM`) ; DECISIONS = pourquoi (`DEC-XXXX` reliés aux CHG).
-- PROGRESS aligné sur le CLAUDE.md global. `anatomy.md` abandonné.
-- Skill assistant : pièce centrale, pas un bonus. Modes reprise / orientation / explication / clôture. Livrée comme skill Claude Code installable (`skills/project-os/SKILL.md`), pas comme simple spec Markdown, pour être dogfoodable. Nouveau dossier `skills/` ajouté au repo.
-- Enforcement : hooks en `sh` POSIX (portables Mac/VPS, dégradation silencieuse si python3/jq absents), portée **par projet** (scripts dans le repo méthode, câblés dans le `.claude/settings.json` posé par `init-project.sh`, config globale non touchée), fermeté **hybride** (bloque nommage espaces/accents et placement document à la racine ; avertit sans bloquer sur la fraîcheur de PROGRESS via le signal git).
-- Volet Code : gate de validation de stack avec compatibilité vérifiée et sourcée avant tout code ; IMPACT_ANALYSIS avant modif ; conseil de séquençage.
-- Extensions MCP (Calendar, Gmail, Drive) : reportées en ROADMAP.
-- Extension Knowledge : activée comme brique transverse optionnelle, non comme nouveau type de projet. Elle formalise la navigation progressive (`docs/INDEX.md`, niveaux global/domaines/détails), l'analyse des dépendances transverses avant modification, les plans et runbooks. Understand-Anything reste un outil complémentaire, pas une source de vérité.
-- Colonne vertébrale Code = Harness (exécuté côté Mac/Claude Code). On emprunte à Spec Kit, sous forme de documents Markdown figés, la constitution (principes projet) et le réflexe clarify. Un seul outil exécuté, aucune couture entre deux moteurs. Deux modes : complet / allégé. Raison : suit Claude Code, garde-fous déterministes natifs, surfaces HTML non-dev, charge minimale pour un non-développeur. État réel juin 2026 : garde-fous natifs Go, 5 verbes (setup/plan/work/review/release), surfaces HTML Plan Brief / Progress Tracker / Acceptance Demo, MIT, Claude Code v2.1+.
-- Veille mensuelle upstream = routine planifiée Claude Code (cloud Anthropic), déclenchée le 1er du mois. Elle compare l'état des deux repos avec un état mémorisé et écrit un rapport dans le repo GitHub (`docs/veille/VEILLE-OUTILS.md`) avec verdict à intégrer / à surveiller / à ignorer. Elle propose, n'intègre jamais seule. Prérequis : projet sur GitHub. VPS (instance Claude Code) = plan B. Routine active : `veille-outils-upstream` (id `trig_01UTxP1TgxFUVUsap7KkY6Ta`), cron `0 8 1 * *` (1er du mois 08h UTC), modèle sonnet-4-6, écriture directe sur `main`. Socle dans `docs/veille/` (`_consigne.md`, `_etat-upstream.md`, `VEILLE-OUTILS.md`). Gestion : https://claude.ai/code/routines. Premier passage réel : 2026-07-01.
-- Repo unique privé `project-os-ai` sur GitHub (compte Mediatros, `gh` connecté). Contient Core + extension Life + extension Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub (email perso en mode privé).
+Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-XXXX`, avec contexte, options, raison, conséquences). L'historique daté des changements est dans `CHANGELOG.md` (`CHG-AAAAMMJJ-HHMM`). Ce fichier ne garde que l'état courant.
 
 ## Travail en cours
 
