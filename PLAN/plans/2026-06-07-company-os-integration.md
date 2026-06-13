@@ -352,7 +352,7 @@ Un bon Project OS doit donc être :
 docs/governance.md
 docs/glossary.md
 structures/knowledge-tree.md
-templates/knowledge/docs/kb_governance.md
+templates/extensions/knowledge/docs/kb_governance.md
 skills/project-os/SKILL.md
 ```
 
@@ -476,8 +476,8 @@ identifier trois choses :
 
 ```text
 structures/knowledge-tree.md
-templates/knowledge/docs/kb_governance.md
-templates/knowledge/docs/INDEX.md
+templates/extensions/knowledge/docs/kb_governance.md
+templates/extensions/knowledge/docs/INDEX.md
 docs/governance.md
 docs/glossary.md
 ```
@@ -684,8 +684,8 @@ docs/glossary.md
 docs/enforcement.md
 docs/classification.md
 structures/knowledge-tree.md
-templates/knowledge/docs/INDEX.md
-templates/knowledge/docs/kb_governance.md
+templates/extensions/knowledge/docs/INDEX.md
+templates/extensions/knowledge/docs/kb_governance.md
 skills/project-os/SKILL.md
 ```
 

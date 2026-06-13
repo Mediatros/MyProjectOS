@@ -56,10 +56,10 @@ Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut 
 - `docs/lifecycle.md` — préciser quand activer l’extension `knowledge`.
 - `docs/glossary.md` — définir `Knowledge`, `Niveau 1`, `Niveau 2`, `Niveau 3`, `runbook`, `plan`.
 - `structures/knowledge-tree.md` — nouveau fichier décrivant l’arborescence cible.
-- `templates/knowledge/` — nouveau template d’extension.
-- `templates/knowledge/docs/kb_governance.md` — template générique.
-- `templates/knowledge/docs/INDEX.md` — carte d’entrée générique.
-- `templates/knowledge/docs/plan/templates/plan_template.md` — template de plan enrichi.
+- `templates/extensions/knowledge/` — nouveau template d’extension.
+- `templates/extensions/knowledge/docs/kb_governance.md` — template générique.
+- `templates/extensions/knowledge/docs/INDEX.md` — carte d’entrée générique.
+- `templates/extensions/knowledge/docs/plan/templates/plan_template.md` — template de plan enrichi.
 - `skills/project-os/SKILL.md` — ajouter le comportement agent pour la navigation Knowledge.
 - `TASKS.md` — ajouter une phase ou sous-phase d’intégration Knowledge.
 - `CHANGELOG.md` — consigner l’évolution si elle est appliquée.
@@ -80,7 +80,7 @@ Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut 
 | Niveau | Consulter ? | Justification | Fichiers concernés |
 |--------|-------------|---------------|--------------------|
 | Core Project OS | Oui | Vérifier la cohérence avec le modèle Core + extensions activables. | `README.md`, `CLAUDE.md`, `PROGRESS.md`, `TASKS.md`, `docs/governance.md` |
-| Extension existante Life/Code | Oui partiel | S’assurer que `knowledge` reste orthogonale et ne duplique pas Life/Code. | `structures/life-tree.md`, `structures/code-tree.md`, `templates/life/`, `templates/code/` |
+| Extension existante Life/Code | Oui partiel | S’assurer que `knowledge` reste orthogonale et ne duplique pas Life/Code. | `structures/life-tree.md`, `structures/code-tree.md`, `templates/extensions/life/`, `templates/extensions/code/` |
 | Cas réel Unjque | Oui | Utiliser l’implémentation réelle comme modèle validé. | `/home/<user>/projects/Unjque_Projet/docs/kb_governance.md`, `docs/INDEX.md`, `docs/plan/templates/plan_template.md`, `CLAUDE.md` |
 | Détail technique hooks/scripts | Non en v1 | Pas de check déterministe en première intégration. | `scripts/hooks/`, `scripts/init-project.sh` |
 
@@ -187,22 +187,22 @@ Règle : les noms peuvent varier, mais la logique de profondeur doit rester stab
 
 ### Phase K3 — Créer les templates Knowledge
 
-1. Créer `templates/knowledge/docs/kb_governance.md`.
-2. Créer `templates/knowledge/docs/INDEX.md`.
+1. Créer `templates/extensions/knowledge/docs/kb_governance.md`.
+2. Créer `templates/extensions/knowledge/docs/INDEX.md`.
 3. Créer les dossiers :
-   - `templates/knowledge/docs/01_global/`
-   - `templates/knowledge/docs/02_domains/`
-   - `templates/knowledge/docs/03_details/`
-   - `templates/knowledge/docs/runbooks/`
-   - `templates/knowledge/docs/plan/templates/`
-   - `templates/knowledge/docs/plan/active/`
-   - `templates/knowledge/docs/plan/ideas/`
-   - `templates/knowledge/docs/plan/archived/`
+   - `templates/extensions/knowledge/docs/01_global/`
+   - `templates/extensions/knowledge/docs/02_domains/`
+   - `templates/extensions/knowledge/docs/03_details/`
+   - `templates/extensions/knowledge/docs/runbooks/`
+   - `templates/extensions/knowledge/docs/plan/templates/`
+   - `templates/extensions/knowledge/docs/plan/active/`
+   - `templates/extensions/knowledge/docs/plan/ideas/`
+   - `templates/extensions/knowledge/docs/plan/archived/`
 4. Ajouter `.gitkeep` uniquement si nécessaire pour versionner les dossiers vides.
 
 ### Phase K4 — Ajouter le template de plan enrichi
 
-1. Créer `templates/knowledge/docs/plan/templates/plan_template.md`.
+1. Créer `templates/extensions/knowledge/docs/plan/templates/plan_template.md`.
 2. Inclure :
    - objectif ;
    - contexte ;
@@ -293,9 +293,9 @@ Mitigation : mettre à jour le skill assistant et prévoir un check script futur
 
 - Une décision `DEC-XXXX` valide l’extension `knowledge`.
 - `structures/knowledge-tree.md` existe et explique clairement le modèle.
-- `templates/knowledge/` contient la structure générique.
-- `templates/knowledge/docs/kb_governance.md` est réutilisable par nouveau projet.
-- `templates/knowledge/docs/plan/templates/plan_template.md` inclut l’analyse par niveau et les dépendances transverses.
+- `templates/extensions/knowledge/` contient la structure générique.
+- `templates/extensions/knowledge/docs/kb_governance.md` est réutilisable par nouveau projet.
+- `templates/extensions/knowledge/docs/plan/templates/plan_template.md` inclut l’analyse par niveau et les dépendances transverses.
 - `README.md` présente `knowledge` comme extension optionnelle.
 - `docs/governance.md` décrit la navigation progressive et l’analyse d’impact.
 - `skills/project-os/SKILL.md` impose le comportement agent attendu.
@@ -338,7 +338,7 @@ Si l’extension alourdit trop le système :
 
 1. Supprimer la référence à `knowledge` dans `README.md`.
 2. Retirer les ajouts de `docs/governance.md`, `principles`, `lifecycle`, `glossary`.
-3. Archiver ou supprimer `templates/knowledge/` selon décision.
+3. Archiver ou supprimer `templates/extensions/knowledge/` selon décision.
 4. Archiver ou supprimer `structures/knowledge-tree.md` selon décision.
 5. Ajouter une entrée `CHANGELOG.md` indiquant l’abandon ou le report.
 

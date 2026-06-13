@@ -94,7 +94,7 @@ Livrable : un projet Core peut être démarré à la main à partir de ces templ
 
 ### Phase 4 — Templates Life
 
-Créer dans `templates/life/` : `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md`.
+Créer dans `templates/extensions/life/` : `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md`.
 
 Définir le registre des preuves (`P-XXXX`) reliant chaque affirmation à un document source.
 
@@ -102,7 +102,7 @@ Livrable : un projet Life est pilotable de bout en bout.
 
 ### Phase 5 — Templates Code
 
-Créer dans `templates/code/` : `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`.
+Créer dans `templates/extensions/code/` : `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`.
 
 Livrable : un projet Code peut valider sa stack et analyser l'impact d'une fonctionnalité avant codage.
 
