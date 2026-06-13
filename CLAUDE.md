@@ -88,7 +88,7 @@ Puis produire : État actuel / Dernière action / Prochaine action / Points de v
 - Tout fichier de pilotage doit être en Markdown
 - `PROGRESS.md` = état actuel (source de vérité opérationnelle), jamais un journal
 - `CHANGELOG.md` = historique utile, pas seulement technique, utilisable pour les projets Life
-- `DECISIONS.md` = décisions structurantes uniquement, format `DEC-XXXX` avec contexte, options, raison, conséquences
+- `DECISIONS.md` = décisions structurantes uniquement, format `DEC-XXXX` avec contexte, options, choix, raison, conséquences
 - `PREUVES.md` (Life) = registre logique `P-XXXX` reliant chaque affirmation à un document source
 - `STACK_VALIDATION.md` (Code) = obligatoire avant toute première ligne de code
 

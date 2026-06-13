@@ -34,7 +34,7 @@ Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`,
 
 ## Décisions actées
 
-Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-XXXX`, avec contexte, options, raison, conséquences). L'historique daté des changements est dans `CHANGELOG.md` (`CHG-AAAAMMJJ-HHMM`). Ce fichier ne garde que l'état courant.
+Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-XXXX`, avec contexte, options, choix, raison, conséquences). L'historique daté des changements est dans `CHANGELOG.md` (`CHG-AAAAMMJJ-HHMM`). Ce fichier ne garde que l'état courant.
 
 ## Travail en cours
 
