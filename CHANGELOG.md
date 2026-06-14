@@ -1,4 +1,4 @@
-# CHANGELOG.md — Project OS AI
+# CHANGELOG.md — MyProjectOS
 
 > Registre daté de ce qui a changé. Historique utile, pas seulement technique.
 > Chaque entrée porte un identifiant `CHG-YYYYMMDD-HHMM` et reste figée une fois écrite.
@@ -24,7 +24,7 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 ### CHG-20260614-0312 — Versionnement de la méthode
 
 - Introduction d'une notion de version de la méthode : fichier `VERSION` à la racine (source de vérité unique, `0.1.0`) et politique `MAJEUR.MINEUR.CORRECTIF` documentée dans `docs/versioning.md` (avec définition d'une release).
-- Empreinte dans chaque projet : champ `version_methode` ajouté au frontmatter de `templates/core/PROJECT.md` (remplace `methode: project-os v1`), estampillé à la création par `scripts/init-project.sh` depuis `VERSION`.
+- Empreinte dans chaque projet : champ `version_methode` ajouté au frontmatter de `templates/core/PROJECT.md` (remplace `methode: my-project-os v1`), estampillé à la création par `scripts/init-project.sh` depuis `VERSION`.
 - Check d'alignement : `scripts/check-project.sh` compare l'empreinte du projet à la version courante et signale « à jour / en retard / sans empreinte ». Comparateur de versions portable ajouté.
 - Voir DEC-0015.
 

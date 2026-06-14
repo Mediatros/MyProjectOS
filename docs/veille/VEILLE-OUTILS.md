@@ -1,6 +1,6 @@
 # Veille outils upstream
 
-> Suivi mensuel de l'évolution des deux outils dont dépend Project OS AI :
+> Suivi mensuel de l'évolution des deux outils dont dépend MyProjectOS :
 > [github/spec-kit](https://github.com/github/spec-kit) et [Chachamaru127/claude-code-harness](https://github.com/Chachamaru127/claude-code-harness).
 >
 > Principe : la veille **propose**, elle n'intègre jamais seule. Chaque entrée liste ce qui a

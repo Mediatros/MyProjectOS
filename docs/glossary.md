@@ -1,8 +1,8 @@
-# Glossaire — Project OS AI
+# Glossaire — MyProjectOS
 
 Vocabulaire commun du système. Une définition par terme.
 
-- **Project OS** : la méthode d'organisation de projets assistée par IA décrite dans ce repository.
+- **MyProjectOS** : la méthode d'organisation de projets assistée par IA décrite dans ce repository.
 - **Core** : le socle commun à tous les projets (cinq fichiers sacrés, dossiers numérotés, gouvernance).
 - **Extension Life** : ajout pour les projets personnels, administratifs ou juridiques (preuves, échéances, correspondances).
 - **Extension Code** : ajout pour les projets logiciels (stack, architecture, specs, tests, impact, release).

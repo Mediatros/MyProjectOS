@@ -1,7 +1,8 @@
 ---
 projet: <NomDuProjet>
 type: Life | Code | Hybrid
-methode: project-os v1
+methode: my-project-os
+version_methode: <VERSION>
 statut: actif | en pause | clôturé
 cree_le: YYYY-MM-DD
 ---

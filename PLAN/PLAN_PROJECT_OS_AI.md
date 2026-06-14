@@ -1,6 +1,6 @@
 # PLAN PROJECT OS AI
 
-Plan de construction du repository `project-os-ai`.
+Plan de construction du repository `my-project-os`.
 Source : `PLAN/HANDOFF.md`. Dernière mise à jour : 2026-06-01.
 
 ## 1. Objectif
@@ -22,7 +22,7 @@ Pour les projets Code s'ajoute : la stack est-elle validée et quels fichiers so
 ## 3. Architecture
 
 ```
-Core Project OS         commun à tous les projets
+Core MyProjectOS         commun à tous les projets
 ├── Extension Life      projets personnels, administratifs, juridiques
 └── Extension Code      projets logiciels
 ```
@@ -56,7 +56,7 @@ Livrable : `docs/governance.md` et `docs/naming-conventions.md` rédigés.
 Créer l'arborescence cible et les fichiers racine.
 
 ```
-project-os-ai/
+my-project-os/
 ├── README.md
 ├── ROADMAP.md
 ├── CHANGELOG.md

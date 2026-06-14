@@ -1,4 +1,4 @@
-# Vision — Project OS AI
+# Vision — MyProjectOS
 
 ## Le problème
 

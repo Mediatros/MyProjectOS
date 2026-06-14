@@ -1,5 +1,5 @@
 #!/bin/sh
-# _lib.sh — fonctions communes aux hooks Project OS.
+# _lib.sh — fonctions communes aux hooks MyProjectOS.
 # POSIX sh. Aucune dépendance obligatoire : dégradation silencieuse si python3/jq absents.
 
 # Lit l'intégralité de stdin dans la variable HOOK_PAYLOAD.
@@ -44,7 +44,7 @@ project_dir() {
     fi
 }
 
-# Vrai si le dossier est un projet Project OS (présence de PROJECT.md).
+# Vrai si le dossier est un projet MyProjectOS (présence de PROJECT.md).
 is_project_os() {
     [ -f "$1/PROJECT.md" ]
 }

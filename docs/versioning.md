@@ -1,6 +1,6 @@
-# Versionnement de la méthode — Project OS AI
+# Versionnement de la méthode — MyProjectOS
 
-> Comment Project OS (la méthode) se numérote, et comment un projet sait s'il suit une version à jour.
+> Comment MyProjectOS (la méthode) se numérote, et comment un projet sait s'il suit une version à jour.
 > Cette page parle de la version de **la méthode**, pas de la version d'un projet ni d'un logiciel.
 
 ## Pourquoi une version
@@ -53,7 +53,7 @@ Le `CHANGELOG.md` garde le détail daté des changements (`CHG-YYYYMMDD-HHMM`) ;
 Quand `scripts/init-project.sh` crée un projet, il inscrit la version de la méthode utilisée dans le frontmatter de `PROJECT.md` :
 
 ```yaml
-methode: project-os
+methode: my-project-os
 version_methode: 0.1.0
 ```
 
@@ -63,8 +63,8 @@ Le projet sait ainsi sur quelle version de la méthode il est né. Cette emprein
 
 `scripts/check-project.sh` lit `version_methode` dans le `PROJECT.md` du projet, le compare au `VERSION` de la méthode installée, et répond :
 
-- **à jour** : `[ok] suit Project OS v0.1.0 (version courante)` ;
-- **en retard** : `[!] suit Project OS v0.1.0, version courante v0.2.0 : voir les changements dans le CHANGELOG de la méthode` ;
+- **à jour** : `[ok] suit MyProjectOS v0.1.0 (version courante)` ;
+- **en retard** : `[!] suit MyProjectOS v0.1.0, version courante v0.2.0 : voir les changements dans le CHANGELOG de la méthode` ;
 - **sans empreinte** : `[!] projet sans empreinte de version (créé avant le versionnement)`.
 
 Le check informe, il ne migre rien et ne bloque rien. La mise à jour d'un projet vers une version plus récente reste une décision humaine.

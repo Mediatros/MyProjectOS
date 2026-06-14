@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Rôle de ce repository
 
-Ce repository documente, structure et versionne le **Project OS AI** : une méthode d'organisation de projets assistée par IA, utilisable par un non-développeur, pilotée par Claude Code (Mac) et Hermes Agent (VPS).
+Ce repository documente, structure et versionne le **MyProjectOS** : une méthode d'organisation de projets assistée par IA, utilisable par un non-développeur, pilotée par Claude Code (Mac) et Hermes Agent (VPS).
 
 Ce n'est pas un projet logiciel. C'est un système documentaire de gestion de projets.
 
@@ -13,7 +13,7 @@ Ce n'est pas un projet logiciel. C'est un système documentaire de gestion de pr
 Le système est organisé en trois couches :
 
 ```
-Core Project OS         # commun à tous les projets
+Core MyProjectOS         # commun à tous les projets
 ├── Extension Life      # projets personnels, admin, juridiques
 └── Extension Code      # projets logiciels
 ```
@@ -52,7 +52,7 @@ Extension Code ajoute : `AGENTS.md`, `CONSTITUTION.md`, `STACK_VALIDATION.md`, `
 ## Structure cible du repository
 
 ```
-project-os-ai/
+my-project-os/
 ├── README.md / ROADMAP.md / CHANGELOG.md
 ├── docs/              # vision, principles, governance, lifecycle, glossary, enforcement
 ├── templates/
@@ -63,7 +63,7 @@ project-os-ai/
 │       └── knowledge/ # docs/INDEX.md, kb_governance.md, niveaux, plans, runbooks
 ├── structures/        # core-tree.md, life-tree.md, code-tree.md
 ├── agents/            # claude-code.md, hermes.md, meta-skill.md
-├── skills/            # project-os/SKILL.md (skill assistant installable)
+├── skills/            # my-project-os/SKILL.md (skill assistant installable)
 ├── examples/          # life-copropriete/, life-comptabilite/, code-wordpress-plugin/
 └── scripts/           # init-project.sh + hooks/ (enforcement déterministe)
 ```

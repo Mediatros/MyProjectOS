@@ -1,6 +1,6 @@
 # PLAN — plans d'évolution
 
-> Zone isolée pour les plans d'évolution du système Project OS AI.
+> Zone isolée pour les plans d'évolution du système MyProjectOS.
 
 ## Rôle
 

@@ -1,4 +1,4 @@
-# Principes de conception — Project OS AI
+# Principes de conception — MyProjectOS
 
 Les principes qui tranchent les arbitrages. En cas de doute, on revient ici.
 

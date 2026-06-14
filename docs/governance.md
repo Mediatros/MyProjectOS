@@ -1,4 +1,4 @@
-# Gouvernance — Project OS AI
+# Gouvernance — MyProjectOS
 
 Les règles d'opération du système : qui met à jour quoi, quand, et ce qui exige une validation humaine.
 
@@ -92,7 +92,7 @@ Il scanne les sous-dossiers directs, lit le frontmatter de chaque `PROGRESS.md` 
 
 ## Versioning de la méthode
 
-La méthode est versionnée (`project-os v1`, `v2`...). Chaque projet inscrit la version utilisée dans l'en-tête de `PROJECT.md`. Les évolutions de la méthode sont consignées dans le `CHANGELOG.md` du repository.
+La méthode est versionnée (`my-project-os v1`, `v2`...). Chaque projet inscrit la version utilisée dans l'en-tête de `PROJECT.md`. Les évolutions de la méthode sont consignées dans le `CHANGELOG.md` du repository.
 
 ## Archivage
 

@@ -1,10 +1,10 @@
 # claude-code.md — Rôle et frontières de Claude Code
 
-> Claude Code (sur Mac) est l'agent principal d'exécution de la méthode Project OS.
+> Claude Code (sur Mac) est l'agent principal d'exécution de la méthode MyProjectOS.
 
 ## Ce qu'il est
 
-L'agent de référence côté poste de travail. Il exécute la skill assistant (`skills/project-os/SKILL.md`), applique les rituels de session, et pilote la colonne vertébrale Code (Harness, Phase 5). C'est lui qui dogfoode la méthode sur ce repo.
+L'agent de référence côté poste de travail. Il exécute la skill assistant (`skills/my-project-os/SKILL.md`), applique les rituels de session, et pilote la colonne vertébrale Code (Harness, Phase 5). C'est lui qui dogfoode la méthode sur ce repo.
 
 ## Ce qu'il fait
 

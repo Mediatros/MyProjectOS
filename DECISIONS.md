@@ -1,4 +1,4 @@
-# DECISIONS.md — Project OS AI
+# DECISIONS.md — MyProjectOS
 
 > Pourquoi des choix structurants. Décisions importantes uniquement, pas les détails d'exécution.
 > Chaque décision porte un identifiant stable `DEC-XXXX` et pointe vers les entrées `CHG-` liées.
@@ -78,7 +78,7 @@
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : l'assistant de méthode est la pièce centrale pour un non-développeur, pas un bonus.
 - **Options envisagées** : simple spécification Markdown ; skill Claude Code installable.
-- **Choix** : skill installable (`skills/project-os/SKILL.md`), avec 4 modes (reprise / orientation / explication / clôture).
+- **Choix** : skill installable (`skills/my-project-os/SKILL.md`), avec 4 modes (reprise / orientation / explication / clôture).
 - **Raison** : être réellement dogfoodable et exécutable, pas seulement décrit.
 - **Conséquences** : nouveau dossier `skills/` ajouté au repo.
 
@@ -134,7 +134,7 @@
 ### DEC-0015 — Versionnement de la méthode en SemVer simplifié, démarrage à 0.1.0
 
 - **Date** : 2026-06-14
-- **Contexte** : la méthode évolue (ex : passage des dates françaises au format `YYYY-MM-DD`) sans qu'aucun numéro ne dise dans quelle version on est, ni si un projet existant suit encore les règles courantes. Le template `PROJECT.md` portait un `methode: project-os v1` statique, non relié à une vraie version.
+- **Contexte** : la méthode évolue (ex : passage des dates françaises au format `YYYY-MM-DD`) sans qu'aucun numéro ne dise dans quelle version on est, ni si un projet existant suit encore les règles courantes. Le template `PROJECT.md` portait un `methode: my-project-os v1` statique, non relié à une vraie version.
 - **Options envisagées** :
   - A. Garder un libellé statique (`v1`) sans mécanique.
   - B. Versionner via les seules entrées datées `CHG-` du CHANGELOG.
@@ -148,6 +148,6 @@
 
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : choisir l'hébergement et la granularité du dépôt.
-- **Choix** : repo unique privé `project-os-ai` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
+- **Choix** : repo unique privé `my-project-os` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
 - **Raison** : un seul point de vérité versionné, email personnel gardé privé.
 - **Conséquences** : tout vit dans ce dépôt ; les projets réels sont générés ailleurs via `init-project.sh`.

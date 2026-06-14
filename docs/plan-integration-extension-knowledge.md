@@ -1,4 +1,4 @@
-# Plan : Intégration de l’extension Knowledge dans Project OS AI
+# Plan : Intégration de l’extension Knowledge dans MyProjectOS
 
 Date : 2026-06-07  
 Statut : Ideas  
@@ -8,7 +8,7 @@ Priorité : Haute
 
 ## 1. Objectif
 
-Intégrer dans Project OS AI une extension officielle `knowledge` inspirée du framework Grok et validée par l’organisation réelle du projet `Unjque_Projet`.
+Intégrer dans MyProjectOS une extension officielle `knowledge` inspirée du framework Grok et validée par l’organisation réelle du projet `Unjque_Projet`.
 
 But opérationnel : permettre aux agents IA de naviguer dans une base de connaissance projet par niveaux de profondeur, sans charger tout le contexte, tout en analysant explicitement les dépendances transverses avant modification.
 
@@ -42,7 +42,7 @@ Après vérification, `Unjque_Projet` applique déjà une version plus mature et
     └── archived/
 ```
 
-Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut en faire une extension officielle `knowledge`, avec `Unjque_Projet` comme cas de dogfood réel.
+Constat : il ne faut pas remplacer MyProjectOS par le framework Grok. Il faut en faire une extension officielle `knowledge`, avec `Unjque_Projet` comme cas de dogfood réel.
 
 ---
 
@@ -50,7 +50,7 @@ Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut 
 
 ### Composants impactés
 
-- `README.md` — présenter l’extension `knowledge` dans l’architecture Project OS.
+- `README.md` — présenter l’extension `knowledge` dans l’architecture MyProjectOS.
 - `docs/governance.md` — ajouter les règles de navigation documentaire par niveaux.
 - `docs/principles.md` — ajouter le principe “charger progressivement le contexte”.
 - `docs/lifecycle.md` — préciser quand activer l’extension `knowledge`.
@@ -60,7 +60,7 @@ Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut 
 - `templates/extensions/knowledge/docs/kb_governance.md` — template générique.
 - `templates/extensions/knowledge/docs/INDEX.md` — carte d’entrée générique.
 - `templates/extensions/knowledge/docs/plan/templates/plan_template.md` — template de plan enrichi.
-- `skills/project-os/SKILL.md` — ajouter le comportement agent pour la navigation Knowledge.
+- `skills/my-project-os/SKILL.md` — ajouter le comportement agent pour la navigation Knowledge.
 - `TASKS.md` — ajouter une phase ou sous-phase d’intégration Knowledge.
 - `CHANGELOG.md` — consigner l’évolution si elle est appliquée.
 - `DECISIONS.md` — créer une décision structurante si validée.
@@ -79,7 +79,7 @@ Constat : il ne faut pas remplacer Project OS AI par le framework Grok. Il faut 
 
 | Niveau | Consulter ? | Justification | Fichiers concernés |
 |--------|-------------|---------------|--------------------|
-| Core Project OS | Oui | Vérifier la cohérence avec le modèle Core + extensions activables. | `README.md`, `CLAUDE.md`, `PROGRESS.md`, `TASKS.md`, `docs/governance.md` |
+| Core MyProjectOS | Oui | Vérifier la cohérence avec le modèle Core + extensions activables. | `README.md`, `CLAUDE.md`, `PROGRESS.md`, `TASKS.md`, `docs/governance.md` |
 | Extension existante Life/Code | Oui partiel | S’assurer que `knowledge` reste orthogonale et ne duplique pas Life/Code. | `structures/life-tree.md`, `structures/code-tree.md`, `templates/extensions/life/`, `templates/extensions/code/` |
 | Cas réel Unjque | Oui | Utiliser l’implémentation réelle comme modèle validé. | `/home/<user>/projects/Unjque_Projet/docs/kb_governance.md`, `docs/INDEX.md`, `docs/plan/templates/plan_template.md`, `CLAUDE.md` |
 | Détail technique hooks/scripts | Non en v1 | Pas de check déterministe en première intégration. | `scripts/hooks/`, `scripts/init-project.sh` |
@@ -169,7 +169,7 @@ Règle : les noms peuvent varier, mais la logique de profondeur doit rester stab
 1. Ajouter une décision candidate dans `DECISIONS.md` : extension `knowledge`.
 2. Documenter les options considérées :
    - copier Grok tel quel ;
-   - remplacer Project OS ;
+   - remplacer MyProjectOS ;
    - intégrer comme extension ;
    - utiliser Unjque comme modèle.
 3. Choisir officiellement : extension `knowledge`, inspirée Grok + dogfood Unjque.
@@ -215,7 +215,7 @@ Règle : les noms peuvent varier, mais la logique de profondeur doit rester stab
    - documentation à mettre à jour ;
    - validation / rollback.
 
-### Phase K5 — Mettre à jour la gouvernance Project OS
+### Phase K5 — Mettre à jour la gouvernance MyProjectOS
 
 1. Modifier `docs/governance.md` pour ajouter :
    - extension `knowledge` ;
@@ -228,7 +228,7 @@ Règle : les noms peuvent varier, mais la logique de profondeur doit rester stab
 
 ### Phase K6 — Mettre à jour le skill assistant
 
-1. Modifier `skills/project-os/SKILL.md`.
+1. Modifier `skills/my-project-os/SKILL.md`.
 2. Ajouter un mode ou comportement `knowledge-navigation`.
 3. Règles agent à inclure :
    - lire `docs/INDEX.md` d’abord ;
@@ -246,7 +246,7 @@ Règle : les noms peuvent varier, mais la logique de profondeur doit rester stab
    - `docs/01_macro/`, `02_meso/`, `03_micro/` ;
    - `docs/plan/` ;
    - `docs/.understand-anything/` comme artefact complémentaire.
-3. Ne pas copier les contenus métier Unjque dans ProjectOS.
+3. Ne pas copier les contenus métier Unjque dans MyProjectOS.
 
 ### Phase K8 — Préparer le check futur
 
@@ -298,7 +298,7 @@ Mitigation : mettre à jour le skill assistant et prévoir un check script futur
 - `templates/extensions/knowledge/docs/plan/templates/plan_template.md` inclut l’analyse par niveau et les dépendances transverses.
 - `README.md` présente `knowledge` comme extension optionnelle.
 - `docs/governance.md` décrit la navigation progressive et l’analyse d’impact.
-- `skills/project-os/SKILL.md` impose le comportement agent attendu.
+- `skills/my-project-os/SKILL.md` impose le comportement agent attendu.
 - `TASKS.md` reflète la phase d’intégration.
 - `CHANGELOG.md` trace l’évolution.
 
@@ -315,7 +315,7 @@ Mitigation : mettre à jour le skill assistant et prévoir un check script futur
 - `docs/lifecycle.md`
 - `docs/glossary.md`
 - `structures/knowledge-tree.md`
-- `skills/project-os/SKILL.md`
+- `skills/my-project-os/SKILL.md`
 
 ---
 
@@ -348,5 +348,5 @@ Si l’extension alourdit trop le système :
 
 - `Unjque_Projet` est le meilleur banc d’essai réel : pipeline NocoDB → n8n → Gelato → WooCommerce → plugin WP.
 - Le framework Grok est utile comme formulation générique, mais moins propre que l’implémentation Unjque.
-- La valeur ajoutée Project OS est de transformer cette pratique en extension réutilisable, pas de multiplier les squelettes.
+- La valeur ajoutée MyProjectOS est de transformer cette pratique en extension réutilisable, pas de multiplier les squelettes.
 - La règle la plus importante à préserver : **l’agent doit analyser les dépendances transverses avant modification.**

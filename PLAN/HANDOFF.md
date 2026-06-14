@@ -1,4 +1,4 @@
-HANDOFF — Création d’un Project OS IA pour projets Life & Code
+HANDOFF — Création d’un MyProjectOS IA pour projets Life & Code
 
 1. Contexte général
 
@@ -67,7 +67,7 @@ Le système doit fonctionner pour deux grandes familles de projets :
 
 4. Deux familles de projets
 
-4.1 Project OS Life
+4.1 MyProjectOS Life
 
 Exemples :
 
@@ -107,7 +107,7 @@ Quelle échéance approche ?
 Quel courrier faut-il préparer ?
 Quelle décision a été prise ?
 
-4.2 Project OS Code
+4.2 MyProjectOS Code
 
 Exemples :
 
@@ -156,15 +156,15 @@ Ne pas créer deux systèmes totalement séparés.
 
 Créer plutôt :
 
-Core Project OS
+Core MyProjectOS
 +
 Extension Life
 +
 Extension Code
 
-5.1 Core Project OS
+5.1 Core MyProjectOS
 
-Le Core Project OS est commun à tous les projets.
+Le Core MyProjectOS est commun à tous les projets.
 
 Il doit contenir les fichiers et règles nécessaires pour piloter n’importe quel projet.
 
@@ -236,7 +236,7 @@ Le système doit couvrir 80 % des besoins avec une base simple.
 
 ⸻
 
-7. Fichiers sacrés du Core Project OS
+7. Fichiers sacrés du Core MyProjectOS
 
 Les fichiers suivants doivent exister dans tous les projets.
 
@@ -545,7 +545,7 @@ Le système doit donc :
 
 ⸻
 
-11. Structure proposée — Core Project OS
+11. Structure proposée — Core MyProjectOS
 
 Base commune minimale :
 
@@ -882,7 +882,7 @@ Prochaine action recommandée
 
 Créer un repository dédié, par exemple :
 
-project-os-ai
+my-project-os
 
 Objectif du repository :
 
@@ -895,7 +895,7 @@ Objectif du repository :
 
 Structure recommandée du repository :
 
-project-os-ai/
+my-project-os/
 ├── README.md
 ├── ROADMAP.md
 ├── CHANGELOG.md
@@ -958,7 +958,7 @@ Rôle potentiel :
 * plan ;
 * tâches.
 
-Pertinent surtout pour Project OS Code.
+Pertinent surtout pour MyProjectOS Code.
 
 17.2 Claude Code Harness
 
@@ -970,7 +970,7 @@ Rôle potentiel :
 * review ;
 * garde-fous.
 
-Pertinent surtout pour Project OS Code.
+Pertinent surtout pour MyProjectOS Code.
 
 17.3 Matt Pocock Skills
 
@@ -982,7 +982,7 @@ Rôle potentiel :
 * challenge de documentation ;
 * amélioration architecture.
 
-Pertinent pour Project OS Code et possiblement pour la méta-skill.
+Pertinent pour MyProjectOS Code et possiblement pour la méta-skill.
 
 17.4 Inspiration Company OS sur GitHub
 
@@ -994,7 +994,7 @@ Rôle conceptuel :
 * structure lisible par l’IA ;
 * documentation vivante.
 
-Très pertinent pour la philosophie générale du Project OS.
+Très pertinent pour la philosophie générale du MyProjectOS.
 
 17.5 Boilerplates IA type Melvynx
 
@@ -1015,7 +1015,7 @@ Rôle potentiel :
 
 Créer un nouveau dossier :
 
-project-os-ai
+my-project-os
 
 Initialiser Git.
 
@@ -1090,7 +1090,7 @@ examples/life-copropriete/
 examples/life-comptabilite/
 examples/code-wordpress-plugin/
 
-Chaque exemple doit contenir une mini version réaliste du Project OS.
+Chaque exemple doit contenir une mini version réaliste du MyProjectOS.
 
 Étape 7 — Préparer un script d’initialisation
 
@@ -1162,13 +1162,13 @@ Le projet sera réussi si :
 
 21. Première tâche demandée à Claude Code
 
-Créer la première version du repository project-os-ai.
+Créer la première version du repository my-project-os.
 
 Ne pas chercher encore à intégrer Spec Kit, Harness ou Skills.
 
 L’objectif immédiat est de créer la fondation :
 
-Core Project OS
+Core MyProjectOS
 Life Extension
 Code Extension
 Templates

@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-project.sh — vérifie la cohérence d'un projet Project OS.
+# check-project.sh — vérifie la cohérence d'un projet MyProjectOS.
 # Usage : check-project.sh [chemin-projet]   (défaut : dossier courant)
 # Signale sans bloquer : fichiers sacrés manquants, extensions incomplètes,
 # PROGRESS périmé, placeholders non substitués, références DEC-/CHG- cassées.
@@ -38,7 +38,7 @@ if [ ! -d "$TARGET" ]; then
 fi
 
 if [ ! -f "$TARGET/PROJECT.md" ]; then
-    echo "Pas de PROJECT.md dans '$TARGET' : ce n'est pas un projet Project OS." >&2
+    echo "Pas de PROJECT.md dans '$TARGET' : ce n'est pas un projet MyProjectOS." >&2
     exit 1
 fi
 
@@ -57,9 +57,9 @@ elif [ -z "$PRJ" ] || [ "$PRJ" = "<VERSION>" ]; then
     warn "projet sans empreinte de version (créé avant le versionnement) ; version courante v$CUR"
 else
     case "$(ver_cmp "$PRJ" "$CUR")" in
-        eq) ok "suit Project OS v$PRJ (version courante)" ;;
-        lt) warn "suit Project OS v$PRJ, version courante v$CUR : voir les changements dans le CHANGELOG de la méthode" ;;
-        gt) warn "déclare v$PRJ, plus récent que la version installée v$CUR : mets à jour Project OS" ;;
+        eq) ok "suit MyProjectOS v$PRJ (version courante)" ;;
+        lt) warn "suit MyProjectOS v$PRJ, version courante v$CUR : voir les changements dans le CHANGELOG de la méthode" ;;
+        gt) warn "déclare v$PRJ, plus récent que la version installée v$CUR : mets à jour MyProjectOS" ;;
     esac
 fi
 

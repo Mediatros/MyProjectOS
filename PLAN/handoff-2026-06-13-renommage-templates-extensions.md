@@ -1,6 +1,6 @@
 # Handoff — Renommage : regroupement des extensions sous `templates/extensions/`
 
-_Date : 2026-06-13. Auteur : session Claude Code (Mac). Destinataire : agent en charge du repo `project-os-ai`._
+_Date : 2026-06-13. Auteur : session Claude Code (Mac). Destinataire : agent en charge du repo `my-project-os`._
 
 ## Résumé en une phrase
 
@@ -67,7 +67,7 @@ Raison : réécrire ces fichiers reviendrait à modifier l'historique du projet,
 ## État Git
 
 - Commit local `abfc7f1` sur `main`, **non poussé**.
-- Non suivis restants (intacts) : `anatomy.md`, `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md`.
+- Non suivis restants (intacts) : `anatomy.md`, `docs/hermes-workdoc-2026-06-03-orientation-my-project-os.md`.
 
 ## Prochaines étapes suggérées
 

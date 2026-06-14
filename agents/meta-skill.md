@@ -1,11 +1,11 @@
-# meta-skill.md — La skill assistant Project OS
+# meta-skill.md — La skill assistant MyProjectOS
 
 > Carte d'identité de la pièce centrale du système : la skill qui pilote les projets.
-> Le « quoi » et le « pourquoi » vivent ici. Le « comment » exécutable vit dans `skills/project-os/SKILL.md`.
+> Le « quoi » et le « pourquoi » vivent ici. Le « comment » exécutable vit dans `skills/my-project-os/SKILL.md`.
 
 ## Rôle
 
-La skill assistant est le cerveau opérationnel de Project OS. Elle applique la méthode à la place de l'utilisateur : lire les fichiers sacrés, produire un état fiable, ranger l'information au bon endroit, expliquer le système, clôturer proprement. Elle rend concret le principe de **reprise à froid** (voir `docs/principles.md`, principe 7).
+La skill assistant est le cerveau opérationnel de MyProjectOS. Elle applique la méthode à la place de l'utilisateur : lire les fichiers sacrés, produire un état fiable, ranger l'information au bon endroit, expliquer le système, clôturer proprement. Elle rend concret le principe de **reprise à froid** (voir `docs/principles.md`, principe 7).
 
 Elle accompagne, elle n'enferme pas. Les règles vraiment non négociables ne reposent pas sur elle mais sur les hooks (Phase 4). La skill est la couche « accompagnement » de l'enforcement à trois couches (documentation / skill / hooks).
 
@@ -55,6 +55,6 @@ Règle de prudence : en cas de doute sur l'ampleur, choisir le parcours complet.
 
 ## Voir aussi
 
-- `skills/project-os/SKILL.md` — implémentation exécutable.
+- `skills/my-project-os/SKILL.md` — implémentation exécutable.
 - `agents/claude-code.md`, `agents/hermes.md` — rôles et frontières des deux agents.
 - `docs/governance.md`, `docs/lifecycle.md`, `docs/principles.md` — règles que la skill applique.

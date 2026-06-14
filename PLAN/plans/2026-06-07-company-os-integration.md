@@ -1,4 +1,4 @@
-# Plan d'évolution — intégrer les apports Company OS dans Project OS AI
+# Plan d'évolution — intégrer les apports Company OS dans MyProjectOS
 
 > **Statut :** plan de travail, non appliqué  
 > **Date :** 2026-06-07  
@@ -6,7 +6,7 @@
 > **Sources étudiées :**
 > - Repo : `Workflowsio/company-os-starter-kit`
 > - Article : `https://workflows.io/blogs/how-to-build-a-company-os-on-github`
-> - Repo cible : `Mediatros/project-os-ai`
+> - Repo cible : `Mediatros/my-project-os`
 
 ---
 
@@ -66,7 +66,7 @@ Documentation used to be a record of decisions for a person to read later.
 Now it's the interface your AI uses to do work on behalf of your company.
 ```
 
-Adaptation pour Project OS AI :
+Adaptation pour MyProjectOS :
 
 ```text
 La documentation n'est plus seulement une mémoire projet.
@@ -94,7 +94,7 @@ plugin/    # agents, commandes, hooks
 skills/    # procédures exécutables par Claude
 ```
 
-Lecture Project OS AI :
+Lecture MyProjectOS :
 
 - `company/` correspond au **contexte stable global**.
 - `wiki/` correspond aux **docs de domaine + runbooks**.
@@ -117,7 +117,7 @@ Brut       → utile mais non encore structuré
 Exécutable → utilisé par l'agent pour agir
 ```
 
-Project OS AI classe déjà par **nature** :
+MyProjectOS classe déjà par **nature** :
 
 ```text
 PROJECT.md    → pourquoi
@@ -143,7 +143,7 @@ L'article insiste sur une boucle de transformation :
 raw data → structured docs → SOPs → skills → automation/hooks
 ```
 
-Adaptation Project OS AI :
+Adaptation MyProjectOS :
 
 ```text
 Note brute
@@ -162,17 +162,17 @@ Cette règle évite deux dérives :
 
 L'article explique que chaque client a son propre repo, pour éviter que Claude mélange les voix, les ICP, les campagnes et les historiques.
 
-Traduction Project OS AI :
+Traduction MyProjectOS :
 
 ```text
-Un projet = un Project OS isolé.
+Un projet = un MyProjectOS isolé.
 La méthode est globale.
 La mémoire opérationnelle reste locale au projet.
 ```
 
 Cela renforce la séparation :
 
-- `project-os-ai` = méthode ;
+- `my-project-os` = méthode ;
 - projets générés = contextes locaux ;
 - Wiki Veille = veille sourcée ;
 - Mnemosyne = mémoire utilisateur / préférences durables ;
@@ -188,7 +188,7 @@ Company OS fonctionne parce que :
 - les hooks bloquent les actions risquées ;
 - les SOPs deviennent progressivement exécutables.
 
-Pour Project OS AI, la boucle de correction devrait devenir explicite :
+Pour MyProjectOS, la boucle de correction devrait devenir explicite :
 
 ```text
 Si l'agent se trompe :
@@ -200,11 +200,11 @@ Si l'agent se trompe :
 
 ---
 
-## 2. Diagnostic Project OS AI actuel
+## 2. Diagnostic MyProjectOS actuel
 
 ### 2.1 Ce qui existe déjà et ne doit pas être remplacé
 
-Project OS AI est déjà plus robuste que Company OS sur :
+MyProjectOS est déjà plus robuste que Company OS sur :
 
 - fichiers sacrés ;
 - reprise à froid ;
@@ -220,7 +220,7 @@ Project OS AI est déjà plus robuste que Company OS sur :
 Objectif :
 
 ```text
-Ajouter à Project OS AI la couche “température + maturité de l'information”
+Ajouter à MyProjectOS la couche “température + maturité de l'information”
 sans casser Core / Life / Code / Knowledge.
 ```
 
@@ -238,7 +238,7 @@ sans casser Core / Life / Code / Knowledge.
 4. **Le README peut mieux expliquer que la doc devient une interface IA.**
    - C'est une phrase différenciante forte.
 
-5. **La skill Project OS peut mieux aiguiller l'information.**
+5. **La skill MyProjectOS peut mieux aiguiller l'information.**
    - Elle devrait déterminer nature, température et maturité avant de ranger.
 
 ---
@@ -250,7 +250,7 @@ sans casser Core / Life / Code / Knowledge.
 
 ### Contexte
 
-Project OS AI classe déjà l'information par nature : état, tâche, décision,
+MyProjectOS classe déjà l'information par nature : état, tâche, décision,
 preuve, contexte, spécification, procédure.
 
 L'analyse de Company OS montre qu'un système documentaire agent-compatible
@@ -259,7 +259,7 @@ opérationnelle.
 
 ### Décision
 
-Project OS AI adopte une double classification complémentaire :
+MyProjectOS adopte une double classification complémentaire :
 
 1. Nature de l'information :
    - état
@@ -308,11 +308,11 @@ actuelles de classement par fichiers sacrés et extensions.
 
 ---
 
-## 4. Proposition d'intégration dans Project OS AI
+## 4. Proposition d'intégration dans MyProjectOS
 
 ### Phase 1 — Ajouter le concept dans la vision
 
-**Objectif :** inscrire dans Project OS AI l'idée que la documentation est l'interface d'exécution des agents IA.
+**Objectif :** inscrire dans MyProjectOS l'idée que la documentation est l'interface d'exécution des agents IA.
 
 **Fichiers ciblés :**
 
@@ -327,11 +327,11 @@ docs/principles.md
 ```markdown
 ## Documentation comme interface IA
 
-Project OS AI part d'un principe simple : la documentation n'est plus seulement
+MyProjectOS part d'un principe simple : la documentation n'est plus seulement
 une archive humaine. Elle devient l'interface par laquelle les agents IA
 comprennent, reprennent et exécutent le travail.
 
-Un bon Project OS doit donc être :
+Un bon MyProjectOS doit donc être :
 
 - lisible par un humain ;
 - lisible par un agent ;
@@ -353,7 +353,7 @@ docs/governance.md
 docs/glossary.md
 structures/knowledge-tree.md
 templates/extensions/knowledge/docs/kb_governance.md
-skills/project-os/SKILL.md
+skills/my-project-os/SKILL.md
 ```
 
 **Modèle proposé :**
@@ -425,7 +425,7 @@ raw → doc → runbook → skill → hook/check
 docs/governance.md
 docs/lifecycle.md
 docs/glossary.md
-skills/project-os/SKILL.md
+skills/my-project-os/SKILL.md
 ```
 
 **Niveaux proposés :**
@@ -445,14 +445,14 @@ M4 — Hook/check
 - un runbook utilisé régulièrement devient candidat skill ;
 - une erreur récurrente ou risquée devient candidate hook/check.
 
-### Phase 4 — Adapter la skill `project-os`
+### Phase 4 — Adapter la skill `my-project-os`
 
 **Objectif :** faire appliquer la grille par l'agent.
 
 **Fichier ciblé :**
 
 ```text
-skills/project-os/SKILL.md
+skills/my-project-os/SKILL.md
 ```
 
 **Ajout proposé :**
@@ -540,7 +540,7 @@ docs/glossary.md
 ```markdown
 ## Isolation des contextes
 
-Un Project OS est local à un projet.
+Un MyProjectOS est local à un projet.
 
 La méthode peut être globale, mais la mémoire opérationnelle doit rester dans
 le projet concerné.
@@ -550,7 +550,7 @@ Règles :
 - ne pas mélanger les décisions de deux projets ;
 - ne pas utiliser un wiki global comme mémoire projet ;
 - ne pas copier une preuve ou un historique d'un projet vers un autre sans raison ;
-- créer un Project OS séparé dès que le contexte, les acteurs ou les décisions divergent.
+- créer un MyProjectOS séparé dès que le contexte, les acteurs ou les décisions divergent.
 ```
 
 ### Phase 8 — Améliorer le README avec une section “inspirations”
@@ -568,7 +568,7 @@ README.md
 ```markdown
 ## Inspirations
 
-Project OS AI s'inspire de plusieurs approches modernes d'organisation
+MyProjectOS s'inspire de plusieurs approches modernes d'organisation
 agent-compatible :
 
 - Company OS : documentation Markdown versionnée, structurée par rôle,
@@ -577,7 +577,7 @@ agent-compatible :
 - Claude Code Harness : workflows plan → work → review ;
 - systèmes de skills : procédures réutilisables et améliorées par usage.
 
-Project OS AI ne copie pas ces systèmes. Il les adapte à un besoin différent :
+MyProjectOS ne copie pas ces systèmes. Il les adapte à un besoin différent :
 piloter des projets Life, Code ou Hybrid avec reprise à froid, gouvernance
 humaine et compatibilité Claude Code / Hermès.
 ```
@@ -602,10 +602,10 @@ docs/classification.md
 git status --short
 sh -n scripts/init-project.sh
 sh -n scripts/hooks/*.sh
-rm -rf /tmp/project-os-companyos-test
-./scripts/init-project.sh /tmp/project-os-companyos-test --code --knowledge
+rm -rf /tmp/my-project-os-companyos-test
+./scripts/init-project.sh /tmp/my-project-os-companyos-test --code --knowledge
 grep -R "Température contextuelle" docs templates skills structures
-grep -R "<NomDuProjet>" /tmp/project-os-companyos-test
+grep -R "<NomDuProjet>" /tmp/my-project-os-companyos-test
 ```
 
 **Attendus :**
@@ -638,9 +638,9 @@ grep -R "<NomDuProjet>" /tmp/project-os-companyos-test
 
 - **T3.1** Ajouter le cycle raw → doc → runbook → skill → hook dans `docs/lifecycle.md`, `docs/governance.md`, `docs/glossary.md`.
 
-### Lot 4 — Skill Project OS
+### Lot 4 — Skill MyProjectOS
 
-- **T4.1** Ajouter l'aiguillage nature/température/maturité dans `skills/project-os/SKILL.md`.
+- **T4.1** Ajouter l'aiguillage nature/température/maturité dans `skills/my-project-os/SKILL.md`.
 
 ### Lot 5 — Couche opératoire
 
@@ -686,7 +686,7 @@ docs/classification.md
 structures/knowledge-tree.md
 templates/extensions/knowledge/docs/INDEX.md
 templates/extensions/knowledge/docs/kb_governance.md
-skills/project-os/SKILL.md
+skills/my-project-os/SKILL.md
 ```
 
 ---
@@ -695,7 +695,7 @@ skills/project-os/SKILL.md
 
 ### Risque 1 — Surcharge documentaire
 
-Trop de concepts peuvent rendre Project OS AI intimidant.
+Trop de concepts peuvent rendre MyProjectOS intimidant.
 
 **Mitigation :** présenter température/maturité comme aide de classement, pas comme bureaucratie.
 
@@ -733,12 +733,12 @@ Rollback simple :
 
 ## 9. Recommandation finale
 
-Intégrer Company OS dans Project OS AI sous forme de **grille transversale**, pas comme refonte.
+Intégrer Company OS dans MyProjectOS sous forme de **grille transversale**, pas comme refonte.
 
 Formule cible :
 
 ```text
-Project OS AI garde son architecture :
+MyProjectOS garde son architecture :
 Core / Life / Code / Hybrid / Knowledge
 
 Et ajoute trois principes issus de Company OS :
@@ -757,4 +757,4 @@ Appliquer l'intégration par lots, en commençant par :
 2. `docs/principles.md` : documentation comme interface IA ;
 3. `docs/governance.md` : température contextuelle ;
 4. `docs/lifecycle.md` : maturité de l'information ;
-5. `skills/project-os/SKILL.md` : aiguillage agent.
+5. `skills/my-project-os/SKILL.md` : aiguillage agent.

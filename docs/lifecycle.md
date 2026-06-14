@@ -1,4 +1,4 @@
-# Cycle de vie d'un projet — Project OS AI
+# Cycle de vie d'un projet — MyProjectOS
 
 De la création à l'archivage, les étapes par lesquelles passe un projet.
 

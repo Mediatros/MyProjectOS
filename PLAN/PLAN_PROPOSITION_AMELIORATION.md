@@ -10,10 +10,10 @@ Chaque proposition suit le même format : problème observé, proposition, impac
 - **#1 Synchronisation Mac/VPS** : réglé par Syncthing (marqueurs `.stfolder` / `.stignore`).
 - **#2 Détection projet courant** : réglé. Ouverture directe du dossier projet côté Claude et côté Hermès (profil dédié isolé, voir `AGENTS.md` racine). L'index global est conservé pour la vue d'ensemble, pas pour la détection.
 - **#3 Frontière fichiers sacrés** : validée. PROGRESS = photo de l'instant (dernières actions, en cours, prochaine action), ne s'allonge pas. CHANGELOG = registre daté avec identifiant `CHG-YYYYMMDD-HHMM`. DECISIONS = pourquoi des choix structurants, chaque `DEC-XXXX` pointe vers les `CHG-` liés.
-- **#4 Articulation PROGRESS global** : PROGRESS du Project OS s'aligne sur la structure du CLAUDE.md global. `anatomy.md` abandonné.
+- **#4 Articulation PROGRESS global** : PROGRESS du MyProjectOS s'aligne sur la structure du CLAUDE.md global. `anatomy.md` abandonné.
 - **#5 Index global** : retenu. Bloc d'en-tête lisible par machine dans chaque PROGRESS + script `build-index.sh`. Détaillé ci-dessous.
 - **#6 Conventions de nommage** : proposition complète inspirée d'Unjque rédigée, en attente d'arbitrage (voir Points à trancher).
-- **#7 Skill Project OS** : retenu.
+- **#7 Skill MyProjectOS** : retenu.
 - **#8 Archivage** : retenu. Vieilles entrées du CHANGELOG déplacées vers `archives/CHANGELOG-AAAA.md`. Nom du dossier d'archive à trancher.
 - **#9 Validation des fichiers sacrés** : retenu.
 - **#10 Type Hybrid** : clarifié. Active simultanément les extensions Life et Code (cas : projet avec dimension réelle ET logicielle, ex `Gestion_Courrier`).
@@ -36,7 +36,7 @@ Chaque proposition suit le même format : problème observé, proposition, impac
 | 4 | Articulation avec le système PROGRESS.md global | Haute | Faible | À trancher en phase 0 |
 | 5 | Index global multi-projets | Moyenne | Faible | À retenir |
 | 6 | Conventions de nommage concrètes | Haute | Faible | À retenir |
-| 7 | Skill Claude Code « Project OS » | Moyenne | Moyen | À étudier après le Core |
+| 7 | Skill Claude Code « MyProjectOS » | Moyenne | Moyen | À étudier après le Core |
 | 8 | Stratégie d'archivage et compaction | Moyenne | Faible | À retenir |
 | 9 | Validation et cohérence des fichiers sacrés | Basse | Moyen | Optionnel |
 | 10 | Définition claire du type Hybrid | Moyenne | Faible | À retenir |
@@ -81,9 +81,9 @@ Une même information ne vit qu'à un seul endroit. Les autres fichiers la réf�
 
 ## 4. Articulation avec le système PROGRESS.md global
 
-**Problème.** Le `CLAUDE.md` global de l'utilisateur impose déjà un système `PROGRESS.md` et `anatomy.md` pour tous les projets, avec sa propre structure obligatoire. Le Project OS définit son propre `PROGRESS.md` avec une structure différente. Risque de conflit ou de double standard.
+**Problème.** Le `CLAUDE.md` global de l'utilisateur impose déjà un système `PROGRESS.md` et `anatomy.md` pour tous les projets, avec sa propre structure obligatoire. Le MyProjectOS définit son propre `PROGRESS.md` avec une structure différente. Risque de conflit ou de double standard.
 
-**Proposition.** Aligner les deux. Soit le Project OS adopte la structure `PROGRESS.md` du CLAUDE.md global, soit le CLAUDE.md global est mis à jour pour pointer vers la structure Project OS sur les projets concernés. Décider d'une seule source de vérité pour le format.
+**Proposition.** Aligner les deux. Soit le MyProjectOS adopte la structure `PROGRESS.md` du CLAUDE.md global, soit le CLAUDE.md global est mis à jour pour pointer vers la structure MyProjectOS sur les projets concernés. Décider d'une seule source de vérité pour le format.
 
 **Impact.** Évite que l'agent applique deux conventions contradictoires.
 **Effort.** Faible.
@@ -109,7 +109,7 @@ Une même information ne vit qu'à un seul endroit. Les autres fichiers la réf�
 **Effort.** Faible.
 **Recommandation.** Retenir et rédiger tôt.
 
-## 7. Skill Claude Code « Project OS »
+## 7. Skill Claude Code « MyProjectOS »
 
 **Problème.** Les rituels de démarrage et de fin de session sont décrits mais reposent sur la mémoire de l'agent. Ils seront appliqués de façon inégale.
 
@@ -153,7 +153,7 @@ Une même information ne vit qu'à un seul endroit. Les autres fichiers la réf�
 
 **Problème.** La méthode évoluera. Les projets créés avec une version ancienne devront pouvoir continuer ou migrer.
 
-**Proposition.** Versionner la méthode (`project-os v1`, `v2`) et inscrire la version utilisée dans `PROJECT.md` de chaque projet. Documenter les changements de méthode dans le `CHANGELOG.md` du repository et fournir des notes de migration au besoin.
+**Proposition.** Versionner la méthode (`my-project-os v1`, `v2`) et inscrire la version utilisée dans `PROJECT.md` de chaque projet. Documenter les changements de méthode dans le `CHANGELOG.md` du repository et fournir des notes de migration au besoin.
 
 **Impact.** Évolutivité maîtrisée sans casser l'existant.
 **Effort.** Faible.

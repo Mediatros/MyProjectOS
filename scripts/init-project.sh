@@ -1,5 +1,5 @@
 #!/bin/sh
-# init-project.sh — pose un nouveau projet Project OS.
+# init-project.sh — pose un nouveau projet MyProjectOS.
 # Usage : init-project.sh <chemin-projet> [--life] [--code] [--knowledge]
 #   (aucun flag = Core seul ; --life + --code = Hybrid ; --knowledge = extension documentaire transverse)
 # POSIX sh.
