@@ -157,6 +157,6 @@
 
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : choisir l'hébergement et la granularité du dépôt.
-- **Choix** : repo unique privé `my-project-os` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
+- **Choix** : repo unique privé `MyProjectOS` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
 - **Raison** : un seul point de vérité versionné, email personnel gardé privé.
 - **Conséquences** : tout vit dans ce dépôt ; les projets réels sont générés ailleurs via `init-project.sh`.

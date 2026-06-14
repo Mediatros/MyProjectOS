@@ -52,7 +52,7 @@ Extension Code ajoute : `AGENTS.md`, `CONSTITUTION.md`, `STACK_VALIDATION.md`, `
 ## Structure cible du repository
 
 ```
-my-project-os/
+MyProjectOS/
 ├── README.md / ROADMAP.md / CHANGELOG.md
 ├── docs/              # vision, principles, governance, lifecycle, glossary, enforcement
 ├── templates/

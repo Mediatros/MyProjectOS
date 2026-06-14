@@ -7,7 +7,7 @@
 ## Terminé
 
 - [x] **T0.1** Décisions de conception actées (outils Code, gouvernance, enforcement à 3 couches). Voir PROGRESS « Décisions actées ».
-- [x] **T0.2** Repo privé `my-project-os` créé (compte Mediatros), branche `main`.
+- [x] **T0.2** Repo privé `MyProjectOS` créé (compte Mediatros), branche `main`.
 - [x] **T0.3** Veille mensuelle upstream en place (`docs/veille/`, routine `veille-outils-upstream`).
 - [x] **T1.1** Arborescence cible créée (`docs/`, `templates/{core,life,code}/`, `structures/`, `agents/`, `examples/`, `scripts/`).
 - [x] **T1.2** `README.md` rédigé (présentation Core + Life + Code, public, usage).
