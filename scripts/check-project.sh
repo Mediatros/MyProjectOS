@@ -151,6 +151,41 @@ check_refs() {
 check_refs 'DEC-[0-9]{4}' DECISIONS.md DEC-
 check_refs 'CHG-[0-9]{8}-[0-9]{4}' CHANGELOG.md CHG-
 
+# --- 6. Format de date (convention YYYY-MM-DD) -------------------------------
+echo "Format de date :"
+_bad_date=0
+
+# 6a. Champs de frontmatter datés : doivent être en YYYY-MM-DD.
+for pair in "PROJECT.md:cree_le" "PROGRESS.md:derniere_maj" "PROGRESS.md:cree_le"; do
+    _file=${pair%%:*}; _field=${pair#*:}
+    [ -f "$TARGET/$_file" ] || continue
+    _val=$(sed -n "s/^$_field:[[:space:]]*//p" "$TARGET/$_file" | head -n 1 | tr -d '[:space:]')
+    [ -n "$_val" ] || continue
+    case "$_val" in
+        [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|YYYY-MM-DD) : ;;
+        *) warn "$_file : champ $_field='$_val' n'est pas au format YYYY-MM-DD"; _bad_date=1 ;;
+    esac
+done
+
+# 6b. Dates JJ/MM/AAAA dans le contenu (format français).
+_slash_n=$(grep -rhoE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+if [ "${_slash_n:-0}" -gt 0 ]; then
+    warn "$_slash_n date(s) au format JJ/MM/AAAA (attendu YYYY-MM-DD), ex :"
+    grep -rnE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | head -n 3 |
+        while IFS= read -r _l; do printf '           %s\n' "${_l#"$TARGET"/}"; done
+    _bad_date=1
+fi
+
+# 6c. Mois en toutes lettres (français).
+_mois='janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre'
+_lit_n=$(grep -rhniE "[0-9]{1,2} ($_mois) 20[0-9]{2}" "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+if [ "${_lit_n:-0}" -gt 0 ]; then
+    warn "$_lit_n date(s) en toutes lettres (mois en français), à passer en YYYY-MM-DD"
+    _bad_date=1
+fi
+
+[ "$_bad_date" -eq 0 ] && ok "dates au format YYYY-MM-DD"
+
 # --- Bilan -------------------------------------------------------------------
 echo ""
 if [ "$FAILS" -eq 0 ] && [ "$WARNS" -eq 0 ]; then

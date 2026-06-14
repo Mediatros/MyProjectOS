@@ -131,6 +131,15 @@
 - **Raison** : rester à jour tout en gardant la décision d'intégration humaine.
 - **Conséquences** : prérequis projet sur GitHub ; VPS = plan B. Routine `veille-outils-upstream` (id `trig_01UTxP1TgxFUVUsap7KkY6Ta`), cron `0 8 1 * *`, modèle sonnet-4-6, écriture sur `main`. Premier passage réel : 2026-07-01.
 
+### DEC-0016 — Le check vérifie la conformité de contenu, pas seulement l'empreinte
+
+- **Date** : 2026-06-14
+- **Contexte** : l'empreinte `version_methode` (DEC-0015) est déclarative, posée à la main. Un projet peut afficher la bonne version tout en restant, dans son contenu, sur l'ancienne convention (ex : dates `JJ/MM/AAAA` alors que la méthode impose `YYYY-MM-DD`). Le check ne regardait la date qu'au champ `derniere_maj`, pour la fraîcheur, et ne scannait jamais le contenu.
+- **Choix** : ajouter à `check-project.sh` une détection de non-conformité de contenu, en commençant par le format de date (dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`). Avertissement non bloquant.
+- **Raison** : un versionnement sans détection concrète est creux. L'empreinte dit « sur quelle version je suis né » ; la conformité de contenu dit « est-ce que je respecte vraiment les conventions courantes ». Les deux se complètent.
+- **Conséquences** : `check-project.sh` gagne une section « Format de date » ; version portée à `0.2.0` (nouvelle capacité = évolution mineure). D'autres contrôles de conformité pourront s'ajouter sur le même principe.
+- **Liens** : CHG-20260614-2100.
+
 ### DEC-0015 — Versionnement de la méthode en SemVer simplifié, démarrage à 0.1.0
 
 - **Date** : 2026-06-14
