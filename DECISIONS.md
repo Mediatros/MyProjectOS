@@ -1,4 +1,4 @@
-# DECISIONS.md — Project OS AI
+# DECISIONS.md — MyProjectOS
 
 > Pourquoi des choix structurants. Décisions importantes uniquement, pas les détails d'exécution.
 > Chaque décision porte un identifiant stable `DEC-XXXX` et pointe vers les entrées `CHG-` liées.
@@ -78,7 +78,7 @@
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : l'assistant de méthode est la pièce centrale pour un non-développeur, pas un bonus.
 - **Options envisagées** : simple spécification Markdown ; skill Claude Code installable.
-- **Choix** : skill installable (`skills/project-os/SKILL.md`), avec 4 modes (reprise / orientation / explication / clôture).
+- **Choix** : skill installable (`skills/my-project-os/SKILL.md`), avec 4 modes (reprise / orientation / explication / clôture).
 - **Raison** : être réellement dogfoodable et exécutable, pas seulement décrit.
 - **Conséquences** : nouveau dossier `skills/` ajouté au repo.
 
@@ -131,10 +131,19 @@
 - **Raison** : rester à jour tout en gardant la décision d'intégration humaine.
 - **Conséquences** : prérequis projet sur GitHub ; VPS = plan B. Routine `veille-outils-upstream` (id `trig_01UTxP1TgxFUVUsap7KkY6Ta`), cron `0 8 1 * *`, modèle sonnet-4-6, écriture sur `main`. Premier passage réel : 2026-07-01.
 
+### DEC-0016 — Le check vérifie la conformité de contenu, pas seulement l'empreinte
+
+- **Date** : 2026-06-14
+- **Contexte** : l'empreinte `version_methode` (DEC-0015) est déclarative, posée à la main. Un projet peut afficher la bonne version tout en restant, dans son contenu, sur l'ancienne convention (ex : dates `JJ/MM/AAAA` alors que la méthode impose `YYYY-MM-DD`). Le check ne regardait la date qu'au champ `derniere_maj`, pour la fraîcheur, et ne scannait jamais le contenu.
+- **Choix** : ajouter à `check-project.sh` une détection de non-conformité de contenu, en commençant par le format de date (dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`). Avertissement non bloquant.
+- **Raison** : un versionnement sans détection concrète est creux. L'empreinte dit « sur quelle version je suis né » ; la conformité de contenu dit « est-ce que je respecte vraiment les conventions courantes ». Les deux se complètent.
+- **Conséquences** : `check-project.sh` gagne une section « Format de date » ; version portée à `0.2.0` (nouvelle capacité = évolution mineure). D'autres contrôles de conformité pourront s'ajouter sur le même principe.
+- **Liens** : CHG-20260614-2100.
+
 ### DEC-0015 — Versionnement de la méthode en SemVer simplifié, démarrage à 0.1.0
 
 - **Date** : 2026-06-14
-- **Contexte** : la méthode évolue (ex : passage des dates françaises au format `YYYY-MM-DD`) sans qu'aucun numéro ne dise dans quelle version on est, ni si un projet existant suit encore les règles courantes. Le template `PROJECT.md` portait un `methode: project-os v1` statique, non relié à une vraie version.
+- **Contexte** : la méthode évolue (ex : passage des dates françaises au format `YYYY-MM-DD`) sans qu'aucun numéro ne dise dans quelle version on est, ni si un projet existant suit encore les règles courantes. Le template `PROJECT.md` portait un `methode: my-project-os v1` statique, non relié à une vraie version.
 - **Options envisagées** :
   - A. Garder un libellé statique (`v1`) sans mécanique.
   - B. Versionner via les seules entrées datées `CHG-` du CHANGELOG.
@@ -148,6 +157,6 @@
 
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : choisir l'hébergement et la granularité du dépôt.
-- **Choix** : repo unique privé `project-os-ai` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
+- **Choix** : repo unique privé `my-project-os` (compte Mediatros, `gh` connecté), contenant Core + extensions Life et Code dans des sous-dossiers. Commits signés avec l'email noreply GitHub.
 - **Raison** : un seul point de vérité versionné, email personnel gardé privé.
 - **Conséquences** : tout vit dans ce dépôt ; les projets réels sont générés ailleurs via `init-project.sh`.

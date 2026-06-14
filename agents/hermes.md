@@ -14,7 +14,7 @@ Un agent autonome, distinct de Claude Code. Il **n'exécute pas** Harness ni les
 
 ## Ses frontières
 
-- Pas d'exécution de la skill `project-os` ni des hooks Claude Code : ces garde-fous sont, à ce stade, spécifiques au poste Mac.
+- Pas d'exécution de la skill `my-project-os` ni des hooks Claude Code : ces garde-fous sont, à ce stade, spécifiques au poste Mac.
 - Mêmes règles de validation humaine que Claude Code sur les actions sensibles.
 - Il ne réorganise pas l'arborescence ni la stack sans validation.
 

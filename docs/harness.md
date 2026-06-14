@@ -1,6 +1,6 @@
 # Harness — colonne vertébrale du volet Code
 
-> Comment Project OS exécute le travail de codage encadré. Harness est le moteur ; Project OS fournit les fichiers sacrés, la gouvernance et les emprunts (constitution, réflexe clarify).
+> Comment MyProjectOS exécute le travail de codage encadré. Harness est le moteur ; MyProjectOS fournit les fichiers sacrés, la gouvernance et les emprunts (constitution, réflexe clarify).
 > Faits vérifiés le 2026-06-01 sur le dépôt upstream. La routine de veille (`docs/veille/`) suit leur évolution.
 
 ## Pourquoi Harness
@@ -31,7 +31,7 @@ Dans Claude Code, à la racine du projet :
 /harness-setup
 ```
 
-`/harness-setup` installe la guidance projet, les surfaces, les hooks et les checks de Harness. À faire **après** `scripts/init-project.sh` (qui pose les fichiers sacrés et les hooks Project OS) : Harness se branche sur un projet déjà structuré.
+`/harness-setup` installe la guidance projet, les surfaces, les hooks et les checks de Harness. À faire **après** `scripts/init-project.sh` (qui pose les fichiers sacrés et les hooks MyProjectOS) : Harness se branche sur un projet déjà structuré.
 
 ## Les cinq verbes
 
@@ -54,9 +54,9 @@ Cycle de fond : **Plan → Work → Review → Release**. L'utilisateur approuve
 
 ## Correspondance avec les fichiers sacrés (T5.3)
 
-Harness produit des artefacts de travail ; les fichiers sacrés Project OS restent la **source de vérité pour la reprise à froid** (principe 7). Règle : ce qui compte pour reprendre le projet doit avoir été reporté dans les fichiers sacrés, pas seulement dans les artefacts Harness. Application directe du principe 6 (« une information, un seul endroit ») : on ne duplique pas, on relie.
+Harness produit des artefacts de travail ; les fichiers sacrés MyProjectOS restent la **source de vérité pour la reprise à froid** (principe 7). Règle : ce qui compte pour reprendre le projet doit avoir été reporté dans les fichiers sacrés, pas seulement dans les artefacts Harness. Application directe du principe 6 (« une information, un seul endroit ») : on ne duplique pas, on relie.
 
-| Artefact / phase Harness | Fichier sacré Project OS | Relation |
+| Artefact / phase Harness | Fichier sacré MyProjectOS | Relation |
 |---|---|---|
 | `spec.md` (périmètre, critères, inconnues) | `SPECS.md` (`F-XXX`) + `05_specs/` | `SPECS.md` catalogue la feature et la relie par `F-XXX` ; `spec.md` en est le détail de travail (déporté dans `05_specs/`). |
 | `Plans.md` (tâches approuvées) | `TASKS.md` (`Tx.y`) | Les tâches approuvées se reportent dans `TASKS.md`, checklist de référence du projet. |
@@ -81,7 +81,7 @@ En cas de doute sur l'ampleur : parcours complet. Le gate `STACK_VALIDATION` (`d
 
 ## Préséance des garde-fous
 
-Harness apporte ses propres hooks et checks. Ils s'ajoutent aux hooks Project OS (`docs/enforcement.md`), ils ne les remplacent pas. Les non-négociables Project OS (fraîcheur PROGRESS, nommage, placement) restent tenus par les hooks du repo méthode.
+Harness apporte ses propres hooks et checks. Ils s'ajoutent aux hooks MyProjectOS (`docs/enforcement.md`), ils ne les remplacent pas. Les non-négociables MyProjectOS (fraîcheur PROGRESS, nommage, placement) restent tenus par les hooks du repo méthode.
 
 ## Voir aussi
 

@@ -1,4 +1,4 @@
-# TASKS.md — Construction de Project OS AI
+# TASKS.md — Construction de MyProjectOS
 
 > Plan de construction du système. Découpé en phases et tâches actionnables.
 > **Reprise après `/clear` : lire `PROGRESS.md` (contexte + décisions) puis ce fichier.**
@@ -7,7 +7,7 @@
 ## Terminé
 
 - [x] **T0.1** Décisions de conception actées (outils Code, gouvernance, enforcement à 3 couches). Voir PROGRESS « Décisions actées ».
-- [x] **T0.2** Repo privé `project-os-ai` créé (compte Mediatros), branche `main`.
+- [x] **T0.2** Repo privé `my-project-os` créé (compte Mediatros), branche `main`.
 - [x] **T0.3** Veille mensuelle upstream en place (`docs/veille/`, routine `veille-outils-upstream`).
 - [x] **T1.1** Arborescence cible créée (`docs/`, `templates/{core,life,code}/`, `structures/`, `agents/`, `examples/`, `scripts/`).
 - [x] **T1.2** `README.md` rédigé (présentation Core + Life + Code, public, usage).
@@ -24,7 +24,7 @@
 - [x] **T2.6** Concept « kit de rails » + format recette défini (`docs/kit-de-rails.md`, couplé à `IMPACT_ANALYSIS`).
 - [x] **T2.7** Extension Knowledge ajoutée et câblée (`structures/knowledge-tree.md`, `templates/extensions/knowledge/`, `scripts/init-project.sh --knowledge`, skill assistant, règles de navigation progressive et dépendances transverses dans les docs).
 - [x] **T3.1** Modes cadrés (reprise / orientation / explication / clôture) + aiguillage complet vs allégé (`agents/meta-skill.md`).
-- [x] **T3.2** Skill assistant installable écrite (`skills/project-os/SKILL.md`, frontmatter + 4 modes + initialisation).
+- [x] **T3.2** Skill assistant installable écrite (`skills/my-project-os/SKILL.md`, frontmatter + 4 modes + initialisation).
 - [x] **T3.3** Fiches d'agent rédigées (`agents/claude-code.md`, `agents/hermes.md`, `agents/meta-skill.md`).
 - [x] **T4.1** Modèle d'enforcement défini (`docs/enforcement.md` : 3 couches, runtime sh POSIX, portée par projet, fermeté hybride).
 - [x] **T4.2** Hooks implémentés et testés (`scripts/hooks/` : `_lib.sh`, `hook-pre-write.sh` nommage+placement, `hook-stop-progress.sh` fraîcheur PROGRESS).

@@ -1,4 +1,4 @@
-# Enforcement — Project OS AI
+# Enforcement — MyProjectOS
 
 > Comment les règles sont tenues. La couche déterministe du système : ce qui ne doit pas dépendre de la mémoire de l'agent.
 
@@ -9,7 +9,7 @@ Rappel du principe 9 (`docs/principles.md`) : une règle qui dépend de la bonne
 | Couche | Mécanisme | Force | Exemple |
 |---|---|---|---|
 | Documentation | `docs/`, templates, conventions | Informe | « PROGRESS n'est pas un journal » |
-| Skill assistant | `skills/project-os/SKILL.md` | Accompagne | Range l'info au bon endroit, produit l'état |
+| Skill assistant | `skills/my-project-os/SKILL.md` | Accompagne | Range l'info au bon endroit, produit l'état |
 | **Hooks** | scripts déterministes Claude Code | **Garantit** | Bloque un nom de fichier interdit |
 
 Les règles vraiment non négociables vivent dans la couche hooks.
@@ -19,7 +19,7 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 - **Runtime** : `sh` POSIX, sans dépendance obligatoire. Portable Mac et VPS (Hermès). Extraction JSON via `python3` ou `jq` si présents ; sinon le hook ne bloque rien (dégradation silencieuse, jamais de blocage du flux de travail).
 - **Portée** : par projet. Les scripts vivent dans `scripts/hooks/` du repo méthode ; ils sont câblés dans le `.claude/settings.json` de chaque projet, posé par `scripts/init-project.sh`. La config globale de l'utilisateur n'est pas touchée.
 - **Fermeté** : hybride. On bloque ce qui est clair et peu coûteux ; on avertit (sans bloquer) ce qui relève du jugement.
-- **Garde-fou** : tout hook ne s'active que si le dossier est un projet Project OS (présence de `PROJECT.md`).
+- **Garde-fou** : tout hook ne s'active que si le dossier est un projet MyProjectOS (présence de `PROJECT.md`).
 
 ## Les hooks livrés
 

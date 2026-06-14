@@ -5,7 +5,7 @@
 ## Objectif
 
 Détecter les évolutions de `github/spec-kit` et `Chachamaru127/claude-code-harness`
-pertinentes pour Project OS AI, et les restituer sans jamais modifier le système lui-même.
+pertinentes pour MyProjectOS, et les restituer sans jamais modifier le système lui-même.
 
 ## Étapes
 

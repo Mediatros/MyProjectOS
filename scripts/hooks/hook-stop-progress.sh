@@ -23,4 +23,4 @@ if printf '%s\n' "$CHANGES" | grep -q 'PROGRESS\.md$'; then
     exit 0
 fi
 
-warn "Project OS : des changements sont en cours mais PROGRESS.md n'a pas été mis à jour cette session. Pense à refléter l'état actuel et le bloc d'en-tête (derniere_maj, prochaine_action) avant de t'arrêter."
+warn "MyProjectOS : des changements sont en cours mais PROGRESS.md n'a pas été mis à jour cette session. Pense à refléter l'état actuel et le bloc d'en-tête (derniere_maj, prochaine_action) avant de t'arrêter."

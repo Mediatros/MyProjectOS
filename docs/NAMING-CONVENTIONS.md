@@ -1,4 +1,4 @@
-# Conventions de nommage — Project OS AI
+# Conventions de nommage — MyProjectOS
 
 > Règles minimales et concrètes pour nommer fichiers, dossiers et entrées de registre.
 > Objectif : que l'humain et l'agent retrouvent l'information sans ambiguïté.

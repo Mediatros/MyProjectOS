@@ -1,4 +1,4 @@
-# ROADMAP — Project OS AI
+# ROADMAP — MyProjectOS
 
 Étapes de construction et éléments reportés. Le plan détaillé et cochable vit dans `TASKS.md`.
 

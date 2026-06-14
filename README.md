@@ -1,4 +1,4 @@
-# Project OS AI
+# MyProjectOS
 
 Une méthode d'organisation de projets assistée par IA, pour reprendre n'importe quel projet à froid, sans aucun historique de conversation.
 
@@ -22,7 +22,7 @@ Les projets **Code** ajoutent : *la stack est-elle validée, et quels fichiers s
 ## Architecture
 
 ```
-Core Project OS             commun à tous les projets
+Core MyProjectOS             commun à tous les projets
 ├── Extension Life          projets personnels, administratifs, juridiques
 ├── Extension Code          projets logiciels
 └── Extension Knowledge     documentation dense, navigation par niveaux, dépendances transverses
@@ -44,7 +44,7 @@ Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré da
 ## Structure du repository
 
 ```
-project-os-ai/
+my-project-os/
 ├── README.md / ROADMAP.md / CHANGELOG.md
 ├── PLAN/              # handoff, plans et documents de travail hors docs stables
 ├── docs/              # vision, principes, gouvernance, cycle de vie, glossaire, nommage
