@@ -80,6 +80,16 @@ Structure de référence : `structures/knowledge-tree.md`. Templates : `template
 
 Le dossier des projets est synchronisé par **Syncthing** (marqueurs `.stfolder` / `.stignore`). Le projet courant est le dossier de travail contenant un `PROJECT.md`. Lancé à la racine du dossier de projets, l'agent liste les projets et demande lequel reprendre.
 
+## Index global multi-projets
+
+Le système répond à « où en est ce projet ? » via `PROGRESS.md`. Pour « où en sont tous mes projets ? », `scripts/build-index.sh` régénère un `INDEX.md` à la racine du dossier de projets.
+
+```sh
+sh <REPO>/scripts/build-index.sh [racine]   # défaut : dossier courant
+```
+
+Il scanne les sous-dossiers directs, lit le frontmatter de chaque `PROGRESS.md` (projet, type, statut, derniere_maj, prochaine_action, prochaine_echeance) et produit un tableau trié par date de mise à jour. L'`INDEX.md` est un fichier régénéré, jamais édité à la main, et il vit à la racine du dossier de projets (hors du repo méthode).
+
 ## Versioning de la méthode
 
 La méthode est versionnée (`project-os v1`, `v2`...). Chaque projet inscrit la version utilisée dans l'en-tête de `PROJECT.md`. Les évolutions de la méthode sont consignées dans le `CHANGELOG.md` du repository.
