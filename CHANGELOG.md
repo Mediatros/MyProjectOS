@@ -13,7 +13,20 @@
 - Lien éventuel vers une décision : voir DEC-XXXX.
 ```
 
+## Releases
+
+La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
+
+- **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
+
 ---
+
+### CHG-20260614-0312 — Versionnement de la méthode
+
+- Introduction d'une notion de version de la méthode : fichier `VERSION` à la racine (source de vérité unique, `0.1.0`) et politique `MAJEUR.MINEUR.CORRECTIF` documentée dans `docs/versioning.md` (avec définition d'une release).
+- Empreinte dans chaque projet : champ `version_methode` ajouté au frontmatter de `templates/core/PROJECT.md` (remplace `methode: project-os v1`), estampillé à la création par `scripts/init-project.sh` depuis `VERSION`.
+- Check d'alignement : `scripts/check-project.sh` compare l'empreinte du projet à la version courante et signale « à jour / en retard / sans empreinte ». Comparateur de versions portable ajouté.
+- Voir DEC-0015.
 
 ### CHG-20260614-0240 — Index global multi-projets `build-index.sh`
 

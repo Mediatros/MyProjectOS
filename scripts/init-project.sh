@@ -8,6 +8,8 @@ set -eu
 
 REPO=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 TODAY=$(date +%Y-%m-%d)
+OS_VERSION=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
+[ -n "$OS_VERSION" ] || OS_VERSION="0.0.0"
 
 # --- Arguments ---------------------------------------------------------------
 TARGET=""
@@ -57,6 +59,7 @@ subst() {
         -e "s#^statut: actif | en pause | clôturé\$#statut: actif#" \
         -e "s#^derniere_maj: YYYY-MM-DD\$#derniere_maj: $TODAY#" \
         -e "s#^cree_le: YYYY-MM-DD\$#cree_le: $TODAY#" \
+        -e "s#^version_methode: <VERSION>\$#version_methode: $OS_VERSION#" \
         "$_f" > "$_f.tmp" && mv "$_f.tmp" "$_f"
 }
 

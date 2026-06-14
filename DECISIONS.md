@@ -131,6 +131,19 @@
 - **Raison** : rester à jour tout en gardant la décision d'intégration humaine.
 - **Conséquences** : prérequis projet sur GitHub ; VPS = plan B. Routine `veille-outils-upstream` (id `trig_01UTxP1TgxFUVUsap7KkY6Ta`), cron `0 8 1 * *`, modèle sonnet-4-6, écriture sur `main`. Premier passage réel : 2026-07-01.
 
+### DEC-0015 — Versionnement de la méthode en SemVer simplifié, démarrage à 0.1.0
+
+- **Date** : 2026-06-14
+- **Contexte** : la méthode évolue (ex : passage des dates françaises au format `YYYY-MM-DD`) sans qu'aucun numéro ne dise dans quelle version on est, ni si un projet existant suit encore les règles courantes. Le template `PROJECT.md` portait un `methode: project-os v1` statique, non relié à une vraie version.
+- **Options envisagées** :
+  - A. Garder un libellé statique (`v1`) sans mécanique.
+  - B. Versionner via les seules entrées datées `CHG-` du CHANGELOG.
+  - C. Numéro `MAJEUR.MINEUR.CORRECTIF` dans un fichier `VERSION`, estampille dans chaque projet, check d'alignement.
+- **Choix** : option C, démarrage à `0.1.0`.
+- **Raison** : une source de vérité unique (`VERSION`) lisible par l'humain et les scripts ; un format standard et compréhensible ; une empreinte par projet qui permet de répondre mécaniquement à « ce projet est-il à jour avec la méthode ? ». Démarrage en `0.x` car la méthode n'est pas encore validée sur un vrai projet (banc d'essai Unjque, Phase 6) ; le `1.0.0` marquera ce cap.
+- **Conséquences** : `VERSION` à la racine devient un fichier de référence ; `docs/versioning.md` fixe la politique et la procédure de release (tag git `vX.Y.Z` + section « Releases » du CHANGELOG) ; `init-project.sh` lit `VERSION` et substitue `version_methode` ; `check-project.sh` gagne une section d'alignement non bloquante. Migrer un projet vers une version plus récente reste une décision humaine.
+- **Liens** : CHG-20260614-0312.
+
 ### DEC-0014 — Repo unique privé sur GitHub
 
 - **Date** : 2026-06-07 (consignée)

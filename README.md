@@ -66,6 +66,7 @@ project-os-ai/
 - [Principes](docs/principles.md) — les règles qui tranchent les arbitrages.
 - [Gouvernance](docs/governance.md) — qui met à jour quoi, quand, et ce qui exige une validation humaine.
 - [Cycle de vie](docs/lifecycle.md) — de la création à l'archivage.
+- [Versionnement](docs/versioning.md) — comment la méthode se numérote et comment un projet sait s'il est à jour.
 - [Conventions de nommage](docs/NAMING-CONVENTIONS.md) — fichiers, dossiers, identifiants.
 - [Glossaire](docs/glossary.md) — le vocabulaire commun.
 

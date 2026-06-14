@@ -10,6 +10,7 @@ set -u
 
 TARGET=${1:-.}
 STALE_DAYS=14
+REPO=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
 FAILS=0
 WARNS=0
@@ -17,6 +18,19 @@ WARNS=0
 ok()   { printf '  [ok]   %s\n' "$1"; }
 warn() { printf '  [!]    %s\n' "$1"; WARNS=$((WARNS + 1)); }
 fail() { printf '  [X]    %s\n' "$1"; FAILS=$((FAILS + 1)); }
+
+# Comparaison de versions X.Y.Z, portable. Échos : lt | eq | gt (pour $1 vs $2).
+ver_cmp() {
+    _i=1
+    while [ "$_i" -le 3 ]; do
+        _fa=$(printf '%s' "$1" | cut -d. -f"$_i" | tr -dc '0-9'); [ -n "$_fa" ] || _fa=0
+        _fb=$(printf '%s' "$2" | cut -d. -f"$_i" | tr -dc '0-9'); [ -n "$_fb" ] || _fb=0
+        if [ "$_fa" -lt "$_fb" ]; then echo lt; return; fi
+        if [ "$_fa" -gt "$_fb" ]; then echo gt; return; fi
+        _i=$((_i + 1))
+    done
+    echo eq
+}
 
 if [ ! -d "$TARGET" ]; then
     echo "Dossier introuvable : $TARGET" >&2
@@ -32,6 +46,22 @@ fi
 TYPE=$(sed -n 's/^type:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1)
 [ -n "$TYPE" ] || TYPE="(inconnu)"
 echo "Projet : $(basename -- "$(cd "$TARGET" && pwd)")  —  type déclaré : $TYPE"
+
+# --- 0. Alignement avec la version de la méthode -----------------------------
+echo "Version de la méthode :"
+CUR=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
+PRJ=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
+if [ -z "$CUR" ]; then
+    warn "version courante introuvable ($REPO/VERSION absent)"
+elif [ -z "$PRJ" ] || [ "$PRJ" = "<VERSION>" ]; then
+    warn "projet sans empreinte de version (créé avant le versionnement) ; version courante v$CUR"
+else
+    case "$(ver_cmp "$PRJ" "$CUR")" in
+        eq) ok "suit Project OS v$PRJ (version courante)" ;;
+        lt) warn "suit Project OS v$PRJ, version courante v$CUR : voir les changements dans le CHANGELOG de la méthode" ;;
+        gt) warn "déclare v$PRJ, plus récent que la version installée v$CUR : mets à jour Project OS" ;;
+    esac
+fi
 
 # --- 1. Fichiers sacrés Core -------------------------------------------------
 echo "Fichiers sacrés Core :"
