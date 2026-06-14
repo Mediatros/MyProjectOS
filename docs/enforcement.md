@@ -60,6 +60,22 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 
 `<REPO>` est le chemin absolu du repo méthode, résolu par `init-project.sh` au moment de la pose. Si le projet a déjà un `.claude/settings.json`, le script ne l'écrase pas : il affiche le bloc à fusionner à la main.
 
+## Vérification à la demande — `scripts/check-project.sh`
+
+Les hooks agissent pendant le travail. Le script `check-project.sh` complète le dispositif par un contrôle global, lancé à la main quand on veut faire le point sur un projet.
+
+```sh
+sh <REPO>/scripts/check-project.sh [chemin-projet]   # défaut : dossier courant
+```
+
+Il signale, sans rien modifier :
+- **fichiers sacrés** manquants (Core, puis extensions Life / Code / Knowledge selon le `type:` déclaré dans `PROJECT.md`) ;
+- **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
+- **placeholders** non substitués (`<NomDuProjet>`) ;
+- **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant.
+
+Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de sortie 1 s'il existe au moins un bloquant, 0 sinon. Comme les hooks, le script reste informatif et ne bloque jamais un flux de travail.
+
 ## Protocole des hooks (référence)
 
 - **Bloquer** (PreToolUse) : émettre sur stdout

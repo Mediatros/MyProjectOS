@@ -15,6 +15,11 @@
 
 ---
 
+### CHG-20260614-0233 — Script de validation `check-project.sh`
+
+- Ajout de `scripts/check-project.sh` : contrôle à la demande d'un projet (fichiers sacrés selon le type, fraîcheur de PROGRESS, placeholders résiduels, références `DEC-`/`CHG-` cassées). Informe sans bloquer, code de sortie 1 si bloquant.
+- Documenté dans `docs/enforcement.md` (section « Vérification à la demande »). Réalise la proposition #9 de `PLAN/PLAN_PROPOSITION_AMELIORATION.md`.
+
 ### CHG-20260613-2253 — Mise en conformité dogfooding : CHANGELOG et DECISIONS à la racine
 
 - Création des deux fichiers sacrés manquants à la racine du repo : `CHANGELOG.md` et `DECISIONS.md`, conformément à la gouvernance de la méthode.
