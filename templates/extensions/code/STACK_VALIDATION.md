@@ -1,7 +1,7 @@
 ---
 projet: <NomDuProjet>
 statut_gate: en cours | validé | rejeté
-valide_le: AAAA-MM-JJ
+valide_le: YYYY-MM-DD
 ---
 
 # STACK_VALIDATION.md — <NomDuProjet>
@@ -31,7 +31,7 @@ valide_le: AAAA-MM-JJ
 
 | Couple vérifié | Compatible ? | Source | Vérifié le |
 |---|---|---|---|
-| <ex : framework X 5.x + lib Y 3.x> | oui | <lien doc officielle> | AAAA-MM-JJ |
+| <ex : framework X 5.x + lib Y 3.x> | oui | <lien doc officielle> | YYYY-MM-DD |
 
 ## Incompatibilités connues
 

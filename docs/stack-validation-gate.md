@@ -17,7 +17,7 @@ Tant que `STACK_VALIDATION.md` n'est pas au statut `validé`, on n'écrit pas un
 1. **Déclarer la stack** : langage, framework, runtime, base, hébergement, versions visées.
 2. **Lister les couples critiques** : chaque paire qui doit cohabiter (framework + lib majeure, runtime + plateforme, API + version).
 3. **Vérifier chaque couple à la source** : documentation officielle, matrice de compatibilité, notes de version. Pas de mémoire, pas de supposition.
-4. **Horodater la vérification** : chaque compatibilité affirmée porte un lien **et** une date (`Vérifié le AAAA-MM-JJ`). Une vérification ancienne se re-vérifie.
+4. **Horodater la vérification** : chaque compatibilité affirmée porte un lien **et** une date (`Vérifié le YYYY-MM-DD`). Une vérification ancienne se re-vérifie.
 5. **Consigner les incompatibilités connues** et les contraintes d'environnement et d'API (limites, dépréciations).
 6. **Évaluer les risques** et noter les alternatives rejetées avec leur raison.
 7. **Rendre un verdict** : `validé`, `rejeté` ou `en attente`. Un verdict structurant est aussi tracé en `DEC-XXXX`.

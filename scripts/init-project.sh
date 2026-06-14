@@ -55,8 +55,8 @@ subst() {
         -e "s#<NomDuProjet>#$NAME#g" \
         -e "s#^type: Life | Code | Hybrid\$#type: $_type_label#" \
         -e "s#^statut: actif | en pause | clôturé\$#statut: actif#" \
-        -e "s#^derniere_maj: AAAA-MM-JJ\$#derniere_maj: $TODAY#" \
-        -e "s#^cree_le: AAAA-MM-JJ\$#cree_le: $TODAY#" \
+        -e "s#^derniere_maj: YYYY-MM-DD\$#derniere_maj: $TODAY#" \
+        -e "s#^cree_le: YYYY-MM-DD\$#cree_le: $TODAY#" \
         "$_f" > "$_f.tmp" && mv "$_f.tmp" "$_f"
 }
 

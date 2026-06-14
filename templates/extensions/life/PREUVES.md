@@ -9,8 +9,8 @@
 ```
 ### P-XXXX — Affirmation prouvée
 - **Affirmation** : ce qui est tenu pour établi.
-- **Document source** : 03_documents/AAAA-MM-JJ-nom.pdf (ou 06_preuves/...).
-- **Date du document** : AAAA-MM-JJ.
+- **Document source** : 03_documents/YYYY-MM-DD-nom.pdf (ou 06_preuves/...).
+- **Date du document** : YYYY-MM-DD.
 - **Lien** : entrée CHANGELOG / décision / correspondance reliée (CHG-, DEC-, C-).
 - **Fiabilité** : sûre | à confirmer | manquante.
 ```
@@ -21,6 +21,6 @@
 
 - **Affirmation** : <...>
 - **Document source** : <...>
-- **Date du document** : AAAA-MM-JJ
+- **Date du document** : YYYY-MM-DD
 - **Lien** : <...>
 - **Fiabilité** : <sûre | à confirmer | manquante>

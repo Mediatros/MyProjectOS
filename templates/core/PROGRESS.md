@@ -2,9 +2,9 @@
 projet: <NomDuProjet>
 type: Life | Code | Hybrid
 statut: actif | en pause | clôturé
-derniere_maj: AAAA-MM-JJ
+derniere_maj: YYYY-MM-DD
 prochaine_action: <la prochaine action concrète, en une ligne>
-prochaine_echeance: <AAAA-MM-JJ ou vide>
+prochaine_echeance: <YYYY-MM-DD ou vide>
 ---
 
 # PROGRESS.md — <NomDuProjet>

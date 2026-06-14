@@ -22,9 +22,9 @@ pertinentes pour Project OS AI, et les restituer sans jamais modifier le systèm
    Points d'attention prioritaires :
    - Harness : nouveaux garde-fous, nouvelles surfaces HTML, **version minimale de Claude Code requise**, changements des verbes plan/work/review/release
    - Spec Kit : changement de format de `constitution` ou des artefacts empruntés (réflexe clarify)
-5. Ajouter la nouvelle entrée **en haut** de `VEILLE-OUTILS.md`, datée `AAAA-MM`.
+5. Ajouter la nouvelle entrée **en haut** de `VEILLE-OUTILS.md`, datée `YYYY-MM`.
 6. Mettre à jour `_etat-upstream.md` avec les versions relevées.
-7. Commit + push directement sur `main`. Message : `docs: veille upstream AAAA-MM`.
+7. Commit + push directement sur `main`. Message : `docs: veille upstream YYYY-MM`.
 
 ## Règle absolue
 

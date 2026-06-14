@@ -6,7 +6,7 @@
 
 ## À venir
 
-### AAAA-MM-JJ — <Titre de l'échéance>
+### YYYY-MM-DD — <Titre de l'échéance>
 
 - **Type** : délai légal | rendez-vous | dépôt | paiement | relance | autre
 - **Importance** : haute | moyenne | basse
@@ -16,7 +16,7 @@
 
 ## Passées
 
-### AAAA-MM-JJ — <Titre>
+### YYYY-MM-DD — <Titre>
 
 - **Statut** : fait | manqué | sans objet
 - **Résultat** : <ce qui s'est passé>

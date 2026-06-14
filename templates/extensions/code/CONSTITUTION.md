@@ -40,4 +40,4 @@ Au-delà des actions sensibles globales (`docs/principles.md`, principe 8), ce p
 
 La constitution change rarement. Toute modification est une décision structurante : la tracer en `DEC-XXXX` dans `DECISIONS.md` et la dater ici.
 
-- **Dernière révision** : AAAA-MM-JJ (`DEC-XXXX`).
+- **Dernière révision** : YYYY-MM-DD (`DEC-XXXX`).

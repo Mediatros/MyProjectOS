@@ -3,7 +3,7 @@ projet: <NomDuProjet>
 type: Life | Code | Hybrid
 methode: project-os v1
 statut: actif | en pause | clôturé
-cree_le: AAAA-MM-JJ
+cree_le: YYYY-MM-DD
 ---
 
 # PROJECT.md — <NomDuProjet>

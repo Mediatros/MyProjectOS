@@ -36,6 +36,6 @@ MonProjet/
 ## Règle de cohérence
 
 - Toute affirmation engageante dans `PROGRESS.md` ou une décision doit pointer vers une preuve (`P-XXXX`) ou être marquée « à confirmer ».
-- Un échange consigné dans `CORRESPONDANCES.md` range son document source dans `05_correspondances/` avec un nom préfixé `AAAA-MM-JJ`.
+- Un échange consigné dans `CORRESPONDANCES.md` range son document source dans `05_correspondances/` avec un nom préfixé `YYYY-MM-DD`.
 
 Nommage : voir `docs/NAMING-CONVENTIONS.md`.

@@ -7,7 +7,7 @@ Les dossiers sont créés à la demande, au moment où ils servent. Aucun squele
 MonProjet/
 ├── PROJECT.md          # pourquoi le projet existe, périmètre, objectifs, réussite
 ├── PROGRESS.md         # état actuel, dernières actions, prochaine action
-├── CHANGELOG.md        # historique daté (CHG-AAAAMMJJ-HHMM)
+├── CHANGELOG.md        # historique daté (CHG-YYYYMMDD-HHMM)
 ├── TASKS.md            # checklist d'actions (Tx.y)
 ├── DECISIONS.md        # décisions structurantes (DEC-XXXX)
 ├── 00_inbox/           # zone temporaire, entrées non classées
@@ -35,7 +35,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 | `00_inbox/` | Tout ce qui arrive et n'est pas encore classé | Doit se vider : on classe régulièrement |
 | `01_context/` | Contexte stable, documents de référence du projet | Bouge peu |
 | `02_work/` | Notes et fichiers du travail en cours | Cœur de l'activité |
-| `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `AAAA-MM-JJ` |
+| `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
 | `99_archive/` | Éléments clôturés ou obsolètes, anciens CHANGELOG | Conserver, ne pas supprimer |
 

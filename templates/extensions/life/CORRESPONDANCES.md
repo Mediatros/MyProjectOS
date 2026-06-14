@@ -8,12 +8,12 @@
 
 ```
 ### C-XXXX — Objet de l'échange
-- **Date** : AAAA-MM-JJ
+- **Date** : YYYY-MM-DD
 - **Canal** : email | courrier | téléphone | réunion
 - **Interlocuteur** : qui.
 - **Sens** : reçu | envoyé.
 - **Résumé** : l'essentiel en une à deux phrases.
-- **Document source** : 05_correspondances/AAAA-MM-JJ-nom.pdf.
+- **Document source** : 05_correspondances/YYYY-MM-DD-nom.pdf.
 - **Action suivante** : ce que cet échange déclenche (avec échéance si besoin).
 - **Lien** : P-XXXX, échéance, décision reliée.
 ```
@@ -22,7 +22,7 @@
 
 ### C-0001 — <Objet du premier échange>
 
-- **Date** : AAAA-MM-JJ
+- **Date** : YYYY-MM-DD
 - **Canal** : <email | courrier | téléphone | réunion>
 - **Interlocuteur** : <...>
 - **Sens** : <reçu | envoyé>

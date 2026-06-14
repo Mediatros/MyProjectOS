@@ -6,7 +6,7 @@
 ## Release en préparation
 
 - **Version** : <ex : 1.2.0>
-- **Date cible** : AAAA-MM-JJ
+- **Date cible** : YYYY-MM-DD
 
 ### Changements inclus
 
@@ -32,6 +32,6 @@
 
 ## Historique des releases
 
-### <version> — AAAA-MM-JJ
+### <version> — YYYY-MM-DD
 
 - <résumé court de ce qui a été livré>

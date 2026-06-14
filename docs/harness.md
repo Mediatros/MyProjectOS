@@ -60,7 +60,7 @@ Harness produit des artefacts de travail ; les fichiers sacrés Project OS reste
 |---|---|---|
 | `spec.md` (périmètre, critères, inconnues) | `SPECS.md` (`F-XXX`) + `05_specs/` | `SPECS.md` catalogue la feature et la relie par `F-XXX` ; `spec.md` en est le détail de travail (déporté dans `05_specs/`). |
 | `Plans.md` (tâches approuvées) | `TASKS.md` (`Tx.y`) | Les tâches approuvées se reportent dans `TASKS.md`, checklist de référence du projet. |
-| `/harness-work` (avancement, preuves) | `PROGRESS.md` + `CHANGELOG.md` | État courant → `PROGRESS.md` ; changement daté → `CHANGELOG.md` (`CHG-AAAAMMJJ-HHMM`). |
+| `/harness-work` (avancement, preuves) | `PROGRESS.md` + `CHANGELOG.md` | État courant → `PROGRESS.md` ; changement daté → `CHANGELOG.md` (`CHG-YYYYMMDD-HHMM`). |
 | `/harness-review` | `TEST_PLAN.md` + `IMPACT_ANALYSIS.md` (`IA-XXX`) | La revue alimente le plan de test et l'analyse d'impact. |
 | `/harness-release` (readiness, evidence) | `RELEASE.md` | Les preuves de livraison se consignent dans `RELEASE.md`. |
 

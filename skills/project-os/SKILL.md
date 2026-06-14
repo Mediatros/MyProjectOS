@@ -15,7 +15,7 @@ Tu accompagnes un porteur de projet souvent **non-développeur**. Langage simple
 |---|---|---|
 | `PROJECT.md` | Pourquoi le projet existe, périmètre, objectifs | Stable |
 | `PROGRESS.md` | Où en est-on ? | Photo de l'instant, jamais un journal |
-| `CHANGELOG.md` | Qu'est-ce qui a changé ? (`CHG-AAAAMMJJ-HHMM`) | Registre daté figé |
+| `CHANGELOG.md` | Qu'est-ce qui a changé ? (`CHG-YYYYMMDD-HHMM`) | Registre daté figé |
 | `TASKS.md` | Que reste-t-il à faire ? (`Tx.y`) | Checklist vivante |
 | `DECISIONS.md` | Pourquoi ces choix ? (`DEC-XXXX`) | Registre figé |
 
@@ -53,7 +53,7 @@ Points de vigilance : <problèmes ouverts, actions à valider>
 Déclencheurs : « Où je range ça ? », un document arrive, une info doit être consignée, on démarre une feature.
 
 - **Une information** → l'aiguiller selon la frontière des fichiers sacrés (tableau ci-dessus).
-- **Un document entrant** (PDF, email, pièce) → `00_inbox/` d'abord, puis classer dans le bon dossier numéroté. Renommer selon les conventions : minuscules, tirets, sans accents, daté `AAAA-MM-JJ-...` si c'est un document daté.
+- **Un document entrant** (PDF, email, pièce) → `00_inbox/` d'abord, puis classer dans le bon dossier numéroté. Renommer selon les conventions : minuscules, tirets, sans accents, daté `YYYY-MM-DD-...` si c'est un document daté.
 - **Une feature Code** → arbitrer parcours **complet** vs **allégé** :
 
 | | Allégé | Complet |
@@ -80,7 +80,7 @@ Déclencheurs : « On s'arrête », fin de session, changement de sujet.
 
 1. Mettre à jour les fichiers Core concernés :
    - `PROGRESS.md` : refléter l'état réel **et** mettre à jour son bloc d'en-tête (`derniere_maj`, `prochaine_action`, `statut`). C'est une règle immuable.
-   - `CHANGELOG.md` : ajouter une entrée `CHG-AAAAMMJJ-HHMM` pour ce qui a changé.
+   - `CHANGELOG.md` : ajouter une entrée `CHG-YYYYMMDD-HHMM` pour ce qui a changé.
    - `DECISIONS.md` : `DEC-XXXX` pour toute décision structurante prise (contexte, options, choix, raison, conséquences).
    - `TASKS.md` : cocher les tâches faites, ajouter celles qui apparaissent.
 2. Produire le résumé :

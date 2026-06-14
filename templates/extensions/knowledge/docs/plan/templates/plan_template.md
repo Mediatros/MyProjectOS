@@ -1,6 +1,6 @@
 # Plan : <Titre>
 
-Date : AAAA-MM-JJ  
+Date : YYYY-MM-DD  
 Statut : Ideas / Active / Archived  
 Priorité : Basse / Moyenne / Haute
 

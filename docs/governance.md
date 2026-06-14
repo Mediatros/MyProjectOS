@@ -19,7 +19,7 @@ Tout projet, quel que soit son type, possède ces cinq fichiers à sa racine :
 Règle d'aiguillage unique. Une information ne vit qu'à un seul endroit.
 
 - **État présent et prochaines actions**, jamais d'historique → `PROGRESS.md`.
-- **Ce qui a changé, daté** (`CHG-AAAAMMJJ-HHMM`) → `CHANGELOG.md`.
+- **Ce qui a changé, daté** (`CHG-YYYYMMDD-HHMM`) → `CHANGELOG.md`.
 - **Actions atomiques cochables** (`Tx.y`) → `TASKS.md`.
 - **Le pourquoi des choix structurants** (`DEC-XXXX`) → `DECISIONS.md`.
 
@@ -86,4 +86,4 @@ La méthode est versionnée (`project-os v1`, `v2`...). Chaque projet inscrit la
 
 ## Archivage
 
-Quand `CHANGELOG.md` ou un registre devient long, les entrées anciennes sont déplacées vers `99_archive/CHANGELOG-AAAA.md`. `PROGRESS.md` reste court par nature.
+Quand `CHANGELOG.md` ou un registre devient long, les entrées anciennes sont déplacées vers `99_archive/CHANGELOG-YYYY.md`. `PROGRESS.md` reste court par nature.

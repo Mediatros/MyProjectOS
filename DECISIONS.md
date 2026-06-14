@@ -8,13 +8,13 @@
 
 ```
 ### DEC-XXXX — Titre de la décision
-- **Date** : AAAA-MM-JJ
+- **Date** : YYYY-MM-DD
 - **Contexte** : le problème ou le besoin qui a forcé un choix.
 - **Options envisagées** : option A, option B, option C.
 - **Choix** : l'option retenue.
 - **Raison** : pourquoi celle-là plutôt que les autres.
 - **Conséquences** : ce que ce choix implique ou contraint.
-- **Liens** : CHG-AAAAMMJJ-HHMM.
+- **Liens** : CHG-YYYYMMDD-HHMM.
 ```
 
 ---
@@ -61,7 +61,7 @@
 
 - **Date** : 2026-06-07 (consignée)
 - **Contexte** : éviter que PROGRESS, CHANGELOG et DECISIONS se chevauchent et deviennent redondants.
-- **Choix** : PROGRESS = photo de l'instant ; CHANGELOG = registre daté (`CHG-AAAAMMJJ-HHMM`) ; DECISIONS = le pourquoi (`DEC-XXXX` reliés aux CHG).
+- **Choix** : PROGRESS = photo de l'instant ; CHANGELOG = registre daté (`CHG-YYYYMMDD-HHMM`) ; DECISIONS = le pourquoi (`DEC-XXXX` reliés aux CHG).
 - **Raison** : chaque fichier répond à une seule question (où en est-on / qu'a-t-il changé / pourquoi ce choix).
 - **Conséquences** : les décisions structurantes vivent ici, pas dans PROGRESS ; PROGRESS ne garde que l'état courant.
 

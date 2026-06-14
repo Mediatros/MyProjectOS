@@ -33,7 +33,7 @@
 ## Mise à jour de la documentation
 
 - `PROGRESS.md` après toute avancée significative.
-- `CHANGELOG.md` (`CHG-AAAAMMJJ-HHMM`) pour ce qui a changé.
+- `CHANGELOG.md` (`CHG-YYYYMMDD-HHMM`) pour ce qui a changé.
 - `DECISIONS.md` (`DEC-XXXX`) pour les choix structurants.
 - `RELEASE.md` au moment de préparer une livraison.
 

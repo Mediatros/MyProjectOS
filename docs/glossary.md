@@ -12,7 +12,7 @@ Vocabulaire commun du système. Une définition par terme.
 - **Fichiers sacrés** : les cinq fichiers Core obligatoires (`PROJECT.md`, `PROGRESS.md`, `CHANGELOG.md`, `TASKS.md`, `DECISIONS.md`).
 - **Reprise à froid** : capacité à reprendre un projet sans aucun historique de conversation, à partir des seuls fichiers.
 - **Bloc d'en-tête** : front-matter YAML en tête de `PROGRESS.md`, lisible par machine, tenu à jour à chaque modification.
-- **CHG-AAAAMMJJ-HHMM** : identifiant d'une entrée datée du `CHANGELOG.md`.
+- **CHG-YYYYMMDD-HHMM** : identifiant d'une entrée datée du `CHANGELOG.md`.
 - **DEC-XXXX** : identifiant d'une décision structurante du `DECISIONS.md`.
 - **P-XXXX** : identifiant d'une preuve du `PREUVES.md` (Life), reliant une affirmation à un document source.
 - **Tx.y** : identifiant d'une tâche du `TASKS.md` (phase.tâche).

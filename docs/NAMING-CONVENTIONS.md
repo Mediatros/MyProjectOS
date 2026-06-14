@@ -7,7 +7,7 @@
 
 - **Minuscules** et **tirets** plutôt qu'espaces : `compte-rendu-ag.md`, pas `Compte Rendu AG.md`.
 - **Pas d'accents ni de caractères spéciaux** dans les noms de fichiers : `echeancier.md`, pas `échéancier.md`.
-- **Documents datés** : préfixe `AAAA-MM-JJ` en tête de nom, pour le tri chronologique.
+- **Documents datés** : préfixe `YYYY-MM-DD` en tête de nom, pour le tri chronologique.
   - `2026-06-01-courrier-syndic.pdf`
   - `2026-05-12-facture-comptable.pdf`
 - **Fichiers sacrés** : en MAJUSCULES, nom fixe imposé par la méthode (`PROJECT.md`, `PROGRESS.md`, `CHANGELOG.md`, `TASKS.md`, `DECISIONS.md`).
@@ -26,7 +26,7 @@ Identifiants stables, jamais réutilisés ni renumérotés.
 
 | Registre | Format | Exemple | Fichier |
 |---|---|---|---|
-| Changements | `CHG-AAAAMMJJ-HHMM` | `CHG-20260601-1430` | `CHANGELOG.md` |
+| Changements | `CHG-YYYYMMDD-HHMM` | `CHG-20260601-1430` | `CHANGELOG.md` |
 | Décisions | `DEC-XXXX` (séquentiel, zéro-paddé) | `DEC-0007` | `DECISIONS.md` |
 | Preuves (Life) | `P-XXXX` | `P-0042` | `PREUVES.md` |
 | Correspondances (Life) | `C-XXXX` | `C-0003` | `CORRESPONDANCES.md` |
