@@ -34,9 +34,30 @@ Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré da
 
 À un porteur de projet, y compris non-développeur, qui pilote plusieurs projets avec l'aide d'agents IA : **Claude Code** sur Mac, **Hermès** sur VPS. Le système guide et protège l'utilisateur, surtout en amont des projets Code.
 
+## Installation
+
+Une seule commande, à partir du lien du dépôt. Le dépôt est cloné dans un dossier temporaire, le projet est posé, puis le clone est supprimé. **Le projet final est autonome** : les hooks d'enforcement sont copiés dans son `.claude/hooks/` et ne dépendent plus de l'emplacement de MyProjectOS.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/install.sh \
+  | sh -s -- ~/MonProjet --life
+```
+
+Flags d'extension : `--life`, `--code`, `--knowledge` (combinables ; aucun = Core seul). Pour greffer sur un projet déjà peuplé sans rien écraser : `--into-existing`.
+
+Variante sans `curl` (clone manuel, jetable) :
+
+```sh
+git clone --depth 1 https://github.com/Mediatros/MyProjectOS.git /tmp/mpos
+sh /tmp/mpos/scripts/init-project.sh ~/MonProjet --life
+rm -rf /tmp/mpos
+```
+
+Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer l'installation sur ce projet avec `--into-existing` : les hooks locaux sont réécrits, le contenu existant est préservé.
+
 ## Comment l'utiliser
 
-1. Créer un projet à partir des templates de `templates/core/` avec `scripts/init-project.sh`.
+1. Installer MyProjectOS sur le dossier du projet (voir ci-dessus).
 2. Choisir le type dans `PROJECT.md` et ajouter les extensions nécessaires (`--life`, `--code`, `--knowledge`).
 3. Activer l'extension `knowledge` si le projet accumule assez de documentation pour nécessiter une navigation par niveaux (`docs/INDEX.md`, `kb_governance.md`, `01_global/`, `02_domains/`, `03_details/`).
 4. À chaque session, suivre les rituels de `docs/governance.md` : lire les fichiers sacrés au démarrage, les mettre à jour pendant et en clôture.
