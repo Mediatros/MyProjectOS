@@ -2,8 +2,8 @@
 projet: MyProjectOS
 type: Code
 statut: en construction
-derniere_maj: 2026-06-14
-prochaine_action: Relire/valider le plan Company OS dans PLAN puis décider l'intégration par lots
+derniere_maj: 2026-07-02
+prochaine_action: Exécuter la Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` (rendre l'installation réelle : committer install.sh/init-project.sh, publier le repo, LICENSE, installer la skill, AGENTS.md racine pour tous les types, dogfooding du repo lui-même)
 prochaine_echeance:
 ---
 
@@ -38,7 +38,8 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Construction du système. Plan détaillé et découpé dans `TASKS.md` (phases 1 à 7). Phases 1 à 5 faites. Plan Company OS ajouté dans `PLAN/` ; validation et intégration par lots à décider avant reprise du banc d'essai Unjque.
+- Audit complet du repository mené le 2026-07-02 (structure, docs, templates, scripts, hooks, skill, RETEX) en vue d'un usage déployable en production/entreprise. Constat : le fond de la méthode est cohérent, mais la promesse d'installation par un agent est cassée (repo GitHub privé, `install.sh` et dernières évolutions d'`init-project.sh` non commités, skill jamais installée dans le projet cible, méthode 2 « adoption d'un projet existant » inexistante, navigation 3 niveaux non outillée, pas de détection de mise à jour de méthode, repo méthode non conforme à sa propre gouvernance). Plan complet en 3 phases dans `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` : **Phase A** (bloquante, priorité immédiate) rend l'installation réelle ; **Phase B** couvre la méthode 2 et la mise à jour de version ; **Phase C** outille la navigation à 3 niveaux, intègre le RETEX comptabilité et remet le repo à niveau de qualité. Plan à valider avant démarrage.
+- Construction du système (historique) : plan détaillé dans `TASKS.md` (phases 1 à 7), phases 1 à 5 faites. Plans Company OS, SecondBrain PKB et Steward OS en attente d'arbitrage dans `PLAN/` (voir tâche C.11 du plan d'audit).
 
 ## Besoins Code identifiés (trois couches)
 

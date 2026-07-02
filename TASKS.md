@@ -39,6 +39,44 @@
 
 ## À faire
 
+### Phase A — Rendre la promesse vraie (bloquant, priorité immédiate)
+But : qu'un agent qui reçoit le lien du repo puisse réellement installer la méthode, sur un projet vierge, pour Claude Code au minimum. Détail : `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
+
+- [ ] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`), trancher le sort de `anatomy.md` et `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md`.
+- [ ] **T-A.2** Publier le dépôt ou documenter un accès authentifié. **Décision actée le 2026-07-02 : le dépôt reste privé pour l'instant, publication reportée.**
+- [ ] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
+- [ ] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md`).
+- [ ] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus.
+- [ ] **T-A.6** Rendre le projet créé auto-vérifiable (copier `check-project.sh` et `VERSION` dans le projet cible).
+- [ ] **T-A.7** Mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine, `PROGRESS.md` dégraissé, docs `enforcement`/`lifecycle`/`governance` réalignés).
+- [ ] **T-A.8** Bump de version à `0.3.0` (`VERSION`, `CHANGELOG.md`, tag `v0.3.0`).
+
+### Phase B — Méthode 2 (adoption d'un projet existant) et mise à jour de la méthode
+But : couvrir l'adoption d'un projet déjà peuplé et boucler la détection de mise à jour. Détail : `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`. Non démarrée, dépend de la Phase A.
+
+- [ ] **T-B.1** Écrire `docs/INSTALL-AGENT.md` (protocole d'adoption, branche de décision méthode 1 / méthode 2).
+- [ ] **T-B.2** Définir la méthode 2 pas à pas (inventaire, classification, mapping, validation humaine, exécution, rapport).
+- [ ] **T-B.3** Remplissage assisté des fichiers sacrés en méthode 2, soumis à relecture humaine.
+- [ ] **T-B.4** Ajouter le mode « adoption » à `skills/my-project-os/SKILL.md`.
+- [ ] **T-B.5** Script de vérification de version distante (`check-update.sh`).
+- [ ] **T-B.6** Runbook de migration de version dans `docs/versioning.md`.
+- [ ] **T-B.7** Mode « revue documentaire » périodique de la skill.
+
+### Phase C — Navigation à trois niveaux, RETEX et qualité générale
+But : navigation progressive fiable et outillée, retours terrain intégrés, repo à niveau de qualité industrielle. Détail : `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`. Non démarrée, dépend de la Phase A.
+
+- [ ] **T-C.1** Frontmatter standard des documents Knowledge (niveau, domaine parent, dépendances, résumé, dernière mise à jour).
+- [ ] **T-C.2** Convention de nommage liant les niveaux 2 et 3 (`docs/NAMING-CONVENTIONS.md`).
+- [ ] **T-C.3** Budgets de taille par niveau, contrôle en avertissement dans `check-project.sh`.
+- [ ] **T-C.4** Détection d'orphelins et de liens cassés dans `docs/INDEX.md`.
+- [ ] **T-C.5** Intégrer le RETEX comptabilité (`SUJETS.md`, source fraîche prioritaire, skills multi-agents).
+- [ ] **T-C.6** Étendre `check-project.sh` pour Knowledge dense (présence/validité de `SUJETS.md`).
+- [ ] **T-C.7** Élargir la couverture des hooks (`Edit`/commandes shell) et corriger le faux négatif du hook Stop.
+- [ ] **T-C.8** Corriger le bug de comptage des `WARNS` dans `check-project.sh` (sous-shell du pipe).
+- [ ] **T-C.9** Créer au moins un exemple Life et un exemple Code dans `examples/`.
+- [ ] **T-C.10** CI minimale (`shellcheck`, tests de fumée) en GitHub Actions.
+- [ ] **T-C.11** Statuer sur les plans en attente (Company OS, SecondBrain PKB, Steward OS) : intégration ou archivage.
+
 ### Phase 6 — Banc d'essai Unjque
 But : valider la méthode sur un vrai projet.
 
