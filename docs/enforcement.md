@@ -41,38 +41,44 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 
 ## Câblage
 
-`scripts/init-project.sh` écrit dans le projet un `.claude/settings.json` :
+Le projet reste autonome, insensible à un déplacement ou à la disparition du repo méthode : `scripts/init-project.sh` copie les hooks dans `.claude/hooks/` du projet cible, puis écrit (ou fusionne) un `.claude/settings.json` qui les référence via `$CLAUDE_PROJECT_DIR` :
 
 ```json
 {
   "hooks": {
     "PreToolUse": [
       { "matcher": "Write",
-        "hooks": [{ "type": "command", "command": "sh <REPO>/scripts/hooks/hook-pre-write.sh" }] }
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] }
     ],
     "Stop": [
       { "matcher": "",
-        "hooks": [{ "type": "command", "command": "sh <REPO>/scripts/hooks/hook-stop-progress.sh" }] }
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
     ]
   }
 }
 ```
 
-`<REPO>` est le chemin absolu du repo méthode, résolu par `init-project.sh` au moment de la pose. Si le projet a déjà un `.claude/settings.json`, le script ne l'écrase pas : il affiche le bloc à fusionner à la main.
+Si le projet a déjà un `.claude/settings.json`, le script fusionne ce bloc dedans (via `python3`, sans écraser la config existante) au lieu de l'écraser. Sans `python3`, il affiche le bloc à fusionner à la main.
+
+Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer `init-project.sh --into-existing` : les hooks locaux sont réécrits, le contenu du projet est préservé.
 
 ## Vérification à la demande — `scripts/check-project.sh`
 
-Les hooks agissent pendant le travail. Le script `check-project.sh` complète le dispositif par un contrôle global, lancé à la main quand on veut faire le point sur un projet.
+Les hooks agissent pendant le travail. Le script `check-project.sh` complète le dispositif par un contrôle global, lancé à la main quand on veut faire le point sur un projet. `init-project.sh` en pose une copie dans `scripts/check-project.sh` du projet cible, accompagnée d'une empreinte `VERSION` figée : le contrôle reste utilisable même si le repo méthode a disparu (voir `docs/versioning.md`).
 
 ```sh
 sh <REPO>/scripts/check-project.sh [chemin-projet]   # défaut : dossier courant
+# ou, depuis la copie locale posée dans le projet :
+sh scripts/check-project.sh
 ```
 
 Il signale, sans rien modifier :
+- **alignement de version** : l'empreinte `version_methode` du projet comparée à `VERSION` ;
 - **fichiers sacrés** manquants (Core, puis extensions Life / Code / Knowledge selon le `type:` déclaré dans `PROJECT.md`) ;
 - **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
 - **placeholders** non substitués (`<NomDuProjet>`) ;
-- **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant.
+- **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
+- **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`.
 
 Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de sortie 1 s'il existe au moins un bloquant, 0 sinon. Comme les hooks, le script reste informatif et ne bloque jamais un flux de travail.
 

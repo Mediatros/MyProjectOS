@@ -5,7 +5,8 @@ Extension **Code** : projets logiciels. S'ajoute au socle Core (`structures/core
 ```
 MonProjet/
 ├── PROJECT.md / PROGRESS.md / CHANGELOG.md / TASKS.md / DECISIONS.md   # Core
-├── AGENTS.md           # instructions d'opération pour les agents
+├── AGENTS.md           # Core + section "Extension Code" ajoutée par cette extension
+├── CLAUDE.md           # Core
 ├── CONSTITUTION.md     # principes non négociables du projet
 ├── STACK_VALIDATION.md # gate de stack, obligatoire avant tout code
 ├── ARCHITECTURE.md     # organisation du code, responsabilités, zones sensibles
@@ -25,9 +26,10 @@ MonProjet/
 
 ## Fichiers ajoutés
 
+`AGENTS.md` existe déjà via le socle Core ; l'extension Code y ajoute une section « Extension Code » (comment travailler dans le repo, quoi lire, quoi valider), elle ne crée pas de fichier séparé.
+
 | Fichier | Rôle |
 |---|---|
-| `AGENTS.md` | Comment les agents travaillent dans le repo, quoi lire, quoi valider |
 | `CONSTITUTION.md` | Principes non négociables du projet, lus par l'agent et Harness (voir `docs/harness.md`) |
 | `STACK_VALIDATION.md` | Gate de compatibilité de stack, sourcé, avant la première ligne de code |
 | `ARCHITECTURE.md` | Où se trouve quoi, responsabilités, zones à ne pas toucher |

@@ -10,6 +10,8 @@ MonProjet/
 ├── CHANGELOG.md        # historique daté (CHG-YYYYMMDD-HHMM)
 ├── TASKS.md            # checklist d'actions (Tx.y)
 ├── DECISIONS.md        # décisions structurantes (DEC-XXXX)
+├── AGENTS.md           # instructions d'opération pour les agents (rituels, garde-fous)
+├── CLAUDE.md           # renvoi vers AGENTS.md, pour que Claude Code le charge
 ├── 00_inbox/           # zone temporaire, entrées non classées
 ├── 01_context/         # contexte stable du projet
 ├── 02_work/            # travail actif en cours
@@ -28,6 +30,8 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 - `TASKS.md` : actions concrètes cochables.
 - `DECISIONS.md` : le pourquoi des choix structurants.
 
+`AGENTS.md` et `CLAUDE.md` ne sont pas des fichiers sacrés (pas de registre à tenir à jour), mais font partie du socle Core posé par `init-project.sh` sur tout type de projet : rituels de session, garde-fous, frontière des fichiers sacrés. Les extensions actives (Code...) ajoutent leur propre section dans `AGENTS.md` plutôt que de créer un fichier séparé.
+
 ## Rôle des dossiers
 
 | Dossier | Rôle | Règle |
@@ -42,7 +46,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 ## Extensions
 
 - **Life** ajoute les fichiers `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md` et des dossiers dédiés. Voir `structures/life-tree.md`.
-- **Code** ajoute `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md` et des dossiers dédiés. Voir `structures/code-tree.md`.
+- **Code** ajoute `CONSTITUTION.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`, une section dédiée dans `AGENTS.md` (Core) et des dossiers dédiés. Voir `structures/code-tree.md`.
 - **Hybrid** combine les deux.
 
 ## Nommage

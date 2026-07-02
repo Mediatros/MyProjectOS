@@ -25,6 +25,8 @@ Règle d'aiguillage unique. Une information ne vit qu'à un seul endroit.
 
 Les autres fichiers référencent par identifiant (« voir DEC-0003 »), ils ne recopient pas.
 
+Le socle Core pose aussi `AGENTS.md` et `CLAUDE.md` à la racine de chaque projet (tous types) : ces rituels y sont recopiés pour que l'agent les charge sans dépendre du repo méthode. Ce ne sont pas des fichiers sacrés (pas de registre à tenir à jour).
+
 ## Rituels de session
 
 ### Au démarrage
