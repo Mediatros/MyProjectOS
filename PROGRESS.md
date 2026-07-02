@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-02
-prochaine_action: Terminer T-A.7 (conformité gouvernance du repo méthode) puis T-A.8 (bump de version 0.3.0) du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`
+prochaine_action: Phase A terminée (sauf T-A.2, dépôt reporté). Décider la suite : Phase B (méthode 2 + mise à jour), Phase C (navigation 3 niveaux + qualité), ou banc d'essai Unjque (Phase 6). Voir `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
 prochaine_echeance:
 ---
 
@@ -30,9 +30,9 @@ Concevoir et construire `MyProjectOS` : une méthodologie unifiée d'organisatio
 
 ## État actuel
 
-Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, actuellement `0.2.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
+Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, `0.3.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
 
-Depuis l'audit du repository du 2026-07-02 (voir Travail en cours), exécution de la Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` : T-A.1 à T-A.6 faites (installation réelle en une commande, `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable). Restent T-A.7 (mise en conformité du repo méthode avec sa propre gouvernance, en cours) et T-A.8 (bump de version). Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
+Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` terminée le 2026-07-02 (T-A.1, T-A.3 à T-A.8) : installation réelle en une commande (`install.sh`), `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable, repo méthode remis en conformité avec sa propre gouvernance, version portée à `0.3.0` (tag `v0.3.0` posé localement, **non poussé sur le remote**). T-A.2 reportée : le dépôt GitHub reste privé pour l'instant (DEC-0017), donc `install.sh` par `curl` ne fonctionnera pas depuis une machine tierce tant que ce n'est pas rouvert. Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
 
 ## Décisions actées
 
@@ -40,8 +40,9 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- T-A.7 : mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine créé, `PROGRESS.md` dégraissé, `docs/enforcement.md`/`lifecycle.md`/`governance.md` réalignés sur le comportement réel des scripts). Reste à vérifier avec `check-project.sh` une fois terminé.
+- Rien en cours activement. Phase A terminée (sauf T-A.2, reportée). Prochaine décision : Phase B, Phase C, ou Phase 6 (Unjque).
 - Statut à trancher pour les plans en attente dans `PLAN/` (Company OS, SecondBrain PKB, Steward OS) : tâche T-C.11 du plan d'industrialisation.
+- Commits locaux non poussés sur `origin/main` (dépôt privé, publication reportée par DEC-0017) : à pousser quand décidé.
 
 ## Besoins Code identifiés (trois couches)
 
@@ -65,7 +66,7 @@ Détail dans `TASKS.md`. Vue macro :
 3. Phase 3 : skill assistant (le cœur). **Faite.**
 4. Phase 4 : hooks d'enforcement + script d'init. **Faite.**
 5. Phase 5 : intégration Harness + emprunts Spec Kit. **Faite.**
-6. Phase A : installation réelle par un agent. **T-A.1 à T-A.6 faites, T-A.7 en cours, T-A.8 restante.**
+6. Phase A : installation réelle par un agent. **Faite** (T-A.1, T-A.3 à T-A.8 ; T-A.2 reportée, dépôt reste privé).
 7. Phase B : méthode 2 (adoption d'un projet existant) + mise à jour de version. Non démarrée.
 8. Phase C : navigation 3 niveaux, RETEX, qualité générale. Non démarrée.
 9. Phase 6 : banc d'essai Unjque.
