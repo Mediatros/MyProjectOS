@@ -42,9 +42,9 @@
 ### Phase A — Rendre la promesse vraie (bloquant, priorité immédiate)
 But : qu'un agent qui reçoit le lien du repo puisse réellement installer la méthode, sur un projet vierge, pour Claude Code au minimum. Détail : `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
 
-- [ ] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`), trancher le sort de `anatomy.md` et `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md`.
+- [x] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`). `anatomy.md` passé en `.gitignore` (généré par le hook Stop) ; `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md` déplacé vers `PLAN/` (document de travail).
 - [ ] **T-A.2** Publier le dépôt ou documenter un accès authentifié. **Décision actée le 2026-07-02 : le dépôt reste privé pour l'instant, publication reportée.**
-- [ ] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
+- [x] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
 - [ ] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md`).
 - [ ] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus.
 - [ ] **T-A.6** Rendre le projet créé auto-vérifiable (copier `check-project.sh` et `VERSION` dans le projet cible).
