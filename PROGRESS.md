@@ -1,9 +1,9 @@
 ---
 projet: MyProjectOS
-type: Code
+type: Core
 statut: en construction
 derniere_maj: 2026-07-02
-prochaine_action: Exécuter la Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` (rendre l'installation réelle : committer install.sh/init-project.sh, publier le repo, LICENSE, installer la skill, AGENTS.md racine pour tous les types, dogfooding du repo lui-même)
+prochaine_action: Terminer T-A.7 (conformité gouvernance du repo méthode) puis T-A.8 (bump de version 0.3.0) du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`
 prochaine_echeance:
 ---
 
@@ -30,7 +30,9 @@ Concevoir et construire `MyProjectOS` : une méthodologie unifiée d'organisatio
 
 ## État actuel
 
-Phases 1 à 5 terminées. Squelette en place (arborescence, `README`, `ROADMAP`, templates Core, docs de gouvernance, structure Core). Extensions livrées : templates Life (`PREUVES`, `ECHEANCES`, `CORRESPONDANCES`) et Code (`AGENTS`, `CONSTITUTION`, `STACK_VALIDATION`, `ARCHITECTURE`, `SPECS`, `TEST_PLAN`, `IMPACT_ANALYSIS`, `RELEASE`), structures `life-tree`/`code-tree`, plus la valeur ajoutée maison : gate `STACK_VALIDATION` sourcé (`docs/stack-validation-gate.md`) et concept « kit de rails » avec format de recette (`docs/kit-de-rails.md`). Extension Knowledge ajoutée et câblée le 2026-06-07 : `structures/knowledge-tree.md`, `templates/extensions/knowledge/`, `scripts/init-project.sh --knowledge`, skill assistant, règles de contexte progressif, dépendances transverses, `docs/INDEX.md`, `kb_governance.md`, plans et runbooks. Zone PLAN ajoutée le 2026-06-07 : `PLAN/README.md` isole les plans d'évolution, et `PLAN/plans/2026-06-07-company-os-integration.md` documente l'analyse Company OS + proposition d'intégration (documentation comme interface IA, température contextuelle, maturité de l'information, isolation des contextes). Test réel validé : génération Core+Knowledge et Hybrid+Knowledge dans `/tmp`, fichiers attendus présents, substitution `<NomDuProjet>` absente, `sh -n` OK. Phase 3 : skill assistant livrée sous forme installable (`skills/my-project-os/SKILL.md`, frontmatter + 4 modes reprise/orientation/explication/clôture + aiguillage Code complet/allégé + initialisation), cadrée dans `agents/meta-skill.md`, fiches d'agent `claude-code.md` et `hermes.md`. Phase 4 : couche enforcement déterministe livrée et testée (`docs/enforcement.md`, `scripts/hooks/` + `scripts/init-project.sh`). Phase 5 : colonne vertébrale Code branchée. `docs/harness.md` documente installation/usage de Harness (faits sourcés sur le dépôt upstream le 2026-06-01 : install via plugin marketplace, 5 verbes `/harness-setup|plan|work|review|release`, artefacts `spec.md`/`Plans.md`, MIT, v4.13.3, Claude Code v2.1+) et la correspondance avec les fichiers sacrés. Emprunts Spec Kit en Markdown figé : `templates/extensions/code/CONSTITUTION.md` (principes projet) et `docs/clarify.md` (réflexe clarify). Constitution câblée dans `code-tree` et `AGENTS`. Outils de cohérence ajoutés le 2026-06-14 : `scripts/check-project.sh` (validation à la demande d'un projet) et `scripts/build-index.sh` (index global multi-projets), réalisant les propositions #9 et #5 du plan d'amélioration ; notation de date alignée en anglais (`YYYY-MM-DD`, `CHG-YYYYMMDD-HHMM`) et dogfooding complété (`CHANGELOG.md` + `DECISIONS.md` à la racine). Versionnement de la méthode ajouté le 2026-06-14 (DEC-0015) : fichier `VERSION` (source unique, `0.1.0`), politique `docs/versioning.md` (format `MAJEUR.MINEUR.CORRECTIF` + notion de release), empreinte `version_methode` dans `PROJECT.md` estampillée par `init-project.sh`, et check d'alignement dans `check-project.sh` (à jour / en retard / sans empreinte). Projet renommé `Project OS AI` → `MyProjectOS` (dépôt GitHub `Mediatros/MyProjectOS`, dossier local `MyProjectOS`, skill `my-project-os`). Version portée à `0.2.0` le 2026-06-14 (DEC-0016) : `check-project.sh` détecte aussi la non-conformité de contenu (dates `JJ/MM/AAAA` ou mois en lettres, champs datés hors `YYYY-MM-DD`), pour repérer un projet resté sur l'ancienne convention. Reste : validation du plan Company OS puis banc d'essai Unjque (Phase 6).
+Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, actuellement `0.2.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
+
+Depuis l'audit du repository du 2026-07-02 (voir Travail en cours), exécution de la Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` : T-A.1 à T-A.6 faites (installation réelle en une commande, `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable). Restent T-A.7 (mise en conformité du repo méthode avec sa propre gouvernance, en cours) et T-A.8 (bump de version). Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
 
 ## Décisions actées
 
@@ -38,8 +40,8 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Audit complet du repository mené le 2026-07-02 (structure, docs, templates, scripts, hooks, skill, RETEX) en vue d'un usage déployable en production/entreprise. Constat : le fond de la méthode est cohérent, mais la promesse d'installation par un agent est cassée (repo GitHub privé, `install.sh` et dernières évolutions d'`init-project.sh` non commités, skill jamais installée dans le projet cible, méthode 2 « adoption d'un projet existant » inexistante, navigation 3 niveaux non outillée, pas de détection de mise à jour de méthode, repo méthode non conforme à sa propre gouvernance). Plan complet en 3 phases dans `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` : **Phase A** (bloquante, priorité immédiate) rend l'installation réelle ; **Phase B** couvre la méthode 2 et la mise à jour de version ; **Phase C** outille la navigation à 3 niveaux, intègre le RETEX comptabilité et remet le repo à niveau de qualité. Plan à valider avant démarrage.
-- Construction du système (historique) : plan détaillé dans `TASKS.md` (phases 1 à 7), phases 1 à 5 faites. Plans Company OS, SecondBrain PKB et Steward OS en attente d'arbitrage dans `PLAN/` (voir tâche C.11 du plan d'audit).
+- T-A.7 : mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine créé, `PROGRESS.md` dégraissé, `docs/enforcement.md`/`lifecycle.md`/`governance.md` réalignés sur le comportement réel des scripts). Reste à vérifier avec `check-project.sh` une fois terminé.
+- Statut à trancher pour les plans en attente dans `PLAN/` (Company OS, SecondBrain PKB, Steward OS) : tâche T-C.11 du plan d'industrialisation.
 
 ## Besoins Code identifiés (trois couches)
 
@@ -49,6 +51,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Problèmes ouverts / points de vigilance
 
+- `check-project.sh` lancé sur ce repo lui-même (dogfooding, T-A.7) signale 2 avertissements attendus, pas de vrais problèmes : le placeholder `<NomDuProjet>` dans les fichiers de `templates/` (il doit y rester, c'est leur rôle) et l'exemple `CHG-20260601-1430` dans `docs/NAMING-CONVENTIONS.md` (une illustration de format, pas une vraie citation). Le script n'est pas conçu pour distinguer un gabarit d'un projet généré ; à améliorer si ça devient gênant.
 - Compatibilité des versions de stack : aucun outil ne la garantit. Valeur ajoutée à construire (gate `STACK_VALIDATION` avec vérification sourcée avant tout code).
 - Portabilité de la couche gouvernance vers Hermès : Hermès (Nous Research) est un agent autonome, pas Claude Code, donc il n'exécute pas Harness. Il consomme les fichiers Markdown. Il supporte MCP et agentskills.io : à terme, exposer skill assistant + règles via MCP partagé ou double skill pour qu'Hermès respecte les mêmes garde-fous. Reporté ROADMAP.
 - Lien NowStack à obtenir pour reproduire précisément l'approche qui a séduit l'utilisateur.
@@ -62,12 +65,16 @@ Détail dans `TASKS.md`. Vue macro :
 3. Phase 3 : skill assistant (le cœur). **Faite.**
 4. Phase 4 : hooks d'enforcement + script d'init. **Faite.**
 5. Phase 5 : intégration Harness + emprunts Spec Kit. **Faite.**
-6. Phase 6 : banc d'essai Unjque.
-7. Phase 7 (ROADMAP) : portabilité Hermès.
+6. Phase A : installation réelle par un agent. **T-A.1 à T-A.6 faites, T-A.7 en cours, T-A.8 restante.**
+7. Phase B : méthode 2 (adoption d'un projet existant) + mise à jour de version. Non démarrée.
+8. Phase C : navigation 3 niveaux, RETEX, qualité générale. Non démarrée.
+9. Phase 6 : banc d'essai Unjque.
+10. Phase 7 (ROADMAP) : portabilité Hermès.
 
 ## Références utiles
 
 - `TASKS.md` : plan de construction détaillé (source pour la reprise après `/clear`).
+- `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` : plan en cours (Phase A/B/C).
 - `PLAN/HANDOFF.md`, `CLAUDE.md`, `PLAN/PLAN_PROJECT_OS_AI.md`, `PLAN/PLAN_PROPOSITION_AMELIORATION.md`.
 - `Unjque_Projet/docs/NAMING-CONVENTIONS.md`, `Unjque_Projet/docs/INDEX.md`, `Unjque_Projet/PROGRESS.md`.
 

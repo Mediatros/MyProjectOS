@@ -19,6 +19,39 @@
 
 ---
 
+### DEC-0019 — AGENTS.md est un fichier Core, l'extension Code y ajoute une section
+
+- **Date** : 2026-07-02
+- **Contexte** : l'audit du 2026-07-02 constate que seul le type Code recevait un `AGENTS.md` ; un projet Core, Life ou Hybrid fraîchement créé n'avait donc aucune instruction agent à la racine (T-A.5).
+- **Options envisagées** :
+  - A. Dupliquer un `AGENTS.md` générique par extension (un par type).
+  - B. Poser un `AGENTS.md` Core générique pour tous les types, et faire des extensions des sections ajoutées au même fichier.
+  - C. Ne rien changer, accepter que seuls les projets Code aient des instructions agent.
+- **Choix** : option B.
+- **Raison** : un seul contenu source par projet, lisible nativement par Codex (`AGENTS.md`) et par Claude Code (`CLAUDE.md` qui y renvoie), sans fichiers concurrents qui s'écrasent au moment de la génération.
+- **Conséquences** : `templates/core/AGENTS.md` et `templates/core/CLAUDE.md` posés par `init-project.sh` pour tous les types. `templates/extensions/code/AGENTS.md` n'est plus un document autonome mais un fragment (« ## Extension Code ») ajouté une seule fois au fichier racine (`append_code_agents`, idempotent en mode `--into-existing`). `structures/core-tree.md`, `structures/code-tree.md` et le `CLAUDE.md` du repo méthode alignés.
+- **Liens** : CHG-20260702-1851.
+
+### DEC-0018 — Licence MIT
+
+- **Date** : 2026-07-02
+- **Contexte** : le repo n'avait pas de `LICENSE`, ce qui bloque tout usage entreprise ou partage (constat de l'audit, T-A.3).
+- **Choix** : licence MIT.
+- **Raison** : cohérent avec les outils empruntés par la méthode (Harness, Spec Kit), tous deux MIT.
+- **Conséquences** : fichier `LICENSE` ajouté à la racine.
+- **Liens** : CHG-20260702-1851.
+
+### DEC-0017 — Le dépôt GitHub reste privé pour l'instant
+
+- **Date** : 2026-07-02
+- **Contexte** : l'audit signale que le repo privé `Mediatros/MyProjectOS` casse le scénario « je donne le lien à mon agent » (T-A.2), puisque `install.sh` clone via `curl`/`git clone` sans authentification.
+- **Options envisagées** : rendre le repo public ; le garder privé et documenter un accès authentifié ; ne pas trancher maintenant.
+- **Choix** : rester privé, publication reportée.
+- **Raison** : décision utilisateur ; les autres tâches de la Phase A (installation réelle sur le principe) ont priorité avant d'ouvrir l'accès public.
+- **Conséquences** : `install.sh`/`curl` tel que documenté dans le `README.md` ne fonctionnera pas depuis une machine tierce tant que le repo reste privé ou qu'un accès authentifié n'est pas documenté. T-A.2 reste ouverte dans `TASKS.md`.
+
+---
+
 ### DEC-0001 — Regrouper les extensions sous `templates/extensions/`
 
 - **Date** : 2026-06-13

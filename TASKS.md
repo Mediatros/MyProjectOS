@@ -48,7 +48,7 @@ But : qu'un agent qui reçoit le lien du repo puisse réellement installer la m�
 - [x] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md` dans `.claude/skills/my-project-os/`).
 - [x] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus. L'extension Code ajoute une section « Extension Code » dans le même fichier (fusion idempotente) au lieu d'un fichier séparé.
 - [x] **T-A.6** Rendre le projet créé auto-vérifiable (`scripts/check-project.sh` + `VERSION` figée copiés dans le projet cible, exécutables sans dépendre du repo MyProjectOS).
-- [ ] **T-A.7** Mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine, `PROGRESS.md` dégraissé, docs `enforcement`/`lifecycle`/`governance` réalignés).
+- [x] **T-A.7** Mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine créé, `PROGRESS.md` dégraissé, docs `enforcement`/`lifecycle`/`governance` réalignés). Vérifié avec `check-project.sh` : 0 bloquant.
 - [ ] **T-A.8** Bump de version à `0.3.0` (`VERSION`, `CHANGELOG.md`, tag `v0.3.0`).
 
 ### Phase B — Méthode 2 (adoption d'un projet existant) et mise à jour de la méthode

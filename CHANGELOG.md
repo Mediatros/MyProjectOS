@@ -22,6 +22,17 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 
 ---
 
+### CHG-20260702-1851 — Phase A de l'industrialisation : installation réelle par un agent
+
+- Audit complet du repository (2026-07-02) : plan en 3 phases dans `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`, transposé en `T-A.x`/`T-B.x`/`T-C.x` dans `TASKS.md`.
+- T-A.1 : `install.sh` (clone jetable, projet final autonome), `init-project.sh --into-existing`/`--sync`, `README.md` committés. `anatomy.md` gitignoré (généré par le hook Stop) ; workdoc Hermès du 2026-06-03 déplacé de `docs/` vers `PLAN/`.
+- T-A.3 : `LICENSE` MIT ajoutée. Voir DEC-0018.
+- T-A.4 : `init-project.sh` installe la skill assistant dans `.claude/skills/my-project-os/` à la création du projet.
+- T-A.5 : `AGENTS.md`/`CLAUDE.md` posés pour tous les types (Core/Life/Code/Hybrid) ; l'extension Code fusionne une section dans le même fichier au lieu de le remplacer. Voir DEC-0019.
+- T-A.6 : `scripts/check-project.sh` + une empreinte `VERSION` figée sont copiés dans le projet cible, qui reste auto-vérifiable sans dépendre du repo méthode.
+- T-A.7 : mise en conformité du repo méthode avec sa propre gouvernance — `PROJECT.md` racine créé, `PROGRESS.md` dégraissé (historique renvoyé vers ce fichier et `DECISIONS.md`), `docs/enforcement.md` et `docs/lifecycle.md` réalignés sur le comportement réel des scripts (hooks copiés localement, fusion JSON, sections du check).
+- Voir aussi DEC-0017 (le dépôt GitHub reste privé pour l'instant, publication reportée).
+
 ### CHG-20260614-2100 — Contrôle du format de date dans le check
 
 - `scripts/check-project.sh` gagne une section « Format de date » : avertit (sans bloquer) sur les dates `JJ/MM/AAAA`, les mois en toutes lettres en français, et les champs `cree_le`/`derniere_maj` qui ne sont pas en `YYYY-MM-DD`.

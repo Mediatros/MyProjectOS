@@ -4,15 +4,17 @@ De la création à l'archivage, les étapes par lesquelles passe un projet.
 
 ## 1. Création
 
-Un projet naît à partir des templates. On choisit son **type** (Life, Code ou Hybrid), ce qui détermine les extensions activées.
+Un projet naît à partir des templates, posés par `scripts/init-project.sh` (ou en une commande via `install.sh`, voir `README.md`). On choisit son **type** (Life, Code ou Hybrid), ce qui détermine les extensions activées.
 
-- On copie les cinq fichiers sacrés Core depuis `templates/core/`.
-- On ajoute les templates des extensions choisies (Life, Code, ou les deux pour Hybrid).
-- On active l'extension `knowledge` seulement si le projet a assez de documentation pour justifier une navigation par niveaux et une analyse transverse.
-- On crée les dossiers numérotés à la demande, au moment où ils servent.
-- On renseigne `PROJECT.md` (pourquoi, périmètre, objectifs, critères de réussite).
+- Les cinq fichiers sacrés Core sont copiés depuis `templates/core/`, avec `AGENTS.md` et `CLAUDE.md` (rituels de session, garde-fous, frontière des fichiers sacrés).
+- Les templates des extensions choisies sont ajoutés (Life, Code, ou les deux pour Hybrid) ; l'extension Code ajoute sa propre section dans `AGENTS.md` au lieu d'un fichier séparé.
+- L'extension `knowledge` ne s'active que si le projet a assez de documentation pour justifier une navigation par niveaux et une analyse transverse.
+- Les dossiers numérotés sont créés à la demande, au moment où ils servent.
+- La skill assistant (`skills/my-project-os/SKILL.md`) est installée dans `.claude/skills/`, et les hooks d'enforcement dans `.claude/hooks/` (voir `docs/enforcement.md`).
+- Une copie de `scripts/check-project.sh` et une empreinte `VERSION` figée sont posées dans le projet : il reste auto-vérifiable même si le repo méthode disparaît ensuite.
+- `PROJECT.md` reste à renseigner (pourquoi, périmètre, objectifs, critères de réussite) : lui seul ne peut pas être automatisé.
 
-À terme, `scripts/init-project.sh` automatise cette étape.
+Sur un projet déjà peuplé (« bordélique » ou partiellement structuré), `--into-existing` greffe les fichiers manquants sans écraser l'existant. Adopter un projet existant et le réorganiser reste un scénario non couvert (méthode 2, voir Phase B du plan d'industrialisation).
 
 ## 2. Travail
 
