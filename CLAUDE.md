@@ -45,9 +45,11 @@ MonProjet/
 └── 99_archive/        # éléments clôturés ou obsolètes
 ```
 
+Tout projet reçoit aussi `AGENTS.md` et `CLAUDE.md` à la racine (socle Core) : rituels de session, garde-fous, frontière des fichiers sacrés. `CLAUDE.md` renvoie vers `AGENTS.md`, source unique lisible aussi par Codex.
+
 Extension Life ajoute : `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md` + dossiers `05_correspondances/` à `08_modeles/`.
 
-Extension Code ajoute : `AGENTS.md`, `CONSTITUTION.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md` + dossiers `05_specs/` à `src/`.
+Extension Code ajoute : `CONSTITUTION.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`, une section dédiée dans `AGENTS.md` + dossiers `05_specs/` à `src/`.
 
 ## Structure cible du repository
 
@@ -56,7 +58,7 @@ MyProjectOS/
 ├── README.md / ROADMAP.md / CHANGELOG.md
 ├── docs/              # vision, principles, governance, lifecycle, glossary, enforcement
 ├── templates/
-│   ├── core/          # PROJECT.md, PROGRESS.md, CHANGELOG.md, TASKS.md, DECISIONS.md (socle)
+│   ├── core/          # PROJECT.md, PROGRESS.md, CHANGELOG.md, TASKS.md, DECISIONS.md, AGENTS.md, CLAUDE.md (socle)
 │   └── extensions/    # modules activables selon le type de projet
 │       ├── life/      # PREUVES.md, ECHEANCES.md, CORRESPONDANCES.md
 │       ├── code/      # AGENTS.md, STACK_VALIDATION.md, ARCHITECTURE.md, etc.

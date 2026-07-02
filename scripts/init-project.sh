@@ -118,6 +118,22 @@ copy_template() {
     CREATED="$CREATED $_base"
 }
 
+append_code_agents() {
+    # append_code_agents <src> <dst> : ajoute la section Code à AGENTS.md, une seule fois.
+    _src=$1
+    _dst=$2
+    if [ -e "$_dst" ] && grep -q '^## Extension Code$' "$_dst" 2>/dev/null; then
+        echo "  = AGENTS.md (section Extension Code déjà présente, conservée)"
+        return
+    fi
+    _tmp="$_dst.append"
+    cp "$_src" "$_tmp"
+    subst "$_tmp"
+    { printf '\n'; cat "$_tmp"; } >> "$_dst"
+    rm -f "$_tmp"
+    echo "  ~ AGENTS.md (section Extension Code ajoutée)"
+}
+
 copy_tree() {
     # copy_tree <src-dir> <dst-dir> : copie récursive puis substitue les fichiers Markdown.
     # En mode greffe, n'écrase jamais un fichier déjà présent.
@@ -149,6 +165,10 @@ for f in PROJECT PROGRESS CHANGELOG TASKS DECISIONS; do
     copy_template "$REPO/templates/core/$f.md" "$TARGET/$f.md"
 done
 
+echo "Instructions agent :"
+copy_template "$REPO/templates/core/AGENTS.md" "$TARGET/AGENTS.md"
+copy_template "$REPO/templates/core/CLAUDE.md" "$TARGET/CLAUDE.md"
+
 if [ "$WANT_LIFE" -eq 1 ]; then
     echo "Extension Life :"
     for f in PREUVES ECHEANCES CORRESPONDANCES; do
@@ -158,9 +178,10 @@ fi
 
 if [ "$WANT_CODE" -eq 1 ]; then
     echo "Extension Code :"
-    for f in AGENTS CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
+    for f in CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
         copy_template "$REPO/templates/extensions/code/$f.md" "$TARGET/$f.md"
     done
+    append_code_agents "$REPO/templates/extensions/code/AGENTS.md" "$TARGET/AGENTS.md"
 fi
 
 if [ "$WANT_KNOWLEDGE" -eq 1 ]; then
