@@ -195,6 +195,21 @@ mkdir -p "$TARGET/00_inbox"
 : > "$TARGET/00_inbox/.gitkeep"
 echo "  + 00_inbox/ (les autres dossiers numérotés se créent à la demande)"
 
+# --- Auto-vérification, sans dépendre du repo MyProjectOS --------------------
+# check-project.sh lit VERSION à côté de lui (dirname/..) : les deux sont copiés
+# ensemble pour que le projet reste vérifiable même si MyProjectOS a disparu
+# (install.sh en mode jetable). VERSION est une empreinte figée à la création :
+# la comparaison à la dernière version publiée est le rôle de check-update.sh (T-B.5).
+if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/scripts/check-project.sh" ]; then
+    echo "  = scripts/check-project.sh (déjà présent, conservé)"
+else
+    mkdir -p "$TARGET/scripts"
+    cp "$REPO/scripts/check-project.sh" "$TARGET/scripts/check-project.sh"
+    chmod +x "$TARGET/scripts/check-project.sh"
+    printf '%s\n' "$OS_VERSION" > "$TARGET/VERSION"
+    echo "  + scripts/check-project.sh + VERSION (empreinte $OS_VERSION, projet auto-vérifiable)"
+fi
+
 # --- Câblage des hooks -------------------------------------------------------
 # Les hooks sont copiés dans le projet (.claude/hooks/) puis référencés via
 # $CLAUDE_PROJECT_DIR : le projet reste autonome, insensible à un déplacement
