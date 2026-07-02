@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.3.0** — 2026-07-02 — Phase A du plan d'industrialisation (installation réelle par un agent) : `install.sh` en une commande, `init-project.sh --into-existing`/`--sync`, skill assistant installée à la création, `AGENTS.md`/`CLAUDE.md` posés pour tous les types (l'extension Code fusionne une section au lieu d'écraser), projet créé auto-vérifiable (`check-project.sh` + `VERSION` figée copiés), `LICENSE` MIT, repo méthode remis en conformité avec sa propre gouvernance. Voir CHG-20260702-1851.
 - **v0.2.0** — 2026-06-14 — le check vérifie désormais la conformité de contenu, pas seulement l'empreinte déclarée : `check-project.sh` détecte les dates au format français (`JJ/MM/AAAA`, mois en toutes lettres) et les champs datés du frontmatter hors `YYYY-MM-DD`. Permet de repérer un projet bâti sur l'ancienne convention de date.
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
