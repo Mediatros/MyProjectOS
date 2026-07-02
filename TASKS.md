@@ -45,7 +45,7 @@ But : qu'un agent qui reçoit le lien du repo puisse réellement installer la m�
 - [x] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`). `anatomy.md` passé en `.gitignore` (généré par le hook Stop) ; `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md` déplacé vers `PLAN/` (document de travail).
 - [ ] **T-A.2** Publier le dépôt ou documenter un accès authentifié. **Décision actée le 2026-07-02 : le dépôt reste privé pour l'instant, publication reportée.**
 - [x] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
-- [ ] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md`).
+- [x] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md` dans `.claude/skills/my-project-os/`).
 - [ ] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus.
 - [ ] **T-A.6** Rendre le projet créé auto-vérifiable (copier `check-project.sh` et `VERSION` dans le projet cible).
 - [ ] **T-A.7** Mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine, `PROGRESS.md` dégraissé, docs `enforcement`/`lifecycle`/`governance` réalignés).

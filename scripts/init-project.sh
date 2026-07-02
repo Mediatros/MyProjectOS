@@ -185,6 +185,15 @@ for _h in _lib.sh hook-pre-write.sh hook-stop-progress.sh; do
 done
 echo "  + .claude/hooks/ (hooks copiés localement, autonomes)"
 
+# --- Installation de la skill assistant --------------------------------------
+if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/skills/my-project-os/SKILL.md" ]; then
+    echo "  = .claude/skills/my-project-os/SKILL.md (déjà présente, conservée)"
+else
+    mkdir -p "$TARGET/.claude/skills/my-project-os"
+    cp "$REPO/skills/my-project-os/SKILL.md" "$TARGET/.claude/skills/my-project-os/SKILL.md"
+    echo "  + .claude/skills/my-project-os/SKILL.md (skill assistant installée)"
+fi
+
 SETTINGS="$TARGET/.claude/settings.json"
 HOOKS_BLOCK=$(cat <<'EOF'
 {
