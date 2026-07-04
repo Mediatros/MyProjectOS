@@ -49,7 +49,8 @@ But : qu'un agent qui reçoit le lien du repo puisse réellement installer la m�
 - [x] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus. L'extension Code ajoute une section « Extension Code » dans le même fichier (fusion idempotente) au lieu d'un fichier séparé.
 - [x] **T-A.6** Rendre le projet créé auto-vérifiable (`scripts/check-project.sh` + `VERSION` figée copiés dans le projet cible, exécutables sans dépendre du repo MyProjectOS).
 - [x] **T-A.7** Mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine créé, `PROGRESS.md` dégraissé, docs `enforcement`/`lifecycle`/`governance` réalignés). Vérifié avec `check-project.sh` : 0 bloquant.
-- [ ] **T-A.8** Bump de version à `0.3.0` (`VERSION`, `CHANGELOG.md`, tag `v0.3.0`).
+- [x] **T-A.8** Bump de version à `0.3.0` (`VERSION`, `CHANGELOG.md`, tag `v0.3.0` posé localement, non poussé).
+- [x] **T-A.9** Corriger `check-project.sh` : le contrôle d'`AGENTS.md`/`CLAUDE.md` (DEC-0019) était limité aux types Code/Hybrid, alors que ces fichiers sont posés pour tous les types depuis T-A.5. Devenu universel + nouvelle section qui avertit si `AGENTS.md`/`CLAUDE.md`/`.hermes.md`/`SOUL.md`/`.cursorrules` dépasse 20 000 caractères (limite de troncature par défaut d'Hermès Agent). `agents/hermes.md` documente la contrainte. Version portée à `0.4.0`. Voir DEC-0020.
 
 ### Phase B — Méthode 2 (adoption d'un projet existant) et mise à jour de la méthode
 But : couvrir l'adoption d'un projet déjà peuplé et boucler la détection de mise à jour. Détail : un plan interne. Non démarrée, dépend de la Phase A.

@@ -2,8 +2,8 @@
 projet: MyProjectOS
 type: Core
 statut: en construction
-derniere_maj: 2026-07-02
-prochaine_action: Terminer T-A.7 (conformité gouvernance du repo méthode) puis T-A.8 (bump de version 0.3.0) du plan interne en cours
+derniere_maj: 2026-07-04
+prochaine_action: Phase A terminée (sauf T-A.2, dépôt reporté), plus T-A.9 (correctif check + garde-fou taille Hermès). Décider la suite : Phase B (méthode 2 + mise à jour), Phase C (navigation 3 niveaux + qualité), ou banc d'essai Projet Zeta (Phase 6). Voir le plan interne en cours.
 prochaine_echeance:
 ---
 
@@ -30,9 +30,13 @@ Concevoir et construire `MyProjectOS` : une méthodologie unifiée d'organisatio
 
 ## État actuel
 
-Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, actuellement `0.2.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
+Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, `0.4.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
 
-Depuis l'audit du repository du 2026-07-02 (voir Travail en cours), exécution de la Phase A d'un plan interne : T-A.1 à T-A.6 faites (installation réelle en une commande, `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable). Restent T-A.7 (mise en conformité du repo méthode avec sa propre gouvernance, en cours) et T-A.8 (bump de version). Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
+Phase A d'un plan interne terminée le 2026-07-02 (T-A.1, T-A.3 à T-A.8) : installation réelle en une commande (`install.sh`), `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable, repo méthode remis en conformité avec sa propre gouvernance. T-A.2 reportée : le dépôt GitHub reste privé pour l'instant (DEC-0017), donc `install.sh` par `curl` ne fonctionnera pas depuis une machine tierce tant que ce n'est pas rouvert.
+
+T-A.9 ajoutée et terminée le 2026-07-04 : `check-project.sh` vérifiait `AGENTS.md`/`CLAUDE.md` uniquement pour les types Code/Hybrid alors qu'ils sont posés partout depuis T-A.5 ; devenu universel. Nouvelle section qui avertit si `AGENTS.md`/`CLAUDE.md`/`.hermes.md`/`SOUL.md`/`.cursorrules` dépasse 20 000 caractères, limite de troncature par défaut d'Hermès Agent en usage mobile (`agents/hermes.md` documente la contrainte). Version portée à `0.4.0` (tag `v0.4.0` à poser, non poussé — dépôt privé, cf. DEC-0017). Voir DEC-0020.
+
+Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
 
 ## Décisions actées
 
@@ -40,8 +44,9 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- T-A.7 : mettre le repo méthode en conformité avec sa propre gouvernance (`PROJECT.md` racine créé, `PROGRESS.md` dégraissé, `docs/enforcement.md`/`lifecycle.md`/`governance.md` réalignés sur le comportement réel des scripts). Reste à vérifier avec `check-project.sh` une fois terminé.
+- Rien en cours activement. Phase A terminée (sauf T-A.2, reportée). Prochaine décision : Phase B, Phase C, ou Phase 6 (Projet Zeta).
 - Statut à trancher pour les plans en attente dans `PLAN/` (Company OS, SecondBrain PKB, Steward OS) : tâche T-C.11 du plan d'industrialisation.
+- Commits locaux non poussés sur `origin/main` (dépôt privé, publication reportée par DEC-0017) : à pousser quand décidé.
 
 ## Besoins Code identifiés (trois couches)
 
@@ -51,7 +56,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Problèmes ouverts / points de vigilance
 
-- `check-project.sh` lancé sur ce repo lui-même (dogfooding, T-A.7) signale 2 avertissements attendus, pas de vrais problèmes : le placeholder `<NomDuProjet>` dans les fichiers de `templates/` (il doit y rester, c'est leur rôle) et l'exemple `CHG-20260601-1430` dans `docs/NAMING-CONVENTIONS.md` (une illustration de format, pas une vraie citation). Le script n'est pas conçu pour distinguer un gabarit d'un projet généré ; à améliorer si ça devient gênant.
+- `check-project.sh` lancé sur ce repo lui-même (dogfooding, T-A.7) signale 3 avertissements attendus, pas de vrais problèmes : le placeholder `<NomDuProjet>` dans les fichiers de `templates/` (il doit y rester, c'est leur rôle), l'exemple `CHG-20260601-1430` dans `docs/NAMING-CONVENTIONS.md` (une illustration de format, pas une vraie citation), et `AGENTS.md manquant` (ce repo méthode n'a volontairement pas d'`AGENTS.md` généré depuis `templates/core/`, cf. `PROJECT.md` ; à traiter si le besoin Codex/Hermès se confirme sur ce repo précis, distinct des projets générés par `init-project.sh` qui en reçoivent un). Le script n'est pas conçu pour distinguer un gabarit d'un projet généré ; à améliorer si ça devient gênant.
 - Compatibilité des versions de stack : aucun outil ne la garantit. Valeur ajoutée à construire (gate `STACK_VALIDATION` avec vérification sourcée avant tout code).
 - Portabilité de la couche gouvernance vers Hermès : Hermès (Nous Research) est un agent autonome, pas Claude Code, donc il n'exécute pas Harness. Il consomme les fichiers Markdown. Il supporte MCP et agentskills.io : à terme, exposer skill assistant + règles via MCP partagé ou double skill pour qu'Hermès respecte les mêmes garde-fous. Reporté ROADMAP.
 - Lien NowStack à obtenir pour reproduire précisément l'approche qui a séduit l'utilisateur.
@@ -65,7 +70,7 @@ Détail dans `TASKS.md`. Vue macro :
 3. Phase 3 : skill assistant (le cœur). **Faite.**
 4. Phase 4 : hooks d'enforcement + script d'init. **Faite.**
 5. Phase 5 : intégration Harness + emprunts Spec Kit. **Faite.**
-6. Phase A : installation réelle par un agent. **T-A.1 à T-A.6 faites, T-A.7 en cours, T-A.8 restante.**
+6. Phase A : installation réelle par un agent. **Faite** (T-A.1, T-A.3 à T-A.8 ; T-A.2 reportée, dépôt reste privé).
 7. Phase B : méthode 2 (adoption d'un projet existant) + mise à jour de version. Non démarrée.
 8. Phase C : navigation 3 niveaux, RETEX, qualité générale. Non démarrée.
 9. Phase 6 : banc d'essai Projet Zeta.
