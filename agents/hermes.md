@@ -18,6 +18,14 @@ Un agent autonome, distinct de Claude Code. Il **n'exécute pas** Harness ni les
 - Mêmes règles de validation humaine que Claude Code sur les actions sensibles.
 - Il ne réorganise pas l'arborescence ni la stack sans validation.
 
+## Fichiers de contexte chargés et limite de troncature
+
+Hermès détecte et charge automatiquement plusieurs fichiers à la racine du projet : `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`. Ils sont injectés dans son prompt système, chacun tronqué par défaut à **20 000 caractères** (paramètre `context_file_max_chars`, configurable côté déploiement Hermès).
+
+Un `AGENTS.md` qui dépasse ce seuil est silencieusement coupé : en usage mobile (Hermès comme seul point d'accès, sans historique de conversation Claude Code pour compenser), la partie tronquée devient invisible à l'agent. `scripts/check-project.sh` avertit si `AGENTS.md`/`CLAUDE.md` (ou les autres fichiers listés ci-dessus, s'ils existent) dépassent ce seuil.
+
+Deux leviers si un projet approche la limite : dégraisser `AGENTS.md` (renvoyer vers `docs/` plutôt que dupliquer le contenu) ou relever `context_file_max_chars` côté configuration Hermès — ce dernier point échappe à ce repo, à documenter dans la config du VPS le jour où le besoin se confirme.
+
 ## Portabilité des garde-fous (ROADMAP, Phase 7)
 
 Hermès supporte **MCP** et **agentskills.io**. Deux pistes pour lui faire respecter les mêmes garde-fous que Claude Code :

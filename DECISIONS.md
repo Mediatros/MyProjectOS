@@ -19,6 +19,19 @@
 
 ---
 
+### DEC-0020 — Le check vérifie AGENTS.md/CLAUDE.md pour tous les types, et leur taille contre la limite de troncature Hermès
+
+- **Date** : 2026-07-04
+- **Contexte** : DEC-0019 (T-A.5) fait poser `AGENTS.md`/`CLAUDE.md` par `init-project.sh` pour tous les types de projet, mais `scripts/check-project.sh` ne vérifiait leur présence que dans la liste de l'extension Code (ligne réservée à `*Code*|*Hybrid*`) : un projet Core ou Life pur n'était jamais audité sur ce point, alors que le fichier est censé y être. Par ailleurs, l'utilisateur confirme (documentation officielle Hermès/Nous Research) qu'Hermès Agent charge `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md` et `.cursorrules` dans son prompt système, tronqués par défaut à 20 000 caractères (`context_file_max_chars`) — un risque concret en usage mobile où Hermès est le seul point d'accès au projet, sans conversation Claude Code pour compenser une troncature silencieuse.
+- **Options envisagées** :
+  - A. Ne rien changer : laisser le contrôle d'`AGENTS.md` dans la liste Code uniquement.
+  - B. Déplacer le contrôle de présence dans une section universelle (tous types), en avertissement (fichier non sacré) ; ajouter une section dédiée qui mesure la taille des fichiers de contexte agent et avertit au-delà de 20 000 caractères.
+  - C. Bloquer (fail) si `AGENTS.md` dépasse la limite, plutôt qu'avertir.
+- **Choix** : option B.
+- **Raison** : cohérent avec DEC-0019 (le fichier est censé exister partout, donc vérifiable partout) et avec la distinction déjà actée dans `docs/governance.md` (AGENTS.md/CLAUDE.md ne sont pas des fichiers sacrés → avertissement, pas blocage). C est rejetée : la taille tolérable dépend de la config Hermès du déploiement (`context_file_max_chars` est ajustable côté VPS), un dépassement n'est donc pas toujours une erreur.
+- **Conséquences** : `scripts/check-project.sh` gagne une section « Socle agent » (présence, tous types) et une section « Taille des fichiers de contexte agent » (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules` si présents, seuil 20 000 caractères, avertissement non bloquant). `agents/hermes.md` documente la liste des fichiers chargés par Hermès et la limite de troncature. Version portée à `0.4.0` (nouvelle capacité de contrôle = évolution mineure).
+- **Liens** : CHG-20260704-1200.
+
 ### DEC-0019 — AGENTS.md est un fichier Core, l'extension Code y ajoute une section
 
 - **Date** : 2026-07-02

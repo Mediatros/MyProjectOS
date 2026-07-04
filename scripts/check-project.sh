@@ -69,6 +69,16 @@ for f in PROJECT PROGRESS CHANGELOG TASKS DECISIONS; do
     if [ -f "$TARGET/$f.md" ]; then ok "$f.md"; else fail "$f.md manquant"; fi
 done
 
+# --- 1bis. Socle agent (AGENTS.md/CLAUDE.md), tous types ---------------------
+# Posés par init-project.sh pour Core/Life/Code/Hybrid (DEC-0019) : garantissent
+# que Codex et Hermès Agent (qui ne lisent pas la config Claude Code) trouvent
+# des instructions à la racine. Pas des fichiers sacrés (pas de registre), donc
+# avertissement plutôt que blocage.
+echo "Socle agent (AGENTS.md/CLAUDE.md) :"
+for f in AGENTS.md CLAUDE.md; do
+    if [ -f "$TARGET/$f" ]; then ok "$f"; else warn "$f manquant : Codex et Hermès Agent n'auront aucune instruction à la racine"; fi
+done
+
 # --- 2. Extensions selon le type ---------------------------------------------
 case "$TYPE" in
     *Life*|*Hybrid*)
@@ -81,7 +91,7 @@ esac
 case "$TYPE" in
     *Code*|*Hybrid*)
         echo "Extension Code :"
-        for f in AGENTS CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
+        for f in CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE; do
             if [ -f "$TARGET/$f.md" ]; then ok "$f.md"; else fail "$f.md manquant (type $TYPE)"; fi
         done
         ;;
@@ -185,6 +195,23 @@ if [ "${_lit_n:-0}" -gt 0 ]; then
 fi
 
 [ "$_bad_date" -eq 0 ] && ok "dates au format YYYY-MM-DD"
+
+# --- 7. Taille des fichiers de contexte agent (limite de troncature Hermès) --
+# Hermès Agent (Nous Research) charge AGENTS.md/CLAUDE.md/.hermes.md/SOUL.md/
+# .cursorrules dans son prompt système, tronqués par défaut à 20 000 caractères
+# (context_file_max_chars). Un fichier tronqué prive Hermès d'instructions en
+# usage mobile, sans historique de conversation pour compenser. Voir DEC-0020.
+echo "Taille des fichiers de contexte agent (limite Hermès) :"
+HERMES_MAX_CHARS=20000
+for f in AGENTS.md CLAUDE.md .hermes.md SOUL.md .cursorrules; do
+    [ -f "$TARGET/$f" ] || continue
+    _size=$(wc -c < "$TARGET/$f" | tr -d ' ')
+    if [ "$_size" -gt "$HERMES_MAX_CHARS" ]; then
+        warn "$f : $_size caractères (> $HERMES_MAX_CHARS) : Hermès Agent le tronque par défaut (context_file_max_chars)"
+    else
+        ok "$f : $_size caractères (sous la limite Hermès de $HERMES_MAX_CHARS)"
+    fi
+done
 
 # --- Bilan -------------------------------------------------------------------
 echo ""

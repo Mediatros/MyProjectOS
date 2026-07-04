@@ -17,11 +17,19 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.4.0** — 2026-07-04 — `check-project.sh` vérifie désormais `AGENTS.md`/`CLAUDE.md` pour tous les types de projet (plus seulement Code/Hybrid) et avertit si un fichier de contexte agent (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`) dépasse 20 000 caractères, seuil de troncature par défaut d'Hermès Agent. Voir CHG-20260704-1200.
 - **v0.3.0** — 2026-07-02 — Phase A du plan d'industrialisation (installation réelle par un agent) : `install.sh` en une commande, `init-project.sh --into-existing`/`--sync`, skill assistant installée à la création, `AGENTS.md`/`CLAUDE.md` posés pour tous les types (l'extension Code fusionne une section au lieu d'écraser), projet créé auto-vérifiable (`check-project.sh` + `VERSION` figée copiés), `LICENSE` MIT, repo méthode remis en conformité avec sa propre gouvernance. Voir CHG-20260702-1851.
 - **v0.2.0** — 2026-06-14 — le check vérifie désormais la conformité de contenu, pas seulement l'empreinte déclarée : `check-project.sh` détecte les dates au format français (`JJ/MM/AAAA`, mois en toutes lettres) et les champs datés du frontmatter hors `YYYY-MM-DD`. Permet de repérer un projet bâti sur l'ancienne convention de date.
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260704-1200 — Check AGENTS.md universel + garde-fou taille Hermès
+
+- `scripts/check-project.sh` : le contrôle de présence d'`AGENTS.md`/`CLAUDE.md` sort de la liste spécifique à l'extension Code et devient une section universelle (« Socle agent »), avertissement non bloquant, tous types de projet.
+- Nouvelle section « Taille des fichiers de contexte agent » : mesure `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules` (s'ils existent) et avertit au-delà de 20 000 caractères, seuil de troncature par défaut d'Hermès Agent (`context_file_max_chars`).
+- `agents/hermes.md` : nouvelle section documentant les fichiers de contexte chargés par Hermès et cette limite de troncature.
+- Version portée à `0.4.0` (nouvelle capacité de contrôle = évolution mineure). Voir DEC-0020.
 
 ### CHG-20260702-1851 — Phase A de l'industrialisation : installation réelle par un agent
 

@@ -2,8 +2,8 @@
 projet: MyProjectOS
 type: Core
 statut: en construction
-derniere_maj: 2026-07-02
-prochaine_action: Phase A terminée (sauf T-A.2, dépôt reporté). Décider la suite : Phase B (méthode 2 + mise à jour), Phase C (navigation 3 niveaux + qualité), ou banc d'essai Unjque (Phase 6). Voir `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
+derniere_maj: 2026-07-04
+prochaine_action: Phase A terminée (sauf T-A.2, dépôt reporté), plus T-A.9 (correctif check + garde-fou taille Hermès). Décider la suite : Phase B (méthode 2 + mise à jour), Phase C (navigation 3 niveaux + qualité), ou banc d'essai Unjque (Phase 6). Voir `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
 prochaine_echeance:
 ---
 
@@ -30,9 +30,13 @@ Concevoir et construire `MyProjectOS` : une méthodologie unifiée d'organisatio
 
 ## État actuel
 
-Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, `0.3.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
+Socle construit, Phases 1 à 5 terminées : templates Core + extensions Life/Code/Knowledge, skill assistant installable, hooks d'enforcement, intégration Harness + emprunts Spec Kit, outils de cohérence (`check-project.sh`, `build-index.sh`), versionnement de la méthode (`VERSION`, `0.4.0`). Détail et historique complet dans `CHANGELOG.md` ; raisons des choix dans `DECISIONS.md`.
 
-Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` terminée le 2026-07-02 (T-A.1, T-A.3 à T-A.8) : installation réelle en une commande (`install.sh`), `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable, repo méthode remis en conformité avec sa propre gouvernance, version portée à `0.3.0` (tag `v0.3.0` posé localement, **non poussé sur le remote**). T-A.2 reportée : le dépôt GitHub reste privé pour l'instant (DEC-0017), donc `install.sh` par `curl` ne fonctionnera pas depuis une machine tierce tant que ce n'est pas rouvert. Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
+Phase A du plan `PLAN/plans/2026-07-02-audit-industrialisation-methode.md` terminée le 2026-07-02 (T-A.1, T-A.3 à T-A.8) : installation réelle en une commande (`install.sh`), `LICENSE` MIT, skill installée à la création du projet, `AGENTS.md`/`CLAUDE.md` posés pour tous les types, projet créé auto-vérifiable, repo méthode remis en conformité avec sa propre gouvernance. T-A.2 reportée : le dépôt GitHub reste privé pour l'instant (DEC-0017), donc `install.sh` par `curl` ne fonctionnera pas depuis une machine tierce tant que ce n'est pas rouvert.
+
+T-A.9 ajoutée et terminée le 2026-07-04 : `check-project.sh` vérifiait `AGENTS.md`/`CLAUDE.md` uniquement pour les types Code/Hybrid alors qu'ils sont posés partout depuis T-A.5 ; devenu universel. Nouvelle section qui avertit si `AGENTS.md`/`CLAUDE.md`/`.hermes.md`/`SOUL.md`/`.cursorrules` dépasse 20 000 caractères, limite de troncature par défaut d'Hermès Agent en usage mobile (`agents/hermes.md` documente la contrainte). Version portée à `0.4.0` (tag `v0.4.0` à poser, non poussé — dépôt privé, cf. DEC-0017). Voir DEC-0020.
+
+Phases B (méthode 2 + mise à jour) et C (navigation 3 niveaux + qualité) transposées dans `TASKS.md`, non démarrées.
 
 ## Décisions actées
 
@@ -52,7 +56,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Problèmes ouverts / points de vigilance
 
-- `check-project.sh` lancé sur ce repo lui-même (dogfooding, T-A.7) signale 2 avertissements attendus, pas de vrais problèmes : le placeholder `<NomDuProjet>` dans les fichiers de `templates/` (il doit y rester, c'est leur rôle) et l'exemple `CHG-20260601-1430` dans `docs/NAMING-CONVENTIONS.md` (une illustration de format, pas une vraie citation). Le script n'est pas conçu pour distinguer un gabarit d'un projet généré ; à améliorer si ça devient gênant.
+- `check-project.sh` lancé sur ce repo lui-même (dogfooding, T-A.7) signale 3 avertissements attendus, pas de vrais problèmes : le placeholder `<NomDuProjet>` dans les fichiers de `templates/` (il doit y rester, c'est leur rôle), l'exemple `CHG-20260601-1430` dans `docs/NAMING-CONVENTIONS.md` (une illustration de format, pas une vraie citation), et `AGENTS.md manquant` (ce repo méthode n'a volontairement pas d'`AGENTS.md` généré depuis `templates/core/`, cf. `PROJECT.md` ; à traiter si le besoin Codex/Hermès se confirme sur ce repo précis, distinct des projets générés par `init-project.sh` qui en reçoivent un). Le script n'est pas conçu pour distinguer un gabarit d'un projet généré ; à améliorer si ça devient gênant.
 - Compatibilité des versions de stack : aucun outil ne la garantit. Valeur ajoutée à construire (gate `STACK_VALIDATION` avec vérification sourcée avant tout code).
 - Portabilité de la couche gouvernance vers Hermès : Hermès (Nous Research) est un agent autonome, pas Claude Code, donc il n'exécute pas Harness. Il consomme les fichiers Markdown. Il supporte MCP et agentskills.io : à terme, exposer skill assistant + règles via MCP partagé ou double skill pour qu'Hermès respecte les mêmes garde-fous. Reporté ROADMAP.
 - Lien NowStack à obtenir pour reproduire précisément l'approche qui a séduit l'utilisateur.
