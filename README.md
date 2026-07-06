@@ -53,7 +53,17 @@ sh /tmp/mpos/scripts/init-project.sh ~/MonProjet --life
 rm -rf /tmp/mpos
 ```
 
-Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer l'installation sur ce projet avec `--into-existing` : les hooks locaux sont réécrits, le contenu existant est préservé.
+## Mise à jour d'un projet
+
+Chaque projet embarque `scripts/check-update.sh` : il compare la version du projet à la dernière version publiée, liste les apports et les artefacts qui seraient remplacés, et n'applique jamais rien seul.
+
+```sh
+sh scripts/check-update.sh          # détecter et auditer
+curl -fsSL https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/install.sh \
+  | sh -s -- ~/MonProjet --update-method   # appliquer, après validation
+```
+
+`--update-method` ne remplace que les artefacts méthode listés dans `.myprojectos/manifest` (hooks, skill, scripts de vérification, empreinte de version), avec sauvegarde préalable dans `99_archive/`. Le contenu du projet n'est jamais touché. Détail : [docs/versioning.md](docs/versioning.md).
 
 ## Comment l'utiliser
 

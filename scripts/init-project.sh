@@ -1,8 +1,11 @@
 #!/bin/sh
 # init-project.sh — pose un nouveau projet MyProjectOS.
-# Usage : init-project.sh <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--sync]
+# Usage : init-project.sh <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--update-method] [--sync]
 #   (aucun flag = Core seul ; --life + --code = Hybrid ; --knowledge = extension documentaire transverse)
 #   --into-existing : greffe sur un projet déjà peuplé (ne pose que les fichiers manquants, n'écrase rien)
+#   --update-method : rafraîchit uniquement les artefacts méthode d'un projet existant (hooks, skill,
+#                     check-project.sh, check-update.sh, VERSION, empreinte version_methode), avec
+#                     sauvegarde préalable dans 99_archive/. Le contenu du projet n'est jamais touché.
 #   --sync          : met à jour la copie locale de MyProjectOS depuis GitHub avant de poser les fichiers
 # POSIX sh.
 
@@ -20,12 +23,14 @@ WANT_CODE=0
 WANT_KNOWLEDGE=0
 WANT_MERGE=0
 WANT_SYNC=0
+WANT_UPDATE=0
 for arg in "$@"; do
     case "$arg" in
         --life) WANT_LIFE=1 ;;
         --code) WANT_CODE=1 ;;
         --knowledge) WANT_KNOWLEDGE=1 ;;
         --into-existing|--merge) WANT_MERGE=1 ;;
+        --update-method) WANT_UPDATE=1 ;;
         --sync) WANT_SYNC=1 ;;
         -*) echo "Option inconnue : $arg" >&2; exit 1 ;;
         *) TARGET=$arg ;;
@@ -33,7 +38,7 @@ for arg in "$@"; do
 done
 
 if [ -z "$TARGET" ]; then
-    echo "Usage : $0 <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--sync]" >&2
+    echo "Usage : $0 <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--update-method] [--sync]" >&2
     exit 1
 fi
 
@@ -49,9 +54,10 @@ fi
 
 NAME=$(basename -- "$TARGET")
 
-if [ "$WANT_MERGE" -eq 0 ] && [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
+if [ "$WANT_MERGE" -eq 0 ] && [ "$WANT_UPDATE" -eq 0 ] && [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
     echo "Le dossier '$TARGET' existe déjà et n'est pas vide. Arrêt par sécurité." >&2
     echo "Pour greffer MyProjectOS sur un projet existant, relance avec --into-existing." >&2
+    echo "Pour rafraîchir les artefacts méthode d'un projet déjà créé, relance avec --update-method." >&2
     exit 1
 fi
 
@@ -64,6 +70,83 @@ if [ "$WANT_SYNC" -eq 1 ]; then
     else
         echo "  pull impossible (réseau, auth ou modifs locales) : on continue avec la copie locale telle quelle." >&2
     fi
+fi
+
+# --- Artefacts méthode et manifest --------------------------------------------
+# Le manifest liste les fichiers qui appartiennent à la méthode (remplaçables par
+# --update-method), par opposition au contenu du projet (jamais touché).
+MANIFEST_REL=".myprojectos/manifest"
+ARTEFACTS=".claude/hooks/_lib.sh
+.claude/hooks/hook-pre-write.sh
+.claude/hooks/hook-stop-progress.sh
+.claude/skills/my-project-os/SKILL.md
+scripts/check-project.sh
+scripts/check-update.sh
+VERSION"
+
+write_manifest() {
+    mkdir -p "$TARGET/.myprojectos"
+    {
+        printf '%s\n' "# Manifest MyProjectOS : artefacts posés par la méthode, remplacés par init-project.sh --update-method."
+        printf '%s\n' "# Ne pas éditer à la main. Le contenu du projet n'est jamais listé ici."
+        printf 'version=%s\n' "$OS_VERSION"
+        printf '%s\n' "$ARTEFACTS"
+    } > "$TARGET/$MANIFEST_REL"
+}
+
+artefact_source() {
+    # artefact_source <chemin-relatif-projet> : chemin du fichier source dans le repo méthode.
+    case "$1" in
+        .claude/hooks/*) printf '%s' "$REPO/scripts/hooks/${1##*/}" ;;
+        .claude/skills/my-project-os/SKILL.md) printf '%s' "$REPO/skills/my-project-os/SKILL.md" ;;
+        scripts/check-project.sh) printf '%s' "$REPO/scripts/check-project.sh" ;;
+        scripts/check-update.sh) printf '%s' "$REPO/scripts/check-update.sh" ;;
+        VERSION) printf '%s' "$REPO/VERSION" ;;
+    esac
+}
+
+# --- Mode mise à jour : rafraîchir les artefacts méthode, rien d'autre ---------
+if [ "$WANT_UPDATE" -eq 1 ]; then
+    if [ ! -f "$TARGET/PROJECT.md" ]; then
+        echo "Pas de PROJECT.md dans '$TARGET' : --update-method s'applique à un projet MyProjectOS existant." >&2
+        exit 1
+    fi
+    OLD=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
+    [ -n "$OLD" ] && [ "$OLD" != "<VERSION>" ] || OLD="inconnue"
+    BACKUP_REL="99_archive/methode-avant-v$OLD"
+    echo "Mise à jour des artefacts méthode : v$OLD -> v$OS_VERSION"
+    echo "Sauvegarde des artefacts remplacés dans $BACKUP_REL/ :"
+    while IFS= read -r _a; do
+        [ -n "$_a" ] || continue
+        if [ -f "$TARGET/$_a" ]; then
+            mkdir -p "$TARGET/$BACKUP_REL/$(dirname -- "$_a")"
+            cp "$TARGET/$_a" "$TARGET/$BACKUP_REL/$_a"
+            echo "  > $_a"
+        fi
+    done <<EOF_BACKUP
+$ARTEFACTS
+EOF_BACKUP
+    echo "Artefacts rafraîchis :"
+    while IFS= read -r _a; do
+        [ -n "$_a" ] || continue
+        _srcf=$(artefact_source "$_a")
+        [ -f "$_srcf" ] || continue
+        mkdir -p "$TARGET/$(dirname -- "$_a")"
+        cp "$_srcf" "$TARGET/$_a"
+        case "$_a" in *.sh) chmod +x "$TARGET/$_a" ;; esac
+        echo "  ~ $_a"
+    done <<EOF_REFRESH
+$ARTEFACTS
+EOF_REFRESH
+    sed "s#^version_methode:.*#version_methode: $OS_VERSION#" "$TARGET/PROJECT.md" > "$TARGET/PROJECT.md.tmp" \
+        && mv "$TARGET/PROJECT.md.tmp" "$TARGET/PROJECT.md"
+    write_manifest
+    echo "  ~ PROJECT.md (version_methode: $OS_VERSION) + $MANIFEST_REL"
+    echo ""
+    echo "Fait. Aucun fichier de contenu touché. À faire ensuite :"
+    echo "  1. consigner la migration dans le CHANGELOG.md du projet (entrée CHG-) ;"
+    echo "  2. lancer sh scripts/check-project.sh pour vérifier la cohérence."
+    exit 0
 fi
 
 # --- Substitution portable (sans sed -i) -------------------------------------
@@ -198,16 +281,29 @@ echo "  + 00_inbox/ (les autres dossiers numérotés se créent à la demande)"
 # --- Auto-vérification, sans dépendre du repo MyProjectOS --------------------
 # check-project.sh lit VERSION à côté de lui (dirname/..) : les deux sont copiés
 # ensemble pour que le projet reste vérifiable même si MyProjectOS a disparu
-# (install.sh en mode jetable). VERSION est une empreinte figée à la création :
-# la comparaison à la dernière version publiée est le rôle de check-update.sh (T-B.5).
-if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/scripts/check-project.sh" ]; then
-    echo "  = scripts/check-project.sh (déjà présent, conservé)"
+# (install.sh en mode jetable). VERSION est une empreinte figée à la création ;
+# check-update.sh compare cette empreinte à la dernière version publiée.
+mkdir -p "$TARGET/scripts"
+for _s in check-project.sh check-update.sh; do
+    if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/scripts/$_s" ]; then
+        echo "  = scripts/$_s (déjà présent, conservé ; --update-method pour rafraîchir)"
+    else
+        cp "$REPO/scripts/$_s" "$TARGET/scripts/$_s"
+        chmod +x "$TARGET/scripts/$_s"
+        echo "  + scripts/$_s"
+    fi
+done
+if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/VERSION" ]; then
+    echo "  = VERSION (déjà présente, conservée)"
 else
-    mkdir -p "$TARGET/scripts"
-    cp "$REPO/scripts/check-project.sh" "$TARGET/scripts/check-project.sh"
-    chmod +x "$TARGET/scripts/check-project.sh"
     printf '%s\n' "$OS_VERSION" > "$TARGET/VERSION"
-    echo "  + scripts/check-project.sh + VERSION (empreinte $OS_VERSION, projet auto-vérifiable)"
+    echo "  + VERSION (empreinte $OS_VERSION, projet auto-vérifiable)"
+fi
+if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/$MANIFEST_REL" ]; then
+    echo "  = $MANIFEST_REL (déjà présent, conservé)"
+else
+    write_manifest
+    echo "  + $MANIFEST_REL (liste des artefacts méthode, base de --update-method)"
 fi
 
 # --- Câblage des hooks -------------------------------------------------------

@@ -61,7 +61,7 @@ Le projet reste autonome, insensible à un déplacement ou à la disparition du 
 
 Si le projet a déjà un `.claude/settings.json`, le script fusionne ce bloc dedans (via `python3`, sans écraser la config existante) au lieu de l'écraser. Sans `python3`, il affiche le bloc à fusionner à la main.
 
-Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer `init-project.sh --into-existing` : les hooks locaux sont réécrits, le contenu du projet est préservé.
+Pour mettre à jour les hooks (et tous les autres artefacts méthode : skill, `check-project.sh`, `check-update.sh`, `VERSION`) d'un projet après une évolution de la méthode, utiliser `init-project.sh --update-method` : les artefacts sont sauvegardés dans `99_archive/methode-avant-vX.Y.Z/` puis remplacés, le contenu du projet n'est jamais touché. `--into-existing` reste le mode « greffe » : il ne pose que les fichiers manquants et n'écrase rien.
 
 ## Vérification à la demande — `scripts/check-project.sh`
 
