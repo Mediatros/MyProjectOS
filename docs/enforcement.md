@@ -35,6 +35,7 @@ Les règles vraiment non négociables vivent dans la couche hooks.
   - espaces dans le nom de fichier ;
   - accents ou caractères non-ASCII dans le nom de fichier.
 - L'usage des minuscules pour les fichiers non sacrés reste une convention portée par la skill et la doc (trop de cas légitimes en majuscules pour bloquer).
+- **Limite assumée** : le hook ne couvre que l'outil `Write` de Claude Code. Un fichier créé par `Edit`, par une commande shell (`cp`, `mv`, redirection) ou par un autre agent échappe au contrôle en temps réel ; c'est `check-project.sh` (contrôle à la demande) qui rattrape ces cas. Étendre le matcher à `Edit` bloquerait la modification de fichiers existants mal nommés, ce qu'on ne veut pas.
 
 ### 3. Placement — `hook-pre-write.sh` (même hook)
 - **Bloque** le cas évident : un document ou fichier binaire (`.pdf`, `.png`, `.eml`, `.docx`, `.xlsx`, `.zip`...) écrit directement à la racine du projet au lieu de `00_inbox/` ou d'un dossier numéroté.

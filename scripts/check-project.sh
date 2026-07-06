@@ -135,8 +135,13 @@ fi
 echo "Substitution des gabarits :"
 PH=$(grep -rl "<NomDuProjet>" "$TARGET" --include="*.md" 2>/dev/null)
 if [ -n "$PH" ]; then
-    printf '%s\n' "$PH" | while IFS= read -r p; do warn "placeholder <NomDuProjet> dans ${p#"$TARGET"/}"; done
-    WARNS=$((WARNS + 1))
+    # Boucle sans pipe : le compteur WARNS doit s'incrémenter dans le shell courant.
+    while IFS= read -r p; do
+        [ -n "$p" ] || continue
+        warn "placeholder <NomDuProjet> dans ${p#"$TARGET"/}"
+    done <<EOF_PH
+$PH
+EOF_PH
 else
     ok "aucun <NomDuProjet> résiduel"
 fi

@@ -18,8 +18,11 @@ git -C "$PROJECT_DIR" rev-parse --git-dir >/dev/null 2>&1 || exit 0
 CHANGES=$(git -C "$PROJECT_DIR" status --porcelain 2>/dev/null)
 [ -n "$CHANGES" ] || exit 0
 
-# PROGRESS.md fait-il partie des fichiers touchés ?
-if printf '%s\n' "$CHANGES" | grep -q 'PROGRESS\.md$'; then
+# PROGRESS.md à la racine fait-il partie des fichiers touchés ?
+# Format porcelain : deux caractères de statut, un espace, puis le chemin.
+# On exige le chemin exact "PROGRESS.md" (racine) pour ne pas être satisfait
+# par un templates/core/PROGRESS.md ou autre copie dans un sous-dossier.
+if printf '%s\n' "$CHANGES" | grep -qE '^.. PROGRESS\.md$|-> PROGRESS\.md$'; then
     exit 0
 fi
 
