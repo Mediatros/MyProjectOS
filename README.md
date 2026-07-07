@@ -36,6 +36,8 @@ Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré da
 
 ## Installation
 
+**Vous êtes un agent ?** Le protocole complet (création sur dossier vierge, adoption d'un projet existant) est écrit pour vous : [docs/INSTALL-AGENT.md](docs/INSTALL-AGENT.md).
+
 Une seule commande, à partir du lien du dépôt. Le dépôt est cloné dans un dossier temporaire, le projet est posé, puis le clone est supprimé. **Le projet final est autonome** : les hooks d'enforcement sont copiés dans son `.claude/hooks/` et ne dépendent plus de l'emplacement de MyProjectOS.
 
 ```sh
@@ -53,7 +55,17 @@ sh /tmp/mpos/scripts/init-project.sh ~/MonProjet --life
 rm -rf /tmp/mpos
 ```
 
-Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer l'installation sur ce projet avec `--into-existing` : les hooks locaux sont réécrits, le contenu existant est préservé.
+## Mise à jour d'un projet
+
+Chaque projet embarque `scripts/check-update.sh` : il compare la version du projet à la dernière version publiée, liste les apports et les artefacts qui seraient remplacés, et n'applique jamais rien seul.
+
+```sh
+sh scripts/check-update.sh          # détecter et auditer
+curl -fsSL https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/install.sh \
+  | sh -s -- ~/MonProjet --update-method   # appliquer, après validation
+```
+
+`--update-method` ne remplace que les artefacts méthode listés dans `.myprojectos/manifest` (hooks, skill, scripts de vérification, empreinte de version), avec sauvegarde préalable dans `99_archive/`. Le contenu du projet n'est jamais touché. Détail : [docs/versioning.md](docs/versioning.md).
 
 ## Comment l'utiliser
 
@@ -87,7 +99,9 @@ MyProjectOS/
 - [Principes](docs/principles.md) — les règles qui tranchent les arbitrages.
 - [Gouvernance](docs/governance.md) — qui met à jour quoi, quand, et ce qui exige une validation humaine.
 - [Cycle de vie](docs/lifecycle.md) — de la création à l'archivage.
-- [Versionnement](docs/versioning.md) — comment la méthode se numérote et comment un projet sait s'il est à jour.
+- [Cycle de travail](docs/cycle-de-travail.md) — une tâche par itération, clôture, contexte vidé, reprise à froid.
+- [Installation par un agent](docs/INSTALL-AGENT.md) — création sur dossier vierge ou adoption d'un projet existant.
+- [Versionnement](docs/versioning.md) — comment la méthode se numérote, se met à jour dans les projets, et comment publier une release.
 - [Conventions de nommage](docs/NAMING-CONVENTIONS.md) — fichiers, dossiers, identifiants.
 - [Glossaire](docs/glossary.md) — le vocabulaire commun.
 

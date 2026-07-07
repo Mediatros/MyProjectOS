@@ -1,4 +1,4 @@
-# AGENTS.md — <NomDuProjet>
+# AGENTS.md — life-copropriete
 
 > Instructions d'opération pour les agents (Claude Code, Codex, Hermès, futurs agents) sur ce projet.
 > Fichier lu nativement par Codex. Claude Code le lit via le renvoi posé dans `CLAUDE.md`.

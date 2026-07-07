@@ -69,10 +69,50 @@ Le projet sait ainsi sur quelle version de la méthode il est né. Cette emprein
 
 Le check informe, il ne migre rien et ne bloque rien. La mise à jour d'un projet vers une version plus récente reste une décision humaine.
 
+## La détection de mise à jour : `check-update.sh`
+
+`check-project.sh` compare le projet à sa copie locale de la méthode ; `check-update.sh` (copié lui aussi dans chaque projet) compare le projet à la **dernière version publiée** sur GitHub. Il lit `version_methode`, interroge le dépôt distant (fichier `VERSION` brut, ou tags `vX.Y.Z` en repli), puis :
+
+- affiche les apports de chaque version plus récente (section « Releases » du CHANGELOG distant) ;
+- liste les artefacts méthode locaux qui seraient remplacés (d'après `.myprojectos/manifest`) ;
+- indique la commande d'application.
+
+Il n'applique jamais rien lui-même. Codes de sortie : `0` à jour, `10` mise à jour disponible, `1` erreur.
+
+## Le manifest des artefacts méthode
+
+`init-project.sh` pose `.myprojectos/manifest` dans chaque projet : la liste des fichiers qui appartiennent à la **méthode** (hooks, skill, `check-project.sh`, `check-update.sh`, `VERSION`) avec la version d'origine. Cette frontière est déterministe : une mise à jour ne remplace que les fichiers du manifest, jamais le contenu du projet (fichiers sacrés, documents, code).
+
+## Runbook : mettre à jour un projet
+
+1. **Détecter** : `sh scripts/check-update.sh` depuis la racine du projet.
+2. **Auditer** : lire ce que les nouvelles versions apportent et la liste des artefacts qui seront remplacés. En cas de saut MAJEUR, lire aussi le `CHANGELOG.md` du dépôt méthode (les ruptures y sont détaillées).
+3. **Valider** : décision humaine. Rien ne s'applique sans elle.
+4. **Appliquer** :
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/install.sh \
+     | sh -s -- <chemin-projet> --update-method
+   # ou, depuis un clone local du repo méthode :
+   sh <REPO>/scripts/init-project.sh <chemin-projet> --update-method
+   ```
+   Les anciens artefacts sont sauvegardés dans `99_archive/methode-avant-vX.Y.Z/` avant remplacement ; l'empreinte `version_methode` et le manifest sont mis à jour.
+5. **Vérifier** : `sh scripts/check-project.sh` doit rester sans bloquant.
+6. **Consigner** : entrée `CHG-` dans le `CHANGELOG.md` du projet (« migration méthode vX.Y.Z → vX.Y.Z »).
+
+## Runbook : migrer un projet né avant le versionnement
+
+Pour un projet sans empreinte `version_methode` (signalé par les deux checks) :
+
+1. Lancer `sh <REPO>/scripts/check-project.sh <chemin-projet>` et corriger les écarts de structure signalés (fichiers sacrés manquants, dates hors format).
+2. Greffer les fichiers manquants sans rien écraser : `init-project.sh <chemin-projet> --into-existing` (+ flags d'extension du projet).
+3. Passer en artefacts courants : `init-project.sh <chemin-projet> --update-method` (pose aussi `version_methode` et le manifest).
+4. Consigner la migration dans le `CHANGELOG.md` du projet, relancer le check.
+
 ## Procédure pour publier une nouvelle version
 
 1. Décider la partie à incrémenter (MAJEUR / MINEUR / CORRECTIF) selon la règle ci-dessus.
 2. Écrire le nouveau numéro dans `VERSION`.
-3. Ajouter une entrée datée dans `CHANGELOG.md` (`CHG-`) et une ligne dans la section « Releases ».
+3. Ajouter une entrée datée dans `CHANGELOG.md` (`CHG-`) et une ligne dans la section « Releases » (c'est elle que `check-update.sh` montre aux projets).
 4. Si le choix est structurant, le consigner dans `DECISIONS.md` (`DEC-`).
-5. Commiter, puis `git tag vX.Y.Z`.
+5. Commiter, poser le tag `git tag vX.Y.Z`, pousser (`git push && git push origin vX.Y.Z`).
+6. Créer la release GitHub associée : `gh release create vX.Y.Z --title "..." --notes "..."` (mêmes apports que la ligne Releases).

@@ -13,7 +13,7 @@ if [ ! -d "$ROOT" ]; then
     echo "Dossier introuvable : $ROOT" >&2
     exit 1
 fi
-ROOT=$(CDPATH= cd -- "$ROOT" && pwd)
+ROOT=$(CDPATH='' cd -- "$ROOT" && pwd)
 OUT="$ROOT/INDEX.md"
 
 # fm_field <fichier> <clé> : valeur d'un champ du frontmatter YAML (entre les --- ).

@@ -43,7 +43,7 @@
 But : qu'un agent qui reçoit le lien du repo puisse réellement installer la méthode, sur un projet vierge, pour Claude Code au minimum. Détail : un plan interne.
 
 - [x] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`). `anatomy.md` passé en `.gitignore` (généré par le hook Stop) ; `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md` déplacé vers `PLAN/` (document de travail).
-- [ ] **T-A.2** Publier le dépôt ou documenter un accès authentifié. **Décision actée le 2026-07-02 : le dépôt reste privé pour l'instant, publication reportée.**
+- [ ] **T-A.2** Publier le dépôt (`gh repo edit Mediatros/MyProjectOS --visibility public`). **Réactivée le 2026-07-07 (DEC-0021) : tout est conçu pour le public, la CI sert de filet ; dernier geste humain, idéalement avec le push de la release v0.5.0.**
 - [x] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
 - [x] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md` dans `.claude/skills/my-project-os/`).
 - [x] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus. L'extension Code ajoute une section « Extension Code » dans le même fichier (fusion idempotente) au lieu d'un fichier séparé.
@@ -53,30 +53,30 @@ But : qu'un agent qui reçoit le lien du repo puisse réellement installer la m�
 - [x] **T-A.9** Corriger `check-project.sh` : le contrôle d'`AGENTS.md`/`CLAUDE.md` (DEC-0019) était limité aux types Code/Hybrid, alors que ces fichiers sont posés pour tous les types depuis T-A.5. Devenu universel + nouvelle section qui avertit si `AGENTS.md`/`CLAUDE.md`/`.hermes.md`/`SOUL.md`/`.cursorrules` dépasse 20 000 caractères (limite de troncature par défaut d'Hermès Agent). `agents/hermes.md` documente la contrainte. Version portée à `0.4.0`. Voir DEC-0020.
 
 ### Phase B — Méthode 2 (adoption d'un projet existant) et mise à jour de la méthode
-But : couvrir l'adoption d'un projet déjà peuplé et boucler la détection de mise à jour. Détail : un plan interne. Non démarrée, dépend de la Phase A.
+But : couvrir l'adoption d'un projet déjà peuplé et boucler la détection de mise à jour. **Terminée le 2026-07-07 (v0.5.0, CHG-20260707-1100), sauf T-B.7.** Reprise par un plan interne (phases D/E/F).
 
-- [ ] **T-B.1** Écrire `docs/INSTALL-AGENT.md` (protocole d'adoption, branche de décision méthode 1 / méthode 2).
-- [ ] **T-B.2** Définir la méthode 2 pas à pas (inventaire, classification, mapping, validation humaine, exécution, rapport).
-- [ ] **T-B.3** Remplissage assisté des fichiers sacrés en méthode 2, soumis à relecture humaine.
-- [ ] **T-B.4** Ajouter le mode « adoption » à `skills/my-project-os/SKILL.md`.
-- [ ] **T-B.5** Script de vérification de version distante (`check-update.sh`).
-- [ ] **T-B.6** Runbook de migration de version dans `docs/versioning.md`.
-- [ ] **T-B.7** Mode « revue documentaire » périodique de la skill.
+- [x] **T-B.1** `docs/INSTALL-AGENT.md` écrit (protocole agent, branche méthode 1 / méthode 2 / mise à jour / migration).
+- [x] **T-B.2** Méthode 2 définie pas à pas (inventaire, classification, mapping, validation humaine, exécution, rapport) dans `docs/INSTALL-AGENT.md`.
+- [x] **T-B.3** Remplissage assisté des fichiers sacrés en méthode 2 (marqué « à confirmer », relecture humaine) dans le protocole et le mode 6 de la skill.
+- [x] **T-B.4** Mode « adoption » ajouté à la skill (mode 6).
+- [x] **T-B.5** `scripts/check-update.sh` écrit et copié dans chaque projet (sortie 0/10/1, apports par version, artefacts remplacés). Complété par le manifest `.myprojectos/manifest` et `init-project.sh --update-method` (DEC-0022).
+- [x] **T-B.6** Runbooks de migration dans `docs/versioning.md` (mise à jour d'un projet, migration d'un projet né avant le versionnement, publication d'une release).
+- [ ] **T-B.7** Mode « revue documentaire » périodique de la skill (état condensé + questions fermées de confirmation, déclenchable à la main ou en routine mensuelle).
 
 ### Phase C — Navigation à trois niveaux, RETEX et qualité générale
-But : navigation progressive fiable et outillée, retours terrain intégrés, repo à niveau de qualité industrielle. Détail : un plan interne. Non démarrée, dépend de la Phase A.
+But : navigation progressive fiable et outillée, retours terrain intégrés, repo à niveau de qualité industrielle. **Terminée le 2026-07-07 (v0.5.0, CHG-20260707-1100), sauf T-C.11.**
 
-- [ ] **T-C.1** Frontmatter standard des documents Knowledge (niveau, domaine parent, dépendances, résumé, dernière mise à jour).
-- [ ] **T-C.2** Convention de nommage liant les niveaux 2 et 3 (`docs/NAMING-CONVENTIONS.md`).
-- [ ] **T-C.3** Budgets de taille par niveau, contrôle en avertissement dans `check-project.sh`.
-- [ ] **T-C.4** Détection d'orphelins et de liens cassés dans `docs/INDEX.md`.
-- [ ] **T-C.5** Intégrer le RETEX Projet Delta (`SUJETS.md`, source fraîche prioritaire, skills multi-agents).
-- [ ] **T-C.6** Étendre `check-project.sh` pour Knowledge dense (présence/validité de `SUJETS.md`).
-- [ ] **T-C.7** Élargir la couverture des hooks (`Edit`/commandes shell) et corriger le faux négatif du hook Stop.
-- [ ] **T-C.8** Corriger le bug de comptage des `WARNS` dans `check-project.sh` (sous-shell du pipe).
-- [ ] **T-C.9** Créer au moins un exemple Life et un exemple Code dans `examples/`.
-- [ ] **T-C.10** CI minimale (`shellcheck`, tests de fumée) en GitHub Actions.
-- [ ] **T-C.11** Statuer sur les plans en attente (Company OS, SecondBrain PKB, Steward OS) : intégration ou archivage.
+- [x] **T-C.1** Frontmatter standard des documents Knowledge documenté dans `kb_governance.md` (niveau, domaine, résumé, dépendances, dernière maj).
+- [x] **T-C.2** Convention de nommage liant les niveaux 2 et 3 (`<domaine>--<sujet>.md`) dans `docs/NAMING-CONVENTIONS.md`.
+- [x] **T-C.3** Budgets de taille par niveau (niveau 1 ≤ 200 lignes, niveau 2 ≤ 300), contrôle en avertissement dans `check-project.sh`.
+- [x] **T-C.4** Détection d'orphelins et de liens cassés autour de `docs/INDEX.md` dans `check-project.sh`.
+- [x] **T-C.5** RETEX Projet Delta intégré : template `SUJETS.md` racine posé par `--knowledge`, source fraîche prioritaire dans `kb_governance.md`, skills par agent dans `templates/core/AGENTS.md` (DEC-0024).
+- [x] **T-C.6** `check-project.sh` vérifie `SUJETS.md` quand Knowledge est actif (présence, gabarit non rempli).
+- [x] **T-C.7** Faux négatif du hook Stop corrigé (chemin racine exigé) ; couverture du hook pre-write limitée à `Write` documentée comme limite assumée dans `docs/enforcement.md` (rattrapée par `check-project.sh`).
+- [x] **T-C.8** Bug de comptage des `WARNS` corrigé (boucle sans sous-shell).
+- [x] **T-C.9** Exemples complets `examples/life-copropriete/` et `examples/code-site-vitrine/` + `examples/README.md`.
+- [x] **T-C.10** CI GitHub Actions : `shellcheck -S warning` + tests de fumée (création, greffe idempotente, scénario de mise à jour complet, dogfooding).
+- [ ] **T-C.11** Statuer sur les plans en attente (Company OS, SecondBrain PKB, Steward OS) : intégration ou archivage. Décision humaine.
 
 ### Phase 6 — Banc d'essai Projet Zeta
 But : valider la méthode sur un vrai projet.

@@ -3,7 +3,7 @@
 #
 # Usage (depuis le lien GitHub, rien à cloner à la main) :
 #   curl -fsSL https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/install.sh \
-#     | sh -s -- <chemin-projet> [--life] [--code] [--knowledge] [--into-existing]
+#     | sh -s -- <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--update-method]
 #
 # Usage (copie locale du script) :
 #   sh install.sh <chemin-projet> [flags]
@@ -24,7 +24,7 @@ REPO_URL="${MYPROJECTOS_REPO_URL:-https://github.com/Mediatros/MyProjectOS.git}"
 REPO_REF="${MYPROJECTOS_REF:-main}"
 
 if [ "$#" -eq 0 ]; then
-    echo "Usage : install.sh <chemin-projet> [--life] [--code] [--knowledge] [--into-existing]" >&2
+    echo "Usage : install.sh <chemin-projet> [--life] [--code] [--knowledge] [--into-existing] [--update-method]" >&2
     exit 1
 fi
 

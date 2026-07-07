@@ -4,6 +4,7 @@
 
 ## Lire d'abord
 
+- `../SUJETS.md` — routeur métier : pour une demande métier, le lire **avant** ce fichier.
 - `../PROJECT.md` — identité, objectif, périmètre.
 - `../PROGRESS.md` — état actuel et prochaine action.
 - `../TASKS.md` — file d'actions.

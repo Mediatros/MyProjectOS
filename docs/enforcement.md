@@ -35,6 +35,7 @@ Les règles vraiment non négociables vivent dans la couche hooks.
   - espaces dans le nom de fichier ;
   - accents ou caractères non-ASCII dans le nom de fichier.
 - L'usage des minuscules pour les fichiers non sacrés reste une convention portée par la skill et la doc (trop de cas légitimes en majuscules pour bloquer).
+- **Limite assumée** : le hook ne couvre que l'outil `Write` de Claude Code. Un fichier créé par `Edit`, par une commande shell (`cp`, `mv`, redirection) ou par un autre agent échappe au contrôle en temps réel ; c'est `check-project.sh` (contrôle à la demande) qui rattrape ces cas. Étendre le matcher à `Edit` bloquerait la modification de fichiers existants mal nommés, ce qu'on ne veut pas.
 
 ### 3. Placement — `hook-pre-write.sh` (même hook)
 - **Bloque** le cas évident : un document ou fichier binaire (`.pdf`, `.png`, `.eml`, `.docx`, `.xlsx`, `.zip`...) écrit directement à la racine du projet au lieu de `00_inbox/` ou d'un dossier numéroté.
@@ -60,7 +61,7 @@ Le projet reste autonome, insensible à un déplacement ou à la disparition du 
 
 Si le projet a déjà un `.claude/settings.json`, le script fusionne ce bloc dedans (via `python3`, sans écraser la config existante) au lieu de l'écraser. Sans `python3`, il affiche le bloc à fusionner à la main.
 
-Pour mettre à jour les hooks d'un projet après une évolution de la méthode, relancer `init-project.sh --into-existing` : les hooks locaux sont réécrits, le contenu du projet est préservé.
+Pour mettre à jour les hooks (et tous les autres artefacts méthode : skill, `check-project.sh`, `check-update.sh`, `VERSION`) d'un projet après une évolution de la méthode, utiliser `init-project.sh --update-method` : les artefacts sont sauvegardés dans `99_archive/methode-avant-vX.Y.Z/` puis remplacés, le contenu du projet n'est jamais touché. `--into-existing` reste le mode « greffe » : il ne pose que les fichiers manquants et n'écrase rien.
 
 ## Vérification à la demande — `scripts/check-project.sh`
 
@@ -76,7 +77,7 @@ Il signale, sans rien modifier :
 - **alignement de version** : l'empreinte `version_methode` du projet comparée à `VERSION` ;
 - **fichiers sacrés** manquants (Core, puis extensions Life / Code / Knowledge selon le `type:` déclaré dans `PROJECT.md`) ;
 - **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
-- **placeholders** non substitués (`<NomDuProjet>`) ;
+- **placeholders** de gabarit non substitués (nom du projet resté en balise) ;
 - **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
 - **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`.
 

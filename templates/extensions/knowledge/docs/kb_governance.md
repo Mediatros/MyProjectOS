@@ -12,6 +12,39 @@ La source de vérité reste Markdown : fichiers sacrés Core + documentation act
 
 Les indexes, graphes, captures, exports et outils comme Understand-Anything sont reconstructibles ou complémentaires. Ils ne remplacent pas les fichiers Markdown validés.
 
+## SUJETS.md — le routeur métier
+
+`docs/INDEX.md` décrit la carte documentaire ; il ne parle pas le vocabulaire de l'utilisateur. `SUJETS.md`, à la racine du projet, fait ce lien : alias utilisateur → sujet canonique → ordre de lecture → dépendances → preuves et décisions liées.
+
+Règles :
+
+- Pour une demande **métier ou ambiguë**, l'agent lit `SUJETS.md` **avant** `docs/INDEX.md`.
+- Chaque sujet déclare sa **source fraîche prioritaire** : le fichier qui fait foi (export, budget, registre), souvent plus récent que la synthèse de domaine. L'agent ne répond jamais depuis une synthèse sans avoir vérifié la source fraîche déclarée.
+- Quand une synthèse diverge de sa source fraîche, on réaligne la synthèse et on le note dans `CHANGELOG.md`.
+
+## Frontmatter standard des documents
+
+Chaque document de `01_global/`, `02_domains/` et `03_details/` porte un en-tête qui permet à l'agent de savoir, depuis l'index, ce qu'il trouvera en descendant, sans charger le contenu :
+
+```yaml
+---
+niveau: 2
+domaine: <domaine parent — niveaux 2 et 3>
+resume: <une ligne : ce que couvre ce document>
+depend_de: <documents ou sujets amont>
+alimente: <documents ou sujets aval>
+derniere_maj: YYYY-MM-DD
+---
+```
+
+## Budgets de taille
+
+Seuils indicatifs, contrôlés en avertissement par `check-project.sh` :
+
+- un document de **niveau 1** (`01_global/`) dépasse rarement **200 lignes** : au-delà, scinder vers un domaine ;
+- un document de **niveau 2** (`02_domains/`) dépasse rarement **300 lignes** : au-delà, extraire les détails vers le niveau 3 ;
+- le niveau 3 est libre, mais un détail qui grossit se découpe par sujet (`<domaine>--<sujet>.md`, voir `docs/NAMING-CONVENTIONS.md` du repo méthode).
+
 ## Niveaux documentaires
 
 ```text

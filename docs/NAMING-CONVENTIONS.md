@@ -41,6 +41,18 @@ Identifiants stables, jamais réutilisés ni renumérotés.
 - `P-` : chaque preuve relie une affirmation à un document source unique.
 - Les références croisées citent l'identifiant : « voir DEC-0007 », « source P-0042 ».
 
+## Documents Knowledge (niveaux 2 et 3)
+
+Le lien entre un domaine et ses détails est porté par le nom : un document de niveau 3 reprend en préfixe le nom de son domaine parent, séparé par un double tiret.
+
+```text
+docs/02_domains/facturation.md              # niveau 2 : le domaine
+docs/03_details/facturation--contrat-api.md # niveau 3 : un détail de ce domaine
+docs/03_details/facturation--mapping-champs.md
+```
+
+Un sous-dossier par domaine (`docs/03_details/facturation/…`) est accepté pour les projets très denses ; dans ce cas, le documenter dans `docs/kb_governance.md`. Le routeur métier garde un nom fixe : `SUJETS.md`, à la racine du projet.
+
 ## Dossiers numérotés
 
 Les dossiers de travail sont préfixés par un numéro à deux chiffres pour fixer l'ordre de lecture :

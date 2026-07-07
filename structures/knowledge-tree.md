@@ -7,6 +7,7 @@ Elle s'ajoute au socle Core (`structures/core-tree.md`) et peut cohabiter avec L
 ```text
 MonProjet/
 ├── PROJECT.md / PROGRESS.md / CHANGELOG.md / TASKS.md / DECISIONS.md   # Core
+├── SUJETS.md             # routeur métier : alias -> sujet -> source fraîche prioritaire
 ├── 00_inbox/ … 04_deliverables/   # dossiers Core
 ├── docs/
 │   ├── kb_governance.md  # règles de navigation, niveaux, dépendances transverses
@@ -35,7 +36,8 @@ Un projet peut utiliser les noms `01_macro`, `02_meso`, `03_micro` si cela corre
 
 | Fichier | Rôle |
 |---|---|
-| `docs/kb_governance.md` | Règles de navigation progressive, analyse transverse, limites des outils complémentaires |
+| `SUJETS.md` (racine) | Routeur métier : alias utilisateur → sujet canonique → ordre de lecture → source fraîche prioritaire → dépendances → preuves/décisions liées. Lu avant `docs/INDEX.md` pour une demande métier |
+| `docs/kb_governance.md` | Règles de navigation progressive, analyse transverse, frontmatter standard, budgets de taille |
 | `docs/INDEX.md` | Point d'entrée documentaire : quoi lire selon le besoin |
 
 ## Dossiers ajoutés
@@ -52,6 +54,7 @@ Un projet peut utiliser les noms `01_macro`, `02_meso`, `03_micro` si cela corre
 
 ## Règles propres à Knowledge
 
+- **Routage métier d'abord** : pour une demande formulée en vocabulaire utilisateur, lire `SUJETS.md` avant `docs/INDEX.md` ; la source fraîche prioritaire d'un sujet prime sur sa synthèse.
 - **Lecture progressive** : lire `docs/INDEX.md`, puis le niveau global, puis les domaines concernés, puis les détails seulement si l'action l'exige.
 - **Analyse transverse obligatoire** : avant modification documentaire ou technique, lister composants impactés, composants explicitement non impactés, dépendances bidirectionnelles et documents à mettre à jour.
 - **Plans hors vérité permanente** : les plans guident l'action mais ne remplacent pas les fichiers sacrés ni les docs actives.
