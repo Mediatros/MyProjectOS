@@ -153,8 +153,9 @@ fi
 
 # --- 4. Placeholders résiduels -----------------------------------------------
 echo "Substitution des gabarits :"
+# NB : $EXCLUDES après --include (BSD grep applique la dernière option qui matche).
 # shellcheck disable=SC2086 # EXCLUDES volontairement éclaté en mots
-PH=$(grep -rl $EXCLUDES "<NomDuProjet>" "$TARGET" --include="*.md" 2>/dev/null)
+PH=$(grep -rl "<NomDuProjet>" "$TARGET" --include="*.md" $EXCLUDES 2>/dev/null)
 if [ -n "$PH" ]; then
     # Boucle sans pipe : le compteur WARNS doit s'incrémenter dans le shell courant.
     while IFS= read -r p; do
@@ -175,7 +176,7 @@ check_refs() {
     [ -f "$TARGET/$_reg" ] || { warn "$_reg absent : références non vérifiables"; return; }
     _defined=$(grep -hoE "$_re" "$TARGET/$_reg" 2>/dev/null | sort -u)
     # shellcheck disable=SC2086
-    _cited=$(grep -rhoE $EXCLUDES "$_re" "$TARGET" --include="*.md" 2>/dev/null | sort -u)
+    _cited=$(grep -rhoE "$_re" "$TARGET" --include="*.md" $EXCLUDES 2>/dev/null | sort -u)
     _missing=0
     for id in $_cited; do
         if ! printf '%s\n' "$_defined" | grep -qx "$id"; then
@@ -206,11 +207,11 @@ done
 
 # 6b. Dates JJ/MM/AAAA dans le contenu (format français).
 # shellcheck disable=SC2086
-_slash_n=$(grep -rhoE $EXCLUDES '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+_slash_n=$(grep -rhoE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' $EXCLUDES 2>/dev/null | wc -l | tr -d ' ')
 if [ "${_slash_n:-0}" -gt 0 ]; then
     warn "$_slash_n date(s) au format JJ/MM/AAAA (attendu YYYY-MM-DD), ex :"
     # shellcheck disable=SC2086
-    grep -rnE $EXCLUDES '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | head -n 3 |
+    grep -rnE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' $EXCLUDES 2>/dev/null | head -n 3 |
         while IFS= read -r _l; do printf '           %s\n' "${_l#"$TARGET"/}"; done
     _bad_date=1
 fi
@@ -218,7 +219,7 @@ fi
 # 6c. Mois en toutes lettres (français).
 _mois='janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre'
 # shellcheck disable=SC2086
-_lit_n=$(grep -rhniE $EXCLUDES "[0-9]{1,2} ($_mois) 20[0-9]{2}" "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+_lit_n=$(grep -rhniE "[0-9]{1,2} ($_mois) 20[0-9]{2}" "$TARGET" --include='*.md' $EXCLUDES 2>/dev/null | wc -l | tr -d ' ')
 if [ "${_lit_n:-0}" -gt 0 ]; then
     warn "$_lit_n date(s) en toutes lettres (mois en français), à passer en YYYY-MM-DD"
     _bad_date=1
