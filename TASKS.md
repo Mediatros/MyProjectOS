@@ -43,7 +43,7 @@
 But : qu'un agent qui reçoit le lien du repo puisse réellement installer la méthode, sur un projet vierge, pour Claude Code au minimum. Détail : `PLAN/plans/2026-07-02-audit-industrialisation-methode.md`.
 
 - [x] **T-A.1** Committer l'état actuel (`install.sh`, `scripts/init-project.sh` `--into-existing`/`--sync`, `README.md`). `anatomy.md` passé en `.gitignore` (généré par le hook Stop) ; `docs/hermes-workdoc-2026-06-03-orientation-project-os-ai.md` déplacé vers `PLAN/` (document de travail).
-- [ ] **T-A.2** Publier le dépôt (`gh repo edit Mediatros/MyProjectOS --visibility public`). **Réactivée le 2026-07-07 (DEC-0021) : tout est conçu pour le public, la CI sert de filet ; dernier geste humain, idéalement avec le push de la release v0.5.0.**
+- [x] **T-A.2** Dépôt publié le 2026-07-07 (`gh repo edit --visibility public`), avec la release v0.5.0. CI verte sur `main`. Voir DEC-0021.
 - [x] **T-A.3** Ajouter une `LICENSE` (MIT, décidé le 2026-07-02).
 - [x] **T-A.4** Installer la skill à la création du projet (`init-project.sh` copie `skills/my-project-os/SKILL.md` dans `.claude/skills/my-project-os/`).
 - [x] **T-A.5** Générer un `AGENTS.md` racine pour tous les types (Core/Life/Hybrid), avec `CLAUDE.md` projet minimal qui pointe dessus. L'extension Code ajoute une section « Extension Code » dans le même fichier (fusion idempotente) au lieu d'un fichier séparé.

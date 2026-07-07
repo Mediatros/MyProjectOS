@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-07
-prochaine_action: Pousser les commits v0.5.0 sur origin, poser le tag v0.5.0 + release GitHub, puis publier le dépôt (T-A.2, DEC-0021). Ensuite, banc d'essai Unjque (Phase 6).
+prochaine_action: v0.5.0 poussée, taguée, release publiée, dépôt rendu public (T-A.2 close), CI verte sur main. Prochaine étape : banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
 prochaine_echeance:
 ---
 
@@ -32,7 +32,7 @@ Concevoir et construire `MyProjectOS` : une méthodologie unifiée d'organisatio
 
 Version `0.5.0` construite le 2026-07-07 : le plan production ready (`PLAN/plans/2026-07-06-plan-amelioration-production-ready.md`) est appliqué, ce qui clôt les Phases B et C (sauf T-B.7 revue documentaire et T-C.11 arbitrage des plans en attente). La méthode sait désormais se mettre à jour dans les projets existants (manifest `.myprojectos/manifest`, `check-update.sh`, `--update-method` avec sauvegarde), accompagne le cadrage et le rythme itératif (`docs/cycle-de-travail.md`, skill à 7 modes, `docs/INSTALL-AGENT.md`), intègre le RETEX comptabilité (`SUJETS.md`, source fraîche), outille la navigation Knowledge (orphelins, liens cassés, budgets), et passe une CI GitHub Actions. Deux exemples complets vivent dans `examples/`. Dogfooding : `check-project.sh .` à 0 bloquant / 0 avertissement. Détail : CHG-20260707-1100 ; raisons : DEC-0021 à DEC-0024.
 
-Conception actée pour un dépôt public (DEC-0021, remplace l'intention de DEC-0017) : la publication effective (T-A.2) est le dernier geste humain. Releases GitHub v0.1.0 à v0.4.0 créées, tag v0.3.0 poussé. **Les commits v0.5.0 sont locaux, non poussés** ; le tag v0.5.0 et sa release restent à poser au moment du push.
+Dépôt rendu public le 2026-07-07 (DEC-0021, T-A.2 close) : `https://github.com/Mediatros/MyProjectOS`. Commits, tag `v0.5.0` et release poussés ; CI GitHub Actions verte sur `main`. `install.sh` par `curl` et `check-update.sh` fonctionnent désormais depuis n'importe quelle machine, y compris le VPS Hermès.
 
 ## Décisions actées
 
@@ -40,7 +40,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Rien en cours activement. La v0.5.0 est prête : reste à pousser, tagger, publier la release, puis rendre le dépôt public (T-A.2).
+- Rien en cours activement. v0.5.0 publiée, dépôt public, CI verte.
 - Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
 
 ## Besoins Code identifiés (trois couches)
@@ -65,7 +65,7 @@ Détail dans `TASKS.md`. Vue macro :
 3. Phase 3 : skill assistant (le cœur). **Faite.**
 4. Phase 4 : hooks d'enforcement + script d'init. **Faite.**
 5. Phase 5 : intégration Harness + emprunts Spec Kit. **Faite.**
-6. Phase A : installation réelle par un agent. **Faite** (T-A.2 publication : dernier geste, réactivée par DEC-0021).
+6. Phase A : installation réelle par un agent. **Faite**, y compris T-A.2 (dépôt public depuis le 2026-07-07).
 7. Phase B : méthode 2 (adoption) + mise à jour de version. **Faite le 2026-07-07** (sauf T-B.7).
 8. Phase C : navigation 3 niveaux, RETEX, qualité générale. **Faite le 2026-07-07** (sauf T-C.11).
 9. Publication : push v0.5.0 + tag + release + dépôt public. **Prochaine étape.**
