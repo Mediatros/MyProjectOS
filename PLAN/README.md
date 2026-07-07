@@ -48,7 +48,8 @@ PLAN/
 
 ## Plans disponibles
 
-- `plans/2026-07-02-audit-industrialisation-methode.md` — audit complet du repository et plan en 3 phases (A : rendre l'installation réelle, B : méthode 2 + mise à jour, C : navigation 3 niveaux + qualité) pour un usage déployable en production. **Priorité actuelle.**
+- `plans/2026-07-06-plan-amelioration-production-ready.md` — revue complète (local + GitHub) et plan en 4 phases (D : mise à jour sécurisée de la méthode, E : cadrage guidé + cycle itératif, F : adoption d'un projet existant, G : qualité production). **Appliqué le 2026-07-07 (v0.5.0, CHG-20260707-1100), sauf T-B.7 et T-C.11.**
+- `plans/2026-07-02-audit-industrialisation-methode.md` — audit complet du repository et plan en 3 phases (A : rendre l'installation réelle, B : méthode 2 + mise à jour, C : navigation 3 niveaux + qualité) pour un usage déployable en production. Phase A terminée ; B et C repris par le plan du 2026-07-06.
 - `plans/2026-06-22-secondbrain-pkb-integration.md` — analyse du repo SecondBrain (PKB) et proposition d'intégration chirurgicale. Statut à trancher (voir plan d'audit, tâche C.11).
 - `plans/2026-06-22-steward-os-integration.md` — analyse de Steward OS (gestion autonome d'issues/PRs par un agent Hermès) et proposition d'intégration. Statut à trancher (voir plan d'audit, tâche C.11).
 - `plans/2026-06-07-company-os-integration.md` — intégrer les apports Company OS : documentation comme interface IA, température contextuelle, maturité de l'information, isolation des contextes. Statut à trancher (voir plan d'audit, tâche C.11).

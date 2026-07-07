@@ -19,6 +19,46 @@
 
 ---
 
+### DEC-0024 — SUJETS.md à la racine, source fraîche prioritaire (intégration du RETEX comptabilité)
+
+- **Date** : 2026-07-07
+- **Contexte** : le RETEX comptabilité (2026-06-14) montre que les demandes métier (« dépenses maison ») ne sont pas bien routées : `docs/INDEX.md` décrit la carte documentaire mais pas le vocabulaire utilisateur, et une synthèse peut être moins fraîche que le fichier source.
+- **Options envisagées** : A. `SUJETS.md` à la racine du projet ; B. `docs/SUJETS.md` dans l'extension Knowledge.
+- **Choix** : option A, recommandée par le RETEX.
+- **Raison** : c'est un fichier de routage, pas de la documentation de détail ; il doit être visible immédiatement par tout agent.
+- **Conséquences** : template `templates/extensions/knowledge/SUJETS.md` posé à la racine par `--knowledge` ; règle « SUJETS.md avant INDEX.md, source fraîche avant synthèse » dans la skill, `templates/core/AGENTS.md`, `kb_governance.md` et `docs/governance.md` ; avertissement de `check-project.sh` si Knowledge est actif sans `SUJETS.md` rempli.
+- **Liens** : CHG-20260707-1100.
+
+### DEC-0023 — Le cycle itératif devient une règle de la méthode ; la skill passe à 7 modes
+
+- **Date** : 2026-07-07
+- **Contexte** : la pratique éprouvée de l'utilisateur (une tâche par session, clôture des fichiers sacrés, `/clear`, reprise à froid) n'était codifiée nulle part ; le cadrage amont (besoin, stack, découpage), couche la plus critique pour un non-développeur, n'était pas accompagné ; l'adoption d'un projet existant n'existait pas.
+- **Options envisagées** : A. laisser ces pratiques à la culture orale ; B. les codifier en doc + templates + skill.
+- **Choix** : option B.
+- **Raison** : une pratique non écrite ne survit ni au changement d'agent ni à la reprise à froid, ce qui contredit le principe fondateur de la méthode.
+- **Conséquences** : `docs/cycle-de-travail.md` (rythme officiel), règles de découpage dans `templates/core/TASKS.md`, sections dédiées dans `templates/core/AGENTS.md`, skill à 7 modes (reprise, orientation, explication, clôture, cadrage, adoption, mise à jour), `docs/INSTALL-AGENT.md` comme protocole d'entrée agent. La skill embarquée ne référence plus de chemins internes au repo méthode : elle est identique dans le repo et dans les projets.
+- **Liens** : CHG-20260707-1100.
+
+### DEC-0022 — Mise à jour de la méthode par manifest d'artefacts, détection distante et `--update-method`
+
+- **Date** : 2026-07-07
+- **Contexte** : les artefacts méthode copiés dans un projet (skill, `check-project.sh`, `VERSION`) n'étaient jamais rafraîchis (`--into-existing` les conserve) : un projet créé en 0.3.0 gardait la skill 0.3.0 à vie, et rien ne détectait qu'une version plus récente existait (T-B.5/T-B.6).
+- **Options envisagées** : A. forcer la réécriture via `--into-existing` ; B. frontière explicite par manifest + détection qui informe seulement + application dédiée avec sauvegarde.
+- **Choix** : option B.
+- **Raison** : A mélange greffe de contenu et mise à jour d'outillage, sans trace de ce qui appartient à la méthode ; B rend la frontière déterministe (le manifest), garantit que le contenu du projet n'est jamais touché, et impose le workflow humain : détecter → auditer → valider → appliquer → tracer.
+- **Conséquences** : `.myprojectos/manifest` posé dans chaque projet ; `scripts/check-update.sh` copié à côté de `check-project.sh` (sortie 0/10/1, replis dossier local et `git ls-remote`) ; `init-project.sh --update-method` sauvegarde dans `99_archive/methode-avant-vX.Y.Z/` puis remplace les seuls fichiers du manifest et met à jour l'empreinte ; mode 7 de la skill impose la validation humaine ; runbooks dans `docs/versioning.md` ; scénario complet testé en CI.
+- **Liens** : CHG-20260707-1100.
+
+### DEC-0021 — La méthode est conçue pour un dépôt public ; la publication reste le dernier geste humain
+
+- **Date** : 2026-07-07
+- **Contexte** : DEC-0017 gardait le dépôt privé, ce qui casse `install.sh` par `curl` et la détection de mise à jour depuis une machine tierce ou le VPS Hermès. L'utilisateur demande de concevoir le système comme si le dépôt allait être public.
+- **Options envisagées** : A. rester privé et documenter un accès authentifié partout ; B. concevoir pour le public (URLs brutes GitHub par défaut, replis authentifiés), la publication effective restant une action humaine.
+- **Choix** : option B.
+- **Raison** : le public rend l'installation et la mise à jour triviales sur toutes les machines ; la licence MIT est posée ; le contenu est vérifié sans donnée personnelle (exemples anonymisés). Les replis (`MYPROJECTOS_REPO_URL`, `git ls-remote` SSH) couvrent l'intervalle et un éventuel retour au privé.
+- **Conséquences** : remplace DEC-0017 dans son intention ; T-A.2 (publier le dépôt) redevient la dernière étape, à faire par l'utilisateur (`gh repo edit --visibility public`), idéalement au moment de pousser la release v0.5.0 ; la CI sert de filet avant publication.
+- **Liens** : CHG-20260707-1100, DEC-0017.
+
 ### DEC-0020 — Le check vérifie AGENTS.md/CLAUDE.md pour tous les types, et leur taille contre la limite de troncature Hermès
 
 - **Date** : 2026-07-04
