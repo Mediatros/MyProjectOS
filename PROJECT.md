@@ -48,7 +48,7 @@ Le projet est réussi quand :
 ## Type et extensions
 
 - **Type** : Core. Le repo contient des scripts shell (`scripts/`, `scripts/hooks/`), mais il n'active pas l'extension Code sur lui-même : ce n'est pas un projet logiciel au sens de la méthode (pas de stack applicative, pas de `STACK_VALIDATION`/`ARCHITECTURE`/`IMPACT_ANALYSIS` à tenir), c'est un système documentaire versionné (voir `CLAUDE.md`).
-- **Extensions activées** : aucune. Le repo a son propre `CLAUDE.md` (convention Claude Code, décrit l'architecture du système lui-même) mais pas d'`AGENTS.md` généré depuis `templates/core/` : lisibilité Codex sur ce repo méthode non couverte à ce stade, à traiter si le besoin se présente.
+- **Extensions activées** : aucune. Le repo a son propre `CLAUDE.md` (convention Claude Code, décrit l'architecture du système lui-même) et un `AGENTS.md` racine adapté au repo méthode (rituels, spécificités du dogfooding, garde-fous) pour la lisibilité Codex et Hermès.
 
 ## Parties prenantes
 

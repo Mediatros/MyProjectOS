@@ -47,6 +47,17 @@ TYPE=$(sed -n 's/^type:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1)
 [ -n "$TYPE" ] || TYPE="(inconnu)"
 echo "Projet : $(basename -- "$(cd "$TARGET" && pwd)")  —  type déclaré : $TYPE"
 
+# Le repo méthode lui-même contient des gabarits (templates/), des exemples
+# (examples/), des documents de travail (PLAN/) et une spec de formats
+# (NAMING-CONVENTIONS.md) volontairement non conformes aux scans de contenu :
+# on les exclut pour que le dogfooding reste propre. Un projet normal n'a pas
+# ces dossiers, l'exclusion ne s'applique donc qu'au repo méthode.
+EXCLUDES=""
+if [ -d "$TARGET/templates/core" ] && [ -f "$TARGET/structures/core-tree.md" ]; then
+    EXCLUDES="--exclude-dir=templates --exclude-dir=examples --exclude-dir=PLAN --exclude=NAMING-CONVENTIONS.md"
+    echo "  (repo méthode détecté : gabarits, exemples et PLAN/ exclus des scans de contenu)"
+fi
+
 # --- 0. Alignement avec la version de la méthode -----------------------------
 echo "Version de la méthode :"
 CUR=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
@@ -101,6 +112,15 @@ if [ -f "$TARGET/docs/INDEX.md" ]; then
     for f in docs/INDEX.md docs/kb_governance.md; do
         if [ -f "$TARGET/$f" ]; then ok "$f"; else warn "$f manquant alors que Knowledge semble actif"; fi
     done
+    if [ -f "$TARGET/SUJETS.md" ]; then
+        if grep -q '<sujet-canonique>' "$TARGET/SUJETS.md" 2>/dev/null; then
+            warn "SUJETS.md présent mais resté en gabarit (<sujet-canonique>) : le remplir ou le retirer"
+        else
+            ok "SUJETS.md (routeur métier)"
+        fi
+    else
+        warn "SUJETS.md absent : recommandé pour router les demandes métier (alias -> sujet -> source fraîche)"
+    fi
 fi
 
 # --- 3. Fraîcheur de PROGRESS.md ---------------------------------------------
@@ -133,7 +153,8 @@ fi
 
 # --- 4. Placeholders résiduels -----------------------------------------------
 echo "Substitution des gabarits :"
-PH=$(grep -rl "<NomDuProjet>" "$TARGET" --include="*.md" 2>/dev/null)
+# shellcheck disable=SC2086 # EXCLUDES volontairement éclaté en mots
+PH=$(grep -rl $EXCLUDES "<NomDuProjet>" "$TARGET" --include="*.md" 2>/dev/null)
 if [ -n "$PH" ]; then
     # Boucle sans pipe : le compteur WARNS doit s'incrémenter dans le shell courant.
     while IFS= read -r p; do
@@ -153,7 +174,8 @@ check_refs() {
     _re=$1; _reg=$2; _defprefix=$3
     [ -f "$TARGET/$_reg" ] || { warn "$_reg absent : références non vérifiables"; return; }
     _defined=$(grep -hoE "$_re" "$TARGET/$_reg" 2>/dev/null | sort -u)
-    _cited=$(grep -rhoE "$_re" "$TARGET" --include="*.md" 2>/dev/null | sort -u)
+    # shellcheck disable=SC2086
+    _cited=$(grep -rhoE $EXCLUDES "$_re" "$TARGET" --include="*.md" 2>/dev/null | sort -u)
     _missing=0
     for id in $_cited; do
         if ! printf '%s\n' "$_defined" | grep -qx "$id"; then
@@ -183,17 +205,20 @@ for pair in "PROJECT.md:cree_le" "PROGRESS.md:derniere_maj" "PROGRESS.md:cree_le
 done
 
 # 6b. Dates JJ/MM/AAAA dans le contenu (format français).
-_slash_n=$(grep -rhoE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+# shellcheck disable=SC2086
+_slash_n=$(grep -rhoE $EXCLUDES '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
 if [ "${_slash_n:-0}" -gt 0 ]; then
     warn "$_slash_n date(s) au format JJ/MM/AAAA (attendu YYYY-MM-DD), ex :"
-    grep -rnE '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | head -n 3 |
+    # shellcheck disable=SC2086
+    grep -rnE $EXCLUDES '[0-9]{1,2}/[0-9]{1,2}/20[0-9]{2}' "$TARGET" --include='*.md' 2>/dev/null | head -n 3 |
         while IFS= read -r _l; do printf '           %s\n' "${_l#"$TARGET"/}"; done
     _bad_date=1
 fi
 
 # 6c. Mois en toutes lettres (français).
 _mois='janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre'
-_lit_n=$(grep -rhniE "[0-9]{1,2} ($_mois) 20[0-9]{2}" "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
+# shellcheck disable=SC2086
+_lit_n=$(grep -rhniE $EXCLUDES "[0-9]{1,2} ($_mois) 20[0-9]{2}" "$TARGET" --include='*.md' 2>/dev/null | wc -l | tr -d ' ')
 if [ "${_lit_n:-0}" -gt 0 ]; then
     warn "$_lit_n date(s) en toutes lettres (mois en français), à passer en YYYY-MM-DD"
     _bad_date=1
@@ -217,6 +242,61 @@ for f in AGENTS.md CLAUDE.md .hermes.md SOUL.md .cursorrules; do
         ok "$f : $_size caractères (sous la limite Hermès de $HERMES_MAX_CHARS)"
     fi
 done
+
+# --- 8. Navigation Knowledge : orphelins, liens cassés, budgets de taille -----
+# Seuils indicatifs documentés dans kb_governance.md : niveau 1 <= 200 lignes,
+# niveau 2 <= 300 lignes. Avertissements uniquement, jamais bloquant.
+if [ -f "$TARGET/docs/INDEX.md" ]; then
+    echo "Navigation Knowledge :"
+    _kb_issue=0
+
+    # 8a. Orphelins : document présent sur disque mais absent de docs/INDEX.md.
+    for _dir in 01_global 02_domains 03_details runbooks; do
+        [ -d "$TARGET/docs/$_dir" ] || continue
+        for _f in "$TARGET/docs/$_dir"/*.md "$TARGET/docs/$_dir"/*/*.md; do
+            [ -f "$_f" ] || continue
+            _rel=${_f#"$TARGET"/docs/}
+            if ! grep -qF "$_rel" "$TARGET/docs/INDEX.md" 2>/dev/null; then
+                warn "docs/$_rel absent de docs/INDEX.md (document orphelin)"
+                _kb_issue=1
+            fi
+        done
+    done
+
+    # 8b. Liens cassés : chemin cité dans docs/INDEX.md mais introuvable sur disque.
+    _cited_paths=$(grep -oE '(0[123]_[a-z]+|runbooks|plan)/[A-Za-z0-9._/-]+\.md' "$TARGET/docs/INDEX.md" 2>/dev/null | sort -u)
+    if [ -n "$_cited_paths" ]; then
+        while IFS= read -r _p; do
+            [ -n "$_p" ] || continue
+            if [ ! -f "$TARGET/docs/$_p" ]; then
+                warn "docs/INDEX.md cite docs/$_p qui n'existe pas (lien cassé)"
+                _kb_issue=1
+            fi
+        done <<EOF_KBLINKS
+$_cited_paths
+EOF_KBLINKS
+    fi
+
+    # 8c. Budgets de taille par niveau.
+    for _f in "$TARGET/docs/01_global"/*.md; do
+        [ -f "$_f" ] || continue
+        _n=$(wc -l < "$_f" | tr -d ' ')
+        if [ "$_n" -gt 200 ]; then
+            warn "${_f#"$TARGET"/} : $_n lignes (> 200) : envisager de scinder vers le niveau 2"
+            _kb_issue=1
+        fi
+    done
+    for _f in "$TARGET/docs/02_domains"/*.md "$TARGET/docs/02_domains"/*/*.md; do
+        [ -f "$_f" ] || continue
+        _n=$(wc -l < "$_f" | tr -d ' ')
+        if [ "$_n" -gt 300 ]; then
+            warn "${_f#"$TARGET"/} : $_n lignes (> 300) : envisager de scinder vers le niveau 3"
+            _kb_issue=1
+        fi
+    done
+
+    [ "$_kb_issue" -eq 0 ] && ok "index aligné avec le disque, budgets de taille respectés"
+fi
 
 # --- Bilan -------------------------------------------------------------------
 echo ""

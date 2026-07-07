@@ -70,8 +70,9 @@ L'extension `knowledge` ajoute une couche documentaire progressive dans `docs/` 
 
 Règles :
 
+- Pour une demande métier, `SUJETS.md` (racine) est lu avant `docs/INDEX.md` : il route les alias utilisateur vers le sujet canonique et sa **source fraîche prioritaire**, qui prime sur toute synthèse.
 - `docs/INDEX.md` est le point d'entrée documentaire.
-- `docs/kb_governance.md` définit les niveaux, la navigation et les règles anti-dérive.
+- `docs/kb_governance.md` définit les niveaux, la navigation, le frontmatter standard, les budgets de taille et les règles anti-dérive.
 - Le niveau global est lu avant les domaines ; les détails sont lus uniquement si l'action l'exige.
 - Avant modification, l'agent liste les composants impactés, les composants explicitement non impactés, les dépendances transverses et les documents à mettre à jour.
 - Understand-Anything et les graphes sont des aides de visualisation, jamais des sources de vérité.
@@ -94,7 +95,7 @@ Il scanne les sous-dossiers directs, lit le frontmatter de chaque `PROGRESS.md` 
 
 ## Versioning de la méthode
 
-La méthode est versionnée (`my-project-os v1`, `v2`...). Chaque projet inscrit la version utilisée dans l'en-tête de `PROJECT.md`. Les évolutions de la méthode sont consignées dans le `CHANGELOG.md` du repository.
+La méthode est versionnée en `MAJEUR.MINEUR.CORRECTIF` (fichier `VERSION` du repo méthode, politique dans `docs/versioning.md`). Chaque projet inscrit la version utilisée dans le frontmatter de `PROJECT.md` (`version_methode`). `check-project.sh` vérifie l'alignement local, `check-update.sh` détecte une version publiée plus récente ; la migration (`--update-method`) reste une décision humaine.
 
 ## Archivage
 

@@ -77,7 +77,7 @@ Il signale, sans rien modifier :
 - **alignement de version** : l'empreinte `version_methode` du projet comparée à `VERSION` ;
 - **fichiers sacrés** manquants (Core, puis extensions Life / Code / Knowledge selon le `type:` déclaré dans `PROJECT.md`) ;
 - **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
-- **placeholders** non substitués (`<NomDuProjet>`) ;
+- **placeholders** de gabarit non substitués (nom du projet resté en balise) ;
 - **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
 - **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`.
 
