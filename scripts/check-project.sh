@@ -10,7 +10,7 @@ set -u
 
 TARGET=${1:-.}
 STALE_DAYS=14
-REPO=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+REPO=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 
 FAILS=0
 WARNS=0

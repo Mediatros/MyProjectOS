@@ -1,0 +1,65 @@
+# CI MyProjectOS : lint des scripts + tests de fumée de bout en bout.
+# Filet de sécurité avant toute publication : création, greffe, mise à jour, dogfooding.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shellcheck:
+    name: Lint shell (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck (POSIX sh, niveau warning)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck -s sh -S warning install.sh scripts/*.sh scripts/hooks/*.sh
+
+  smoke:
+    name: Tests de fumée
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Création Core seul, check sans bloquant
+        run: |
+          sh scripts/init-project.sh /tmp/p-core
+          sh scripts/check-project.sh /tmp/p-core
+
+      - name: Création Hybrid + Knowledge, check sans bloquant
+        run: |
+          sh scripts/init-project.sh /tmp/p-full --life --code --knowledge
+          sh scripts/check-project.sh /tmp/p-full
+          test -f /tmp/p-full/SUJETS.md
+          test -f /tmp/p-full/.myprojectos/manifest
+          test -f /tmp/p-full/.claude/skills/my-project-os/SKILL.md
+
+      - name: Greffe idempotente (--into-existing ne casse rien)
+        run: |
+          sh scripts/init-project.sh /tmp/p-full --life --code --knowledge --into-existing
+          sh scripts/check-project.sh /tmp/p-full
+
+      - name: Scénario de mise à jour (check-update + --update-method)
+        run: |
+          sh scripts/init-project.sh /tmp/p-old --life
+          sed -i 's/^version_methode: .*/version_methode: 0.2.0/' /tmp/p-old/PROJECT.md
+          # Détection : une mise à jour doit être signalée (code 10).
+          rc=0
+          MYPROJECTOS_REPO_URL="$GITHUB_WORKSPACE" sh /tmp/p-old/scripts/check-update.sh /tmp/p-old || rc=$?
+          test "$rc" -eq 10
+          # Le contenu utilisateur ne doit jamais être touché par la mise à jour.
+          echo "contenu utilisateur" > /tmp/p-old/00_inbox/note.md
+          sh scripts/init-project.sh /tmp/p-old --update-method
+          grep -q "contenu utilisateur" /tmp/p-old/00_inbox/note.md
+          # Les anciens artefacts sont sauvegardés avant remplacement.
+          test -f /tmp/p-old/99_archive/methode-avant-v0.2.0/scripts/check-project.sh
+          # Après mise à jour : plus rien à signaler (code 0) et projet cohérent.
+          MYPROJECTOS_REPO_URL="$GITHUB_WORKSPACE" sh /tmp/p-old/scripts/check-update.sh /tmp/p-old
+          sh scripts/check-project.sh /tmp/p-old
+
+      - name: Le repo méthode respecte sa propre gouvernance (dogfooding)
+        run: sh scripts/check-project.sh .

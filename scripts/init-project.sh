@@ -11,7 +11,7 @@
 
 set -eu
 
-REPO=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+REPO=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 TODAY=$(date +%Y-%m-%d)
 OS_VERSION=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
 [ -n "$OS_VERSION" ] || OS_VERSION="0.0.0"

@@ -3,7 +3,7 @@
 # Fait respecter le nommage et le placement (docs/enforcement.md).
 # Bloque le clair et sans ambiguïté ; laisse passer le reste.
 
-DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 . "$DIR/_lib.sh"
 
 read_payload

@@ -2,7 +2,7 @@
 # hook-stop-progress.sh — Stop.
 # Avertit (sans bloquer) si du travail a eu lieu sans mise à jour de PROGRESS.md.
 
-DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 . "$DIR/_lib.sh"
 
 read_payload
