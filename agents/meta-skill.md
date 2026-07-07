@@ -9,7 +9,7 @@ La skill assistant est le cerveau opérationnel de MyProjectOS. Elle applique la
 
 Elle accompagne, elle n'enferme pas. Les règles vraiment non négociables ne reposent pas sur elle mais sur les hooks (Phase 4). La skill est la couche « accompagnement » de l'enforcement à trois couches (documentation / skill / hooks).
 
-## Les quatre modes
+## Les sept modes
 
 ### 1. Reprise
 Déclencheur : « Reprends le projet », ouverture d'un dossier de projet, début de session.
@@ -19,19 +19,31 @@ Action : lire dans l'ordre `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.m
 - **Prochaine action**
 - **Points de vigilance**
 
-C'est le mode par défaut. Aucun historique de conversation requis.
+C'est le mode par défaut. Aucun historique de conversation requis. La reprise débouche sur **une** tâche : celle de l'itération (voir `docs/cycle-de-travail.md`).
 
 ### 2. Orientation
 Déclencheur : « Où je range ça ? », un document arrive, une info doit être consignée, on lance une feature.
-Action : aiguiller vers le bon fichier sacré (frontière de `docs/governance.md`) ou le bon dossier numéroté (`structures/*-tree.md`). Pour un projet Code, arbitrer entre **parcours complet** et **parcours allégé** (voir ci-dessous).
+Action : aiguiller vers le bon fichier sacré (frontière de `docs/governance.md`) ou le bon dossier numéroté (`structures/*-tree.md`). Pour une demande métier dans un projet dense : `SUJETS.md` d'abord, source fraîche prioritaire avant toute synthèse. Pour un projet Code, arbitrer entre **parcours complet** et **parcours allégé** (voir ci-dessous).
 
 ### 3. Explication
 Déclencheur : « C'est quoi ce fichier ? », « Pourquoi cette règle ? », utilisateur non-développeur qui veut comprendre.
 Action : expliquer un fichier, une convention, un identifiant (`CHG`/`DEC`/`P`/`F`/`IA`/`Tx.y`), un dossier ou un principe, en langage simple, sans jargon. Renvoyer aux docs du repo méthode pour le détail.
 
 ### 4. Clôture
-Déclencheur : « On s'arrête », fin de session, changement de sujet.
-Action : mettre à jour tous les fichiers Core concernés (PROGRESS + son en-tête, CHANGELOG, DECISIONS, TASKS), puis produire le résumé : **fait / reste / décisions / risques / prochaine action**. Garantir que la reprise à froid sera possible.
+Déclencheur : « On s'arrête », fin de session, changement de sujet, tâche de l'itération terminée (la skill la propose alors d'elle-même).
+Action : mettre à jour tous les fichiers Core concernés (PROGRESS + son en-tête, CHANGELOG, DECISIONS, TASKS), puis produire le résumé : **fait / reste / décisions / risques / prochaine action**. Suggérer `/clear`. Garantir que la reprise à froid sera possible.
+
+### 5. Cadrage (et initialisation)
+Déclencheur : dossier vide, « je démarre un projet », `PROJECT.md` resté en gabarit.
+Action : interview guidée, une question à la fois (pourquoi, périmètre inclus/exclu, critères de réussite, risques, type et extensions), pose de la structure, `PROJECT.md` pré-rempli soumis à relecture. Volet Code : `CONSTITUTION` → `STACK_VALIDATION` (gate sourcé) → `SPECS` + clarify → découpage de `TASKS.md` en itérations.
+
+### 6. Adoption
+Déclencheur : dossier peuplé sans `PROJECT.md`, « mets ce projet sous méthode ».
+Action : protocole `docs/INSTALL-AGENT.md` méthode 2 — inventaire en lecture seule, classification, proposition de mapping, **validation humaine avant tout déplacement**, greffe `--into-existing`, remplissage assisté des fichiers sacrés, rapport `CHG-`.
+
+### 7. Mise à jour de la méthode
+Déclencheur : « y a-t-il une mise à jour ? », avertissement de version du check.
+Action : détecter (`scripts/check-update.sh`), auditer (apports des versions, artefacts remplacés, contenu jamais touché), questions fermées de validation, appliquer (`--update-method`, sauvegarde dans `99_archive/`), vérifier et tracer (`check-project.sh` + entrée `CHG-`). Jamais d'application sans validation. Détail : `docs/versioning.md`.
 
 ## Aiguillage Code : complet vs allégé
 

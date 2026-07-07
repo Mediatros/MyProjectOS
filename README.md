@@ -36,6 +36,8 @@ Un projet est de type **Life**, **Code** ou **Hybrid**. Le type est déclaré da
 
 ## Installation
 
+**Vous êtes un agent ?** Le protocole complet (création sur dossier vierge, adoption d'un projet existant) est écrit pour vous : [docs/INSTALL-AGENT.md](docs/INSTALL-AGENT.md).
+
 Une seule commande, à partir du lien du dépôt. Le dépôt est cloné dans un dossier temporaire, le projet est posé, puis le clone est supprimé. **Le projet final est autonome** : les hooks d'enforcement sont copiés dans son `.claude/hooks/` et ne dépendent plus de l'emplacement de MyProjectOS.
 
 ```sh
@@ -97,7 +99,9 @@ MyProjectOS/
 - [Principes](docs/principles.md) — les règles qui tranchent les arbitrages.
 - [Gouvernance](docs/governance.md) — qui met à jour quoi, quand, et ce qui exige une validation humaine.
 - [Cycle de vie](docs/lifecycle.md) — de la création à l'archivage.
-- [Versionnement](docs/versioning.md) — comment la méthode se numérote et comment un projet sait s'il est à jour.
+- [Cycle de travail](docs/cycle-de-travail.md) — une tâche par itération, clôture, contexte vidé, reprise à froid.
+- [Installation par un agent](docs/INSTALL-AGENT.md) — création sur dossier vierge ou adoption d'un projet existant.
+- [Versionnement](docs/versioning.md) — comment la méthode se numérote, se met à jour dans les projets, et comment publier une release.
 - [Conventions de nommage](docs/NAMING-CONVENTIONS.md) — fichiers, dossiers, identifiants.
 - [Glossaire](docs/glossary.md) — le vocabulaire commun.
 
