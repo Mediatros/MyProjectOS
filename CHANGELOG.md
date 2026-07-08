@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir CHG-20260709-0017, DEC-0025.
 - **v0.5.0** — 2026-07-07 — la méthode se met à jour dans les projets existants : manifest d'artefacts (`.myprojectos/manifest`), détection distante (`check-update.sh`), application sécurisée (`init-project.sh --update-method` avec sauvegarde dans `99_archive/`). Cycle de travail itératif codifié (`docs/cycle-de-travail.md`), skill assistant portée à 7 modes (cadrage guidé, adoption d'un projet existant, mise à jour), protocole agent `docs/INSTALL-AGENT.md`, intégration du RETEX Projet Delta (`SUJETS.md`, source fraîche prioritaire), navigation Knowledge outillée (orphelins, liens cassés, budgets de taille), exemples complets Life et Code, CI GitHub Actions, corrections de fiabilité. Voir CHG-20260707-1100.
 - **v0.4.0** — 2026-07-04 — `check-project.sh` vérifie désormais `AGENTS.md`/`CLAUDE.md` pour tous les types de projet (plus seulement Code/Hybrid) et avertit si un fichier de contexte agent (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`) dépasse 20 000 caractères, seuil de troncature par défaut d'Hermès Agent. Voir CHG-20260704-1200.
 - **v0.3.0** — 2026-07-02 — Phase A du plan d'industrialisation (installation réelle par un agent) : `install.sh` en une commande, `init-project.sh --into-existing`/`--sync`, skill assistant installée à la création, `AGENTS.md`/`CLAUDE.md` posés pour tous les types (l'extension Code fusionne une section au lieu d'écraser), projet créé auto-vérifiable (`check-project.sh` + `VERSION` figée copiés), `LICENSE` MIT, repo méthode remis en conformité avec sa propre gouvernance. Voir CHG-20260702-1851.
@@ -24,6 +25,15 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260709-0017 — Résorption du clone divergent : skills de maintenance + hook Stop sans git
+
+- Un second clone du dépôt vivait dans `Documents/MyProjects/` (créé le 2026-07-04 par une session hors de `SYNC/`, divergent depuis). Son travail utile est rapatrié ici ; le clone est supprimé.
+- Repris tel quel (cherry-pick du commit du 2026-07-07) : 3 skills Claude Code de maintenance du dépôt méthode — `.claude/skills/add-extension`, `.claude/skills/evolve-method`, `.claude/skills/validate` — puis adaptées au dépôt cible : l'isolation des hooks y est référencée DEC-0025 (le clone l'appelait « DEC-0017 », numéro déjà attribué ici), état VERSION/git et sorties attendues re-vérifiés par exécution le 2026-07-09.
+- Porté en l'adaptant : `scripts/hooks/hook-stop-progress.sh` détecte désormais le travail non consigné même sans dépôt git (un fichier du projet plus récent que `PROGRESS.md`), en conservant le contrôle exact du chemin `PROGRESS.md` racine introduit en v0.5.0. Comportement assumé : sur un projet fraîchement généré sans git, le hook rappelle de renseigner `PROGRESS.md` (les gabarits copiés après lui sont plus récents), aligné sur la « prochaine étape » affichée par `init-project.sh`.
+- Écarté car déjà en place ici : la réimplémentation de l'isolation des hooks dans `init-project.sh` (présente depuis v0.3.0), l'entrée de release « v0.3.0 » du clone et son bump `VERSION` (caducs, dépôt en 0.5.0).
+- `VERSION` inchangée : le hook Stop étant un artefact copié dans les projets (manifest), une release mineure reste à décider pour le propager via `--update-method`.
+- Voir DEC-0025.
 
 ### CHG-20260707-1100 — v0.5.0 : mise à jour de la méthode, cadrage, cycle itératif, qualité production
 
