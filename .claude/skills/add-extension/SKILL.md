@@ -41,7 +41,7 @@ Dérouler la batterie complète de la skill `validate` (source unique de la proc
 
 - Les scripts ne sont PAS exécutables : `./scripts/init-project.sh` → `permission denied` (exit 126). Toujours `sh scripts/<script>.sh`. [verified: executed]
 - Chemins en dur : le renommage `templates/extensions/` (DEC-0001) a exigé de réaligner script ET docs ; chercher les anciens chemins avant de conclure (`grep -rn "templates/" scripts/ docs/ skills/`).
-- Ne PAS modifier `scripts/hooks/*` à la légère : 4 projets legacy les référencent à distance (piège DEC-0017, voir `evolve-method`).
+- Ne PAS modifier `scripts/hooks/*` à la légère : 4 projets legacy les référencent à distance (piège DEC-0025, voir `evolve-method`).
 
 ## Provenance et maintenance
 

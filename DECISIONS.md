@@ -19,6 +19,19 @@
 
 ---
 
+### DEC-0025 — Isolation complète des hooks : copie locale au lieu d'une référence à `MyProjectOS`
+
+- **Date** : 2026-07-04 (consignée le 2026-07-09, récupérée du clone divergent résorbé)
+- **Contexte** : `init-project.sh` câblait `.claude/settings.json` de chaque projet avec un chemin absolu vers `MyProjectOS/scripts/hooks/*.sh`. Les gabarits Markdown étaient copiés (isolés), mais les hooks référencés à distance : un projet dépendait donc du dépôt `MyProjectOS` restant en place à ce chemin exact, et modifier un script de hook affectait silencieusement tous les projets déjà créés (4 projets concernés au moment du constat, aucun averti). Repéré lors d'un audit du projet LaCIOTAT, qui a demandé l'arrêt de ce partage.
+- **Options envisagées** :
+  - A. Garder la référence à distance, documenter le risque.
+  - B. Copier les scripts de hooks (`_lib.sh`, `hook-pre-write.sh`, `hook-stop-progress.sh`) dans `.claude/hooks/` de chaque projet à la création, et câbler `settings.json` sur `$CLAUDE_PROJECT_DIR/.claude/hooks/...`.
+- **Choix** : option B.
+- **Raison** : cohérence avec le principe déjà appliqué aux gabarits Markdown (un projet ne dépend d'aucun autre dossier pour fonctionner) ; un projet Life peut contenir des données sensibles (succession, santé) et ne doit pas voir son comportement changer sans qu'on le sache, du fait d'une modification faite ailleurs.
+- **Conséquences** : chaque nouveau projet reçoit sa propre copie des hooks, modifiable indépendamment des autres. Corriger un bug de hook dans `MyProjectOS` ne se propage plus automatiquement : recopie projet par projet, ou `--update-method` depuis la v0.5.0. Les 4 projets créés avant cette décision (LaCIOTAT, HomeLab, Assistant_Juridique, TeamLeader) gardent l'ancien câblage tant qu'ils ne sont pas migrés individuellement.
+- **Note** : décision prise et implémentée le 2026-07-04 dans un clone divergent du dépôt, sous le numéro « DEC-0017 » déjà attribué ici ; l'implémentation équivalente existait déjà dans ce dépôt (v0.3.0 du 2026-07-02, puis manifest en v0.5.0). Consignée pour conserver le pourquoi.
+- **Liens** : CHG-20260709-0017.
+
 ### DEC-0024 — SUJETS.md à la racine, source fraîche prioritaire (intégration du RETEX comptabilité)
 
 - **Date** : 2026-07-07

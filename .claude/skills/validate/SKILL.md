@@ -19,7 +19,7 @@ Depuis la racine du dépôt (`sh` obligatoire, les scripts ne sont pas exécutab
 ```bash
 # 1. Syntaxe de tous les scripts
 for s in scripts/*.sh scripts/hooks/*.sh; do sh -n "$s" && echo "OK $s"; done
-# Attendu : OK sur les 6 scripts. [verified: executed 2026-07-07]
+# Attendu : OK sur les 7 scripts. [verified: executed 2026-07-09]
 
 # 2. Génération de test — répéter pour chaque combinaison touchée
 sh scripts/init-project.sh /tmp/T-core                      # Core seul
@@ -28,16 +28,19 @@ sh scripts/init-project.sh /tmp/T-full --life --code --knowledge  # Hybrid compl
 
 # 3. Contrôle de cohérence
 sh scripts/check-project.sh /tmp/T-full
-# Attendu (dernière ligne) : « Bilan : cohérent, aucun problème détecté. »
-# Sortie : [ok] / [!] avertissement / [X] bloquant. [verified: executed 2026-07-07]
+# Attendu (dernière ligne) : « Bilan : 0 bloquant(s), 1 avertissement(s). »
+# L'avertissement attendu est le rappel DEC-0024 « SUJETS.md resté en gabarit »,
+# normal sur un projet frais généré avec --knowledge.
+# Sortie : [ok] / [!] avertissement / [X] bloquant. [verified: executed 2026-07-09]
 
-# 4. Résidus de substitution
-grep -rn "<NomDuProjet>" /tmp/T-full && echo "ÉCHEC" || echo "OK substitution"
+# 4. Résidus de substitution — --include="*.md" obligatoire : depuis v0.5.0 le projet
+# embarque check-project.sh, dont le code contient le motif (faux ÉCHEC sinon).
+grep -rn --include="*.md" "<NomDuProjet>" /tmp/T-full && echo "ÉCHEC" || echo "OK substitution"  # [verified: executed 2026-07-09]
 
 # 5. Empreinte de version posée
 grep "version_methode" /tmp/T-full/PROJECT.md   # attendu : la valeur de VERSION
 
-# 6. Isolation des hooks (post-DEC-0017)
+# 6. Isolation des hooks (post-DEC-0025)
 ls /tmp/T-full/.claude/hooks/   # attendu : _lib.sh, hook-pre-write.sh, hook-stop-progress.sh
 grep -n "MyProjectOS" /tmp/T-full/.claude/settings.json && echo "ÉCHEC isolation" || echo "OK isolation"
 
@@ -46,14 +49,14 @@ grep -n "MyProjectOS" /tmp/T-full/.claude/settings.json && echo "ÉCHEC isolatio
 rm -rf /tmp/T-core /tmp/T-life /tmp/T-full
 ```
 
-Ce qu'a produit la génération vérifiée du 2026-07-07 (Core+Code+Knowledge) : 5 fichiers sacrés Core, 8 fichiers extension Code, docs/ Knowledge (INDEX, kb_governance, niveaux, plans, runbooks), 00_inbox/, .claude/hooks/ en copie locale, .claude/settings.json câblé. check-project : tout `[ok]`. [verified: executed]
+Ce qu'a produit la génération vérifiée du 2026-07-09 (Life+Code+Knowledge) : 5 fichiers sacrés Core + `AGENTS.md`/`CLAUDE.md`, extension Life (PREUVES, ECHEANCES, CORRESPONDANCES), extension Code (CONSTITUTION, STACK_VALIDATION, ARCHITECTURE, SPECS, TEST_PLAN, IMPACT_ANALYSIS, RELEASE), Knowledge (docs/INDEX.md, docs/kb_governance.md, SUJETS.md), `.claude/hooks/` en copie locale, `.claude/settings.json` câblé, `check-project.sh` + empreinte `VERSION` embarqués. check-project : 0 bloquant, 1 avertissement attendu (SUJETS.md en gabarit, DEC-0024). [verified: executed]
 
 ## Comportement attendu des hooks d'enforcement (référence : docs/enforcement.md)
 
 | Hook | Événement | Comportement |
 |---|---|---|
 | `hook-pre-write.sh` | PreToolUse Write | BLOQUE : nom de fichier avec espaces/accents ; document posé à la racine |
-| `hook-stop-progress.sh` | Stop | AVERTIT (systemMessage, non bloquant) si PROGRESS.md pas fraîche ; depuis v0.3.0 détecte aussi sans git (dates de fichiers) |
+| `hook-stop-progress.sh` | Stop | AVERTIT (systemMessage, non bloquant) si PROGRESS.md pas fraîche ; détecte aussi sans git (dates de fichiers) depuis CHG-20260709-0017 |
 
 sh POSIX, dégradation silencieuse si `python3`/`jq` absents (DEC-0008). Tester un hook = lui passer le JSON d'événement sur stdin et observer exit code + stdout. [read: from docs/enforcement.md, DECISIONS.md]
 

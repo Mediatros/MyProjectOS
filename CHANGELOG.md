@@ -25,6 +25,15 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 
 ---
 
+### CHG-20260709-0017 — Résorption du clone divergent : skills de maintenance + hook Stop sans git
+
+- Un second clone du dépôt vivait dans `Documents/MyProjects/` (créé le 2026-07-04 par une session hors de `SYNC/`, divergent depuis). Son travail utile est rapatrié ici ; le clone est supprimé.
+- Repris tel quel (cherry-pick du commit du 2026-07-07) : 3 skills Claude Code de maintenance du dépôt méthode — `.claude/skills/add-extension`, `.claude/skills/evolve-method`, `.claude/skills/validate` — puis adaptées au dépôt cible : l'isolation des hooks y est référencée DEC-0025 (le clone l'appelait « DEC-0017 », numéro déjà attribué ici), état VERSION/git et sorties attendues re-vérifiés par exécution le 2026-07-09.
+- Porté en l'adaptant : `scripts/hooks/hook-stop-progress.sh` détecte désormais le travail non consigné même sans dépôt git (un fichier du projet plus récent que `PROGRESS.md`), en conservant le contrôle exact du chemin `PROGRESS.md` racine introduit en v0.5.0. Comportement assumé : sur un projet fraîchement généré sans git, le hook rappelle de renseigner `PROGRESS.md` (les gabarits copiés après lui sont plus récents), aligné sur la « prochaine étape » affichée par `init-project.sh`.
+- Écarté car déjà en place ici : la réimplémentation de l'isolation des hooks dans `init-project.sh` (présente depuis v0.3.0), l'entrée de release « v0.3.0 » du clone et son bump `VERSION` (caducs, dépôt en 0.5.0).
+- `VERSION` inchangée : le hook Stop étant un artefact copié dans les projets (manifest), une release mineure reste à décider pour le propager via `--update-method`.
+- Voir DEC-0025.
+
 ### CHG-20260707-1100 — v0.5.0 : mise à jour de la méthode, cadrage, cycle itératif, qualité production
 
 - Application du plan `PLAN/plans/2026-07-06-plan-amelioration-production-ready.md` (phases D/E/F/G), conception pour dépôt public actée (DEC-0021).

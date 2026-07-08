@@ -2,8 +2,8 @@
 projet: MyProjectOS
 type: Core
 statut: en construction
-derniere_maj: 2026-07-07
-prochaine_action: v0.5.0 poussée, taguée, release publiée, dépôt rendu public (T-A.2 close), CI verte sur main. Prochaine étape : banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
+derniere_maj: 2026-07-09
+prochaine_action: Clone divergent résorbé (CHG-20260709-0017), modifications non commitées. Décider une release mineure pour propager le hook Stop amélioré (--update-method), puis banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
 prochaine_echeance:
 ---
 
@@ -40,7 +40,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Rien en cours activement. v0.5.0 publiée, dépôt public, CI verte.
+- Récupéré du clone divergent résorbé le 2026-07-09 (non committé) : 3 skills de maintenance `.claude/skills/` (add-extension, evolve-method, validate, cherry-pick) et détection sans git dans `hook-stop-progress.sh`. Consigné : CHG-20260709-0017, DEC-0025. Release mineure à décider pour propager le hook aux projets existants.
 - Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
 
 ## Besoins Code identifiés (trois couches)

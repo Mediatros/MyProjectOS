@@ -20,7 +20,7 @@ Ce dépôt EST la méthode : toute modification ici change le comportement atten
 3. Nouvelle capacité ou rupture ? → bump de `VERSION` (SemVer simplifié, politique complète dans `docs/versioning.md`) + ligne dans la section « Releases » du CHANGELOG + tag `vX.Y.Z` au commit (sur demande explicite uniquement). ⚠️ `docs/governance.md` §Versioning décrit encore l'ancien schéma « v1, v2 » antérieur à DEC-0015 [verified: executed grep 2026-07-07] : divergence à aligner via ce gate.
 4. `PROGRESS.md` : mettre à jour l'état ET le frontmatter (règle immuable : toute maj de PROGRESS met à jour le bloc d'en-tête).
 
-Version courante : 0.3.0 [verified: executed cat VERSION 2026-07-07]. Attention, état git inhabituel : un seul commit (2026-06-14) et le travail v0.3.0 est NON committé [verified: executed]. Ne jamais committer sans demande explicite.
+Version courante : 0.5.0 [verified: executed cat VERSION 2026-07-09]. Ne jamais committer sans demande explicite.
 
 ## Checklist de propagation d'un changement de méthode
 
@@ -36,13 +36,13 @@ Un changement de règle ou de gabarit doit être reporté PARTOUT où il vit, si
 
 Puis dérouler la skill `validate` (génération de test + check).
 
-## ⚠️ Piège DEC-0017 : les hooks ne se propagent plus
+## ⚠️ Piège DEC-0025 : les hooks ne se propagent plus
 
 Depuis v0.3.0, `init-project.sh` COPIE `_lib.sh`, `hook-pre-write.sh`, `hook-stop-progress.sh` dans `.claude/hooks/` de chaque projet créé (isolation voulue : un projet Life avec données sensibles ne doit pas changer de comportement depuis l'extérieur).
 
 Conséquences opérationnelles :
-- Corriger un bug de hook dans `scripts/hooks/` ne répare AUCUN projet existant → recopier projet par projet, décision humaine.
-- Les projets créés AVANT v0.3.0 gardent l'ANCIEN câblage (référence à distance vers `MyProjectOS/scripts/hooks/`) : toute modification de ces scripts les affecte SILENCIEUSEMENT tant qu'ils ne sont pas migrés. Liste des projets concernés (volatile) : DEC-0017 dans DECISIONS.md, qui fait foi. Vérifier avant de toucher `scripts/hooks/*`. [read: from DECISIONS.md DEC-0017]
+- Corriger un bug de hook dans `scripts/hooks/` ne répare AUCUN projet existant → recopier projet par projet, ou `--update-method` (v0.5.0), décision humaine.
+- Les projets créés AVANT v0.3.0 gardent l'ANCIEN câblage (référence à distance vers `MyProjectOS/scripts/hooks/`) : toute modification de ces scripts les affecte SILENCIEUSEMENT tant qu'ils ne sont pas migrés. Liste des projets concernés (volatile) : DEC-0025 dans DECISIONS.md, qui fait foi. Vérifier avant de toucher `scripts/hooks/*`. [read: from DECISIONS.md DEC-0025]
 
 ## Décisions déjà tranchées (ne pas re-litiguer, détail dans DECISIONS.md)
 
