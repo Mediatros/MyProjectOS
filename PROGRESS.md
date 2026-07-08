@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-09
-prochaine_action: Clone divergent résorbé (CHG-20260709-0017), modifications non commitées. Décider une release mineure pour propager le hook Stop amélioré (--update-method), puis banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
+prochaine_action: v0.6.0 publiée (hook Stop sans git). Propager aux projets via --update-method, pilote LaCIOTAT en premier, puis Comptabilite_globale et TeamLeader (0.2.0, sans git, principaux bénéficiaires). Ensuite banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11.
 prochaine_echeance:
 ---
 

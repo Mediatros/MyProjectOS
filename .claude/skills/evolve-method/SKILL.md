@@ -20,7 +20,7 @@ Ce dépôt EST la méthode : toute modification ici change le comportement atten
 3. Nouvelle capacité ou rupture ? → bump de `VERSION` (SemVer simplifié, politique complète dans `docs/versioning.md`) + ligne dans la section « Releases » du CHANGELOG + tag `vX.Y.Z` au commit (sur demande explicite uniquement). ⚠️ `docs/governance.md` §Versioning décrit encore l'ancien schéma « v1, v2 » antérieur à DEC-0015 [verified: executed grep 2026-07-07] : divergence à aligner via ce gate.
 4. `PROGRESS.md` : mettre à jour l'état ET le frontmatter (règle immuable : toute maj de PROGRESS met à jour le bloc d'en-tête).
 
-Version courante : 0.5.0 [verified: executed cat VERSION 2026-07-09]. Ne jamais committer sans demande explicite.
+Version courante : 0.6.0 [verified: executed cat VERSION 2026-07-09]. Ne jamais committer sans demande explicite.
 
 ## Checklist de propagation d'un changement de méthode
 
