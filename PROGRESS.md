@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-09
-prochaine_action: v0.6.0 publiée (hook Stop sans git). Propager aux projets via --update-method, pilote LaCIOTAT en premier, puis Comptabilite_globale et TeamLeader (0.2.0, sans git, principaux bénéficiaires). Ensuite banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11.
+prochaine_action: v0.6.0 publiée et propagée (LaCIOTAT, Comptabilite_globale, TeamLeader migrés, hooks actifs partout). Prochaine étape : banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
 prochaine_echeance:
 ---
 
@@ -40,7 +40,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Récupéré du clone divergent résorbé le 2026-07-09 (non committé) : 3 skills de maintenance `.claude/skills/` (add-extension, evolve-method, validate, cherry-pick) et détection sans git dans `hook-stop-progress.sh`. Consigné : CHG-20260709-0017, DEC-0025. Release mineure à décider pour propager le hook aux projets existants.
+- v0.6.0 publiée le 2026-07-09 (tag + release GitHub) puis propagée via `--update-method` aux trois projets structurés : LaCIOTAT (0.3.0 → 0.6.0), Comptabilite_globale et TeamLeader (0.2.0 → 0.6.0, hooks activés par pose du `settings.json` standard, ils n'en avaient aucun). Migrations consignées dans le CHANGELOG de chaque projet. Reste non committé ici : cette mise à jour de PROGRESS.
 - Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
 
 ## Besoins Code identifiés (trois couches)
