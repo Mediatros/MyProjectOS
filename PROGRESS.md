@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-09
-prochaine_action: v0.6.0 publiée (hook Stop sans git). Propager aux projets via --update-method, pilote Projet Alpha en premier, puis Projet Delta et Projet Epsilon (0.2.0, sans git, principaux bénéficiaires). Ensuite banc d'essai Projet Zeta (Phase 6), ou T-B.7 / T-C.11.
+prochaine_action: Décider une release mineure (v0.7.0) pour propager les garde-fous dossiers racine (T-R.1/T-R.2 faits) et le hook Stop sans git aux projets via --update-method. Puis T-R.3/T-R.4, banc d'essai Projet Zeta (Phase 6), ou T-B.7 / T-C.11.
 prochaine_echeance:
 ---
 
@@ -40,8 +40,9 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
-- Récupéré du clone divergent résorbé le 2026-07-09 (non committé) : 3 skills de maintenance `.claude/skills/` (add-extension, evolve-method, validate, cherry-pick) et détection sans git dans `hook-stop-progress.sh`. Consigné : CHG-20260709-0017, DEC-0025. Release mineure à décider pour propager le hook aux projets existants.
+- v0.6.0 publiée le 2026-07-09 (tag + release GitHub) puis propagée via `--update-method` aux trois projets structurés : Projet Alpha (0.3.0 → 0.6.0), Projet Delta et Projet Epsilon (0.2.0 → 0.6.0, hooks activés par pose du `settings.json` standard, ils n'en avaient aucun). Migrations consignées dans le CHANGELOG de chaque projet. Reste non committé ici : cette mise à jour de PROGRESS.
 - Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
+- RETEX Projet Alpha du 2026-07-09 (le RETEX correspondant, CHG-20260709-2350) : un quasi-doublon de dossier racine (`99_archives`/`99_archive`) a traversé les trois couches d'enforcement, qui contrôlaient les fichiers mais pas les dossiers. Phase R : T-R.1 (audit `check-project.sh`) et T-R.2 (barrière `hook-pre-write.sh`) implémentés et testés le 2026-07-09 (CHG-20260709-2355) ; restent T-R.3 (installeur) et T-R.4 (consigne active). Propagation aux projets suspendue à une release mineure.
 
 ## Besoins Code identifiés (trois couches)
 
