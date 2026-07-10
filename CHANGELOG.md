@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.7.0** — 2026-07-10 — garde-fous sur les dossiers racine, issus du RETEX LaCIOTAT (un `99_archives/` a vécu deux jours à côté du `99_archive/` canonique sans détection) : `hook-pre-write.sh` refuse en temps réel la création d'un dossier racine quasi-doublon d'un dossier existant (normalisation accents/casse/tirets/`s` final), et `check-project.sh` gagne une section « Dossiers racine » qui avertit sur les quasi-doublons et les collisions de préfixe numérique `NN_`. Voir CHG-20260709-2350, CHG-20260709-2355 et `RETEX/retex-laciotat-doublon-archives.md`.
 - **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir CHG-20260709-0017, DEC-0025.
 - **v0.5.0** — 2026-07-07 — la méthode se met à jour dans les projets existants : manifest d'artefacts (`.myprojectos/manifest`), détection distante (`check-update.sh`), application sécurisée (`init-project.sh --update-method` avec sauvegarde dans `99_archive/`). Cycle de travail itératif codifié (`docs/cycle-de-travail.md`), skill assistant portée à 7 modes (cadrage guidé, adoption d'un projet existant, mise à jour), protocole agent `docs/INSTALL-AGENT.md`, intégration du RETEX comptabilité (`SUJETS.md`, source fraîche prioritaire), navigation Knowledge outillée (orphelins, liens cassés, budgets de taille), exemples complets Life et Code, CI GitHub Actions, corrections de fiabilité. Voir CHG-20260707-1100.
 - **v0.4.0** — 2026-07-04 — `check-project.sh` vérifie désormais `AGENTS.md`/`CLAUDE.md` pour tous les types de projet (plus seulement Code/Hybrid) et avertit si un fichier de contexte agent (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`) dépasse 20 000 caractères, seuil de troncature par défaut d'Hermès Agent. Voir CHG-20260704-1200.
@@ -25,6 +26,21 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260709-2355 — Garde-fous dossiers racine : quasi-doublons détectés et bloqués (T-R.1, T-R.2)
+
+- `check-project.sh` : nouvelle section « Dossiers racine » (avertissements, jamais bloquant) — quasi-doublons de premier niveau (noms identiques après normalisation : translittération des accents via iconv si présent, minuscules, tirets vers underscores, `s` final retiré) et collisions de préfixe numérique `NN_` entre dossiers distincts. Pas de liste blanche : les extensions du canon restent légitimes.
+- `hook-pre-write.sh` : refuse en temps réel l'écriture d'un fichier dont le premier segment de chemin créerait un dossier racine quasi-doublon d'un dossier existant (dossiers cachés hors périmètre). C'est la barrière qui aurait arrêté la dérive LaCIOTAT le 2026-07-07.
+- Normalisation : `normalize_root_name` dans `scripts/hooks/_lib.sh` ; logique dupliquée en `norm_dirname` dans `check-project.sh`, qui est copié seul dans les projets (duplication assumée et documentée en commentaire des deux côtés).
+- Vérifié : projet-éprouvette (doublon `99_archive`/`99_archives` et collision `07_` détectés, cas propre silencieux ; hook testé sur 5 chemins dont variante de casse `06_Preuve` et dossier caché), `shellcheck -S warning` propre, dépôt méthode et LaCIOTAT à 0 avertissement nouveau. Corrigé au passage : comparaison awk numérique piégeuse sur les préfixes (`00` == variable non initialisée), forcée en chaîne.
+- `VERSION` inchangée : ces artefacts sont propagés aux projets via le manifest, une release mineure (`--update-method`) reste à décider pour en faire bénéficier LaCIOTAT et les autres projets.
+- Clôt T-R.1 et T-R.2 (Phase R) ; T-R.3 (installeur) et T-R.4 (consigne active) restent ouvertes. Voir `RETEX/retex-laciotat-doublon-archives.md` et CHG-20260709-2350.
+
+### CHG-20260709-2350 — RETEX LaCIOTAT : doublon de dossier racine non détecté (`99_archives`/`99_archive`)
+
+- Dérive constatée dans LaCIOTAT : dossier `99_archives/` (pluriel) créé hors canon le 2026-07-07, puis dossier canonique `99_archive/` posé par la migration v0.6.0 le 2026-07-09 ; aucun des trois mécanismes d'enforcement (hook pre-write, `check-project.sh`, installeur) ne contrôle les dossiers de la racine. Correction locale faite dans le projet (fusion, cf. son CHG-20260709-2340).
+- RETEX rédigé : `RETEX/retex-laciotat-doublon-archives.md` (faits, analyse par couche, évolutions génériques proposées).
+- Nouvelle Phase R dans `TASKS.md` (T-R.1 à T-R.4) : détection des quasi-doublons et collisions de préfixe dans `check-project.sh`, barrière temps réel dans `hook-pre-write.sh`, pose de dossier non aveugle dans l'installeur, consigne active dans `NAMING-CONVENTIONS.md` et la skill. En attente d'arbitrage humain avant implémentation.
 
 ### CHG-20260709-0017 — Résorption du clone divergent : skills de maintenance + hook Stop sans git
 

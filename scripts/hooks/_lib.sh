@@ -49,6 +49,18 @@ is_project_os() {
     [ -f "$1/PROJECT.md" ]
 }
 
+# Normalise un nom de dossier racine pour comparer des quasi-doublons :
+# accents translittérés (si iconv présent), minuscules, tirets -> underscores,
+# 's' final retiré. Attrape 99_archives/99_archive, Preuves/06_preuves, etc.
+# Même logique que norm_dirname dans scripts/check-project.sh (script autonome).
+normalize_root_name() {
+    _n=$1
+    if command -v iconv >/dev/null 2>&1; then
+        _n=$(printf '%s' "$_n" | iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null || printf '%s' "$_n")
+    fi
+    printf '%s' "$_n" | LC_ALL=C tr '[:upper:]' '[:lower:]' | tr '-' '_' | sed 's/s$//'
+}
+
 # Refuse l'action (PreToolUse) avec une raison, puis sort proprement.
 deny() {
     _reason=$(printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g')

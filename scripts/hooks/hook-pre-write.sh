@@ -41,4 +41,27 @@ case "$REL" in
         esac ;;
 esac
 
+# Dossiers racine : écrire dans un dossier de premier niveau qui n'existe pas
+# encore et dont le nom est un quasi-doublon d'un dossier existant est refusé
+# (RETEX LaCIOTAT : 99_archives/ créé à côté de 99_archive/, deux jours de dérive).
+case "$REL" in
+    */*)
+        SEG1=${REL%%/*}
+        case "$SEG1" in
+            .*) : ;;  # dossiers cachés (.claude, .git) hors périmètre
+            *)
+                if [ ! -d "$PROJECT_DIR/$SEG1" ]; then
+                    NORM_NEW=$(normalize_root_name "$SEG1")
+                    for _d in "$PROJECT_DIR"/*/; do
+                        [ -d "$_d" ] || continue
+                        _existing=$(basename -- "$_d")
+                        case "$_existing" in .*) continue ;; esac
+                        if [ "$(normalize_root_name "$_existing")" = "$NORM_NEW" ]; then
+                            deny "Dossiers racine MyProjectOS : créer '$SEG1/' ferait un quasi-doublon de '$_existing/' qui existe déjà. Range le fichier dans '$_existing/' ou choisis un nom clairement distinct. Voir docs/NAMING-CONVENTIONS.md."
+                        fi
+                    done
+                fi ;;
+        esac ;;
+esac
+
 exit 0

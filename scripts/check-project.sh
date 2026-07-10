@@ -19,6 +19,18 @@ ok()   { printf '  [ok]   %s\n' "$1"; }
 warn() { printf '  [!]    %s\n' "$1"; WARNS=$((WARNS + 1)); }
 fail() { printf '  [X]    %s\n' "$1"; FAILS=$((FAILS + 1)); }
 
+# Normalise un nom de dossier racine pour la détection de quasi-doublons :
+# accents translittérés (si iconv présent), minuscules, tirets -> underscores,
+# 's' final retiré. Même logique que normalize_root_name dans scripts/hooks/_lib.sh
+# (dupliquée : ce script est copié seul dans les projets, sans les hooks).
+norm_dirname() {
+    _n=$1
+    if command -v iconv >/dev/null 2>&1; then
+        _n=$(printf '%s' "$_n" | iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null || printf '%s' "$_n")
+    fi
+    printf '%s' "$_n" | LC_ALL=C tr '[:upper:]' '[:lower:]' | tr '-' '_' | sed 's/s$//'
+}
+
 # Comparaison de versions X.Y.Z, portable. Échos : lt | eq | gt (pour $1 vs $2).
 ver_cmp() {
     _i=1
@@ -298,6 +310,52 @@ EOF_KBLINKS
 
     [ "$_kb_issue" -eq 0 ] && ok "index aligné avec le disque, budgets de taille respectés"
 fi
+
+# --- 9. Dossiers racine : quasi-doublons et collisions de préfixe -------------
+# RETEX LaCIOTAT (2026-07-09) : 99_archives/ a vécu deux jours à côté de
+# 99_archive/ sans qu'aucun contrôle ne s'en aperçoive. On compare les dossiers
+# de premier niveau après normalisation (norm_dirname). Pas de liste blanche :
+# les projets étendent légitimement le canon. Avertissement, jamais bloquant.
+echo "Dossiers racine :"
+_root_issue=0
+_root_pairs=""
+for _d in "$TARGET"/*/; do
+    [ -d "$_d" ] || continue
+    _name=$(basename -- "$_d")
+    case "$_name" in .*) continue ;; esac
+    _root_pairs="${_root_pairs}$(norm_dirname "$_name")|${_name}
+"
+done
+
+# 9a. Quasi-doublons : deux dossiers dont le nom normalisé est identique.
+_dup_lines=$(printf '%s' "$_root_pairs" | sort |
+    awk -F'|' 'BEGIN { p = ""; pn = "" } $1 != "" && $1 == p { print pn " / " $2 } { p = $1; pn = $2 }')
+if [ -n "$_dup_lines" ]; then
+    while IFS= read -r _l; do
+        [ -n "$_l" ] || continue
+        warn "dossiers racine quasi-doublons : $_l (noms équivalents après normalisation) : fusionner vers le nom canonique"
+        _root_issue=1
+    done <<EOF_ROOTDUP
+$_dup_lines
+EOF_ROOTDUP
+fi
+
+# 9b. Même préfixe numérique NN_ sur deux dossiers distincts : casse l'ordre
+# de lecture, raison d'être du préfixe. (Les quasi-doublons du 9a sont exclus.)
+_pref_lines=$(printf '%s' "$_root_pairs" |
+    awk -F'|' '$2 ~ /^[0-9][0-9]_/ { print substr($2, 1, 2) "|" $1 "|" $2 }' | sort |
+    awk -F'|' 'BEGIN { p = ""; pn = "" } ($1 "" == p "") && $2 != pn { print pd " / " $3 } { p = $1; pn = $2; pd = $3 }')
+if [ -n "$_pref_lines" ]; then
+    while IFS= read -r _l; do
+        [ -n "$_l" ] || continue
+        warn "dossiers racine avec le même préfixe numérique : $_l : renuméroter l'un des deux"
+        _root_issue=1
+    done <<EOF_ROOTPREF
+$_pref_lines
+EOF_ROOTPREF
+fi
+
+[ "$_root_issue" -eq 0 ] && ok "aucun quasi-doublon ni collision de préfixe parmi les dossiers de premier niveau"
 
 # --- Bilan -------------------------------------------------------------------
 echo ""

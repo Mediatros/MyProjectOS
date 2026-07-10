@@ -40,6 +40,10 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 ### 3. Placement — `hook-pre-write.sh` (même hook)
 - **Bloque** le cas évident : un document ou fichier binaire (`.pdf`, `.png`, `.eml`, `.docx`, `.xlsx`, `.zip`...) écrit directement à la racine du projet au lieu de `00_inbox/` ou d'un dossier numéroté.
 
+### 4. Dossiers racine — `hook-pre-write.sh` (même hook)
+- **Bloque** l'écriture d'un fichier dont le premier segment de chemin créerait un dossier racine **quasi-doublon** d'un dossier existant : noms équivalents après normalisation (accents translittérés, minuscules, tirets ramenés aux underscores, `s` final retiré), par exemple `99_archives/` à côté de `99_archive/`. Dossiers cachés hors périmètre.
+- Origine : RETEX LaCIOTAT (`RETEX/retex-laciotat-doublon-archives.md`), où un tel doublon a vécu deux jours sans détection. Le contrôle à la demande équivalent (quasi-doublons + collisions de préfixe `NN_`) vit dans `check-project.sh`, section « Dossiers racine ».
+
 ## Câblage
 
 Le projet reste autonome, insensible à un déplacement ou à la disparition du repo méthode : `scripts/init-project.sh` copie les hooks dans `.claude/hooks/` du projet cible, puis écrit (ou fusionne) un `.claude/settings.json` qui les référence via `$CLAUDE_PROJECT_DIR` :

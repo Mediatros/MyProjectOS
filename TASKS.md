@@ -78,6 +78,14 @@ But : navigation progressive fiable et outillée, retours terrain intégrés, re
 - [x] **T-C.10** CI GitHub Actions : `shellcheck -S warning` + tests de fumée (création, greffe idempotente, scénario de mise à jour complet, dogfooding).
 - [ ] **T-C.11** Statuer sur les plans en attente (Company OS, SecondBrain PKB, Steward OS) : intégration ou archivage. Décision humaine.
 
+### Phase R — RETEX LaCIOTAT : intégrité des dossiers racine
+But : qu'un quasi-doublon de dossier racine (type `99_archives`/`99_archive`, survenu dans LaCIOTAT du 2026-07-07 au 2026-07-09) soit bloqué à la création ou, à défaut, détecté à l'audit. Analyse complète : `RETEX/retex-laciotat-doublon-archives.md`.
+
+- [x] **T-R.1** `check-project.sh` : section « Dossiers racine » — avertit sur les quasi-doublons (noms identiques après normalisation minuscules/accents/tirets/`s` final) et sur les collisions de préfixe `NN_` entre dossiers distincts. Pas de liste blanche : les extensions du canon restent légitimes. Fait le 2026-07-09, voir CHG-20260709-2355.
+- [x] **T-R.2** `hook-pre-write.sh` : refuse l'écriture d'un fichier dont le premier segment créerait un dossier racine quasi-doublon d'un dossier existant (`normalize_root_name` dans `_lib.sh`, dupliquée dans `check-project.sh` qui est copié seul). Fait le 2026-07-09, voir CHG-20260709-2355.
+- [ ] **T-R.3** `install.sh` / `init-project.sh` / `--update-method` : avant de créer un dossier canonique, détecter une variante proche existante et signaler au lieu de créer le jumeau en silence.
+- [ ] **T-R.4** Consigne active : règle « pas de variante de dossier racine » dans `docs/NAMING-CONVENTIONS.md` (section Dossiers numérotés) et dans les garde-fous de la skill `my-project-os`.
+
 ### Phase 6 — Banc d'essai Unjque
 But : valider la méthode sur un vrai projet.
 

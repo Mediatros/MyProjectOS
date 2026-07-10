@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-07-09
-prochaine_action: v0.6.0 publiée et propagée (LaCIOTAT, Comptabilite_globale, TeamLeader migrés, hooks actifs partout). Prochaine étape : banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11 si priorité différente.
+prochaine_action: Décider une release mineure (v0.7.0) pour propager les garde-fous dossiers racine (T-R.1/T-R.2 faits) et le hook Stop sans git aux projets via --update-method. Puis T-R.3/T-R.4, banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11.
 prochaine_echeance:
 ---
 
@@ -42,6 +42,7 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 - v0.6.0 publiée le 2026-07-09 (tag + release GitHub) puis propagée via `--update-method` aux trois projets structurés : LaCIOTAT (0.3.0 → 0.6.0), Comptabilite_globale et TeamLeader (0.2.0 → 0.6.0, hooks activés par pose du `settings.json` standard, ils n'en avaient aucun). Migrations consignées dans le CHANGELOG de chaque projet. Reste non committé ici : cette mise à jour de PROGRESS.
 - Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
+- RETEX LaCIOTAT du 2026-07-09 (`RETEX/retex-laciotat-doublon-archives.md`, CHG-20260709-2350) : un quasi-doublon de dossier racine (`99_archives`/`99_archive`) a traversé les trois couches d'enforcement, qui contrôlaient les fichiers mais pas les dossiers. Phase R : T-R.1 (audit `check-project.sh`) et T-R.2 (barrière `hook-pre-write.sh`) implémentés et testés le 2026-07-09 (CHG-20260709-2355) ; restent T-R.3 (installeur) et T-R.4 (consigne active). Propagation aux projets suspendue à une release mineure.
 
 ## Besoins Code identifiés (trois couches)
 
