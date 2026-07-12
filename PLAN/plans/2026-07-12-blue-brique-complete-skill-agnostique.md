@@ -197,10 +197,30 @@ Notes Phase 3 (exécution réelle sur le banc d'essai MySecretaire, objets `TEST
 - `companyId` des mutations (`createFolder`, `createFile`) = ID d'organisation, le slug est refusé (les filtres de query l'acceptent).
 - Skill portée à `1.1.0`, propagée aux 4 instances. Détail : CHG-20260712-1658.
 
-### Phase 4 — Workspace modèle et workflow commentaires
+### Phase 4 — Workspace modèle et workflow commentaires — **faite le 2026-07-12**
 Dérouler T-PLAN-3 amendé : structure du modèle posée par agent (CLI), conversion testée via `convertWorkspaceToTemplate` (GraphQL), réglages visuels par l'utilisateur, création d'un workspace fils et relevé des nouveaux IDs. Implémenter et tester le workflow commentaires (§ 6) sur une carte réelle : commentaire de l'utilisateur → action agent → mise à jour `TASKS.md` → resynchro carte → commentaire de confirmation.
-- [ ] Points 5.1 à 5.3 de T-PLAN-3 vérifiés au premier essai.
-- [ ] Un commentaire posté depuis le téléphone est détecté, exécuté et confirmé à la session suivante.
+- [x] Points 5.1 à 5.3 de T-PLAN-3 vérifiés au premier essai.
+- [x] Un commentaire posté depuis le téléphone est détecté, exécuté et confirmé (test réalisé en session live plutôt qu'à la session suivante, voir note ci-dessous).
+
+Fait le 2026-07-12 : workspace modèle `_Modele_MyProjectOS` créé dans `myagent` (ID `cmrhzyyb0671vkm012cj0trql`, slug `modelemyprojectos`), structure posée par CLI — 4 lists (À faire `cmrhzz672673hkm019tk1nyeh`, En cours `cmrhzz6np673kkm0191r8g0xh`, Terminé `cmrhzz6s7673nkm01x5fvvhri`, Abandonné `cmrhzz6wa673qkm01eprf855e`), tag Urgent `cmrhzzb3d673wkm01845jtd5t`, custom field `ID` `cmrhzz7do673tkm014kbtgxow`. Nouveau piège CLI confirmé et consigné dans `GOUVERNANCE_BLUE.md` : `tags create --color` exige un hex, pas un nom de couleur.
+
+Incident d'accès constaté et résolu : le workspace créé par API n'était pas visible dans l'UI de l'utilisateur (`members: []` côté GraphQL — champ non fiable, aussi vide sur des workspaces pourtant visibles, donc pas la cause certaine mais la piste retenue). Résolu par `blue users invite --email mybluemanager@serf.me --access-level ADMIN --workspace <id>` (utilisateur "Super Admin" déjà présent au niveau company, ajouté au workspace). Accès confirmé par l'utilisateur, réglages visuels faits par lui en cible pour tous les futurs workspaces.
+
+Conversion en template faite le 2026-07-12, accord explicite donné en session : mutation `convertWorkspaceToTemplate` (`input: { projectId, isOfficialTemplate: false }`) → `isTemplate: true`, confirmé listé par `query { templates { items { id name } } }`.
+
+Points 5.1-5.3 vérifiés via un workspace fils jetable créé depuis le template (`workspaces create --template <id>`, ID `emiy5risvlz2gz7sd819fmsj`), structure relue puis workspace supprimé (accord explicite donné) une fois la vérification faite :
+- 5.1 (Convert to Template disponible) : oui, mutation exécutée avec succès.
+- 5.2 (custom field `ID` + 4 lists copiés) : oui, structure identique retrouvée avec de nouveaux IDs propres au workspace fils (lists, tag Urgent avec sa couleur, custom field avec sa description).
+- 5.3 (réglages d'affichage copiés, rendu identique) : cohérent avec la doc (« settings » inclus dans la copie), non revérifié visuellement dans l'UI car le workspace de test a été supprimé aussitôt après lecture API — à confirmer visuellement par l'utilisateur au prochain vrai workspace créé depuis le template, sans quoi cela reste une extrapolation documentaire plutôt qu'un fait observé.
+
+Nouveau piège CLI trouvé : `workspaces create --template <id>` renvoie une fiche vide (ID/Name/Slug/Category non peuplés dans la sortie CLI, la copie étant asynchrone) — il faut retrouver le workspace fils par `workspaceList` (recherche par nom) plutôt que de se fier à la sortie de la commande.
+
+Workflow commentaires testé le 2026-07-12 sur une carte réelle MySecretaire (T1.1, « Vérifier le cas de déblocage anticipé... », ID `6128d4903ad14f65ba8b3897e8cbef9c`), pas la carte candidate initialement prévue — l'utilisateur a posté depuis son téléphone pendant la session. Déroulé réel, avec un aléa instructif :
+1. Premier commentaire posté par l'utilisateur, supprimé côté Blue par l'utilisateur lui-même avant lecture (texte et html reviennent vides une fois `deletedAt` posé — suppression douce, comportement Blue normal, pas un bug de l'API/CLI). L'utilisateur a alors donné le texte directement dans le chat.
+2. Demande traitée sur cette base : `TASKS.md` (T1.3 reformulée, marquée ⚠️ URGENT, enjeu du délai d'homologation JAF vs fenêtre de 6 mois), `02_SUJETS/S01_Retrait_Epargne_Entreprise/NOTES.md` complété, carte Blue T1.3 (`f87725f720cf4cc98889df8d15830a7b`) resynchronisée (titre, description, tag Urgent — piège confirmé : `tags add` exige aussi `-w`), commentaire de confirmation posté sur la carte T1.1.
+3. L'utilisateur a ensuite reposté le même commentaire correctement sur Blue (`cmri1t3j77gwjor01fxkox0nc`, 17:09) : relu intégralement via l'API (`commentList` GraphQL, texte identique), confirmant que la lecture fonctionne normalement pour un commentaire non supprimé. Deuxième commentaire de confirmation posté, référençant explicitement celui-ci pour boucler proprement le protocole malgré l'ordre chronologique particulier (traitement avant la republication propre).
+
+Écart avec le critère d'origine : la détection n'a pas eu lieu de façon autonome au rituel de reprise d'une nouvelle session (« relève Blue » en début de session, § 7.3 du plan) — c'est l'utilisateur qui a signalé le commentaire en direct dans la même session. Le mécanisme lecture → traitement → confirmation est validé ; le relevé autonome en tout début de session reste à vérifier au premier vrai cas d'usage (prochaine session où un commentaire attend déjà).
 
 ### Phase 5 — Wiring méthode et propagation
 Appliquer le § 8 (gate DEC/CHG, v0.11.0), dérouler la skill `validate`, propager par `--update-method` aux projets structurés, mettre à jour les gouvernances Blue instanciées (LaCIOTAT, MySecretaire) sans écraser leur vécu. Migrer `~/.claude/skills/blue-cli` (myagent) vers une instance de `blue-app` (D4) et consigner la migration dans la section Provenance de la skill.

@@ -235,9 +235,10 @@ Pour les pièges CLI (paramètres obligatoires, échappement de description, che
 Si un workspace modèle existe dans l'organisation (structure canonique : 4 lists, tag `Urgent`, custom field `ID`), partir de lui plutôt que de construire à la main :
 
 1. Trouver son ID : `query { templates { items { id name } } }`.
-2. Créer le workspace fils : `BLUE_ORG=<org> scripts/blue-cli.sh workspaces create --name "<Projet>" --template <template_id>`.
-3. La copie génère de nouveaux IDs pour les lists, tags et custom fields : les relever (`lists list`, `tags list`, `fields list`) et créer les tags de domaine propres au projet.
-4. Instancier `98_configuration/GOUVERNANCE_BLUE.md` du projet avec ces IDs.
+2. Créer le workspace fils : `BLUE_ORG=<org> scripts/blue-cli.sh workspaces create --name "<Projet>" --template <template_id>`. Piège : la sortie de cette commande revient vide (ID/Name/Slug/Category non peuplés, la copie est asynchrone) — retrouver le workspace fils par `workspaceList` (recherche par nom), pas par la sortie de la commande.
+3. **Inviter l'utilisateur humain sur ce workspace** (`blue users invite --email <email> --access-level <niveau> --workspace <id>`) : un workspace créé par API n'est pas automatiquement visible dans l'UI de l'humain propriétaire du compte, même s'il est admin de l'organisation. Sans cette étape, l'humain ne verra pas le workspace qu'il vient de faire créer.
+4. La copie génère de nouveaux IDs pour les lists, tags et custom fields : les relever (`lists list`, `tags list`, `fields list`) et créer les tags de domaine propres au projet.
+5. Instancier `98_configuration/GOUVERNANCE_BLUE.md` du projet avec ces IDs.
 
 Si aucun workspace modèle n'existe encore : le signaler, construire d'abord sa structure via la CLI, proposer la conversion en template (voir piège ci-dessus, accord humain obligatoire), avant de créer le workspace du projet.
 

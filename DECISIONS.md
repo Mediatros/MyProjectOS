@@ -19,6 +19,22 @@
 
 ---
 
+### DEC-0029 — Brique Blue complète : skill technique portable, secrets multi-backend, registre d'équipement (D1-D5)
+
+- **Date** : 2026-07-12
+- **Contexte** : DEC-0027/0028 posent la gouvernance Blue (`GOUVERNANCE_BLUE.md`) et sa proposition active, mais la méthode ne livrait qu'un gabarit documentaire, pas d'outillage technique installable. Le plan `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` (T-PLAN-4, englobe T-PLAN-2/T-PLAN-3) propose qu'un projet qui active Blue reçoive en plus une skill technique portable (CLI + GraphQL + résolution de secrets), agnostique agent (Claude Code, Codex, Hermès), et un protocole d'équipement inter-agents. Cinq points d'architecture nécessitaient un arbitrage humain (D1-D5, § 10 du plan) ; tranchés par l'utilisateur le 2026-07-12.
+- **Options envisagées et choix (D1-D5)** :
+  - **D1 — Nom de la skill** : `blue-app` sous `templates/skills/blue-app/`, minuscules-tirets (compatibilité multi-implémentations du standard agentskills.io ; `blue.app`/`blue_app` écartés). Variante `blue-app-<projet>` réservée à un *comportement* différent, la *configuration* spécifique restant dans `GOUVERNANCE_BLUE.md` du projet.
+  - **D2 — Conversion d'un workspace en template** : exécutée par l'agent (`convertWorkspaceToTemplate`), après accord explicite de l'humain en session (action réversible via `removeWorkspaceFromTemplates`, mais nouvelle au niveau organisation). Les réglages visuels du modèle restent un geste humain.
+  - **D3 — Installation Hermès** : copie unique globale dans son dossier skills (chemin réel vérifié au premier essai VPS, `~/.hermes/skills/`), plutôt que `skills.external_dirs` (écarté : modifiable par toute session touchant le dossier projet, vulnérable aux conflits Syncthing).
+  - **D4 — Migration de `~/.claude/skills/blue-cli`** (myagent, skill globale personnelle antérieure au plan) vers une instance de `blue-app`, débloquée une fois la Phase 2 (banc d'essai MySecretaire) validée en réel.
+  - **D5 — Windows** : documentation seule dans `INSTALL.md` (PowerShell SecretManagement/SecretStore), aucun script `.ps1` tant qu'aucune machine Windows réelle ne permet de le tester (règle « aucune recette théorique »).
+- **Raison** : chaque option retenue suit un principe déjà établi ailleurs dans la méthode — compatibilité multi-agent avant confort de frappe (D1), accord humain explicite avant toute action au niveau organisation (D2), simplicité et intégrité de la source projet avant flexibilité de configuration (D3), séquencement par validation réelle plutôt que migration anticipée (D4), aucune recette non testée (D5, cohérent avec le refus des « faits non sourcés » de la méthode).
+- **Conséquences** : `templates/skills/blue-app/` créé (SKILL.md, INSTALL.md, `scripts/blue-secrets.sh`/`blue-cli.sh`/`blue-gql.sh`/`blue-files.sh`), testé en réel sur les trois agents (Phases 1-3, voir CHG-20260712-1345/1658). Workspace modèle et workflow commentaires validés en réel (Phase 4, CHG-20260712-1720). Wiring méthode (Phase 5, ce DEC) : `skills/my-project-os/SKILL.md` propose désormais la pose de la skill en Mode 5/6 après la gouvernance, et corrige la ligne obsolète sur le support de skills par Codex/Hermès ; `docs/NAMING-CONVENTIONS.md` fixe les noms d'agents canoniques (`CLAUDECODE`, `HERMES`, `CODEX`) ; `agents/hermes.md` documente les chemins skills réels et cite `blue-app` comme premier cas concret de skill partagée entre les trois agents ; `structures/core-tree.md` mentionne `98_configuration/skills/` ; `templates/configuration/HANDOFF_INTERAGENT.md` gagne le renvoi vers le tableau d'équipement et le modèle d'entrée « Équiper un agent ». Version portée à `0.11.0` (nouvelle capacité = évolution mineure). Restent, hors câblage interne du dépôt méthode : la propagation `--update-method` aux projets structurés, la mise à jour des `GOUVERNANCE_BLUE.md` déjà instanciées (LaCIOTAT, MySecretaire) et la migration D4 de `blue-cli` — actions sur des systèmes externes/live, traitées dans une session dédiée.
+- **Liens** : CHG-20260712-1250, CHG-20260712-1345, CHG-20260712-1658, CHG-20260712-1720, CHG à venir pour ce wiring.
+
+---
+
 ### DEC-0028 — Blue proposé activement par la skill assistant (Mode 5 et Mode 6)
 
 - **Date** : 2026-07-12

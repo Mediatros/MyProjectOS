@@ -18,6 +18,7 @@ MonProjet/
 ├── 03_documents/       # PDF, emails, pièces jointes
 ├── 04_deliverables/    # livrables finaux
 ├── 98_configuration/   # optionnel : gouvernance d'intégrations tierces, handoff inter-agents
+│   └── skills/         # optionnel : copie canonique projet d'une skill technique portable (ex. blue-app)
 └── 99_archive/         # éléments clôturés ou obsolètes
 ```
 
@@ -43,6 +44,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 | `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
 | `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents | Optionnel, créé à la demande dès qu'un projet est piloté par plusieurs agents/outils partagés ; jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
+| `98_configuration/skills/` | Copie canonique projet d'une skill technique portable (agnostique agent, ex. `blue-app`), synchronisée Syncthing ; chaque agent l'installe ensuite chez lui selon son `INSTALL.md` | Optionnel, posé quand une intégration outillée (ex. Blue) est activée ; source unique, jamais modifiée localement par un agent sans répercuter ici |
 | `99_archive/` | Éléments clôturés ou obsolètes, anciens CHANGELOG | Conserver, ne pas supprimer |
 
 ## Extensions
