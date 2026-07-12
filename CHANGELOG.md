@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.8.0** — 2026-07-12 — canonisation de `98_configuration/`, dossier optionnel pour la gouvernance d'intégrations tierces partagées entre agents et le handoff asynchrone inter-agents, issue du RETEX LaCIOTAT sur l'intégration Blue. `structures/core-tree.md` et `docs/NAMING-CONVENTIONS.md` documentent la convention ; deux gabarits génériques dans `templates/configuration/` (`HANDOFF_INTERAGENT.md`, `GOUVERNANCE_INTEGRATION.md`) ; `hook-pre-write.sh` refuse désormais aussi en temps réel une collision de préfixe numérique `NN_` entre deux dossiers racine distincts (referme l'angle mort des abréviations, ex. `98_config`/`98_configuration`, que la détection de quasi-doublon seule ne voyait pas) ; consigne « consulter le canon avant de créer un dossier racine » ajoutée à la skill, ce qui clôt T-R.4. Voir CHG-20260712-1110, DEC-0026.
 - **v0.7.0** — 2026-07-10 — garde-fous sur les dossiers racine, issus du RETEX LaCIOTAT (un `99_archives/` a vécu deux jours à côté du `99_archive/` canonique sans détection) : `hook-pre-write.sh` refuse en temps réel la création d'un dossier racine quasi-doublon d'un dossier existant (normalisation accents/casse/tirets/`s` final), et `check-project.sh` gagne une section « Dossiers racine » qui avertit sur les quasi-doublons et les collisions de préfixe numérique `NN_`. Voir CHG-20260709-2350, CHG-20260709-2355 et `RETEX/retex-laciotat-doublon-archives.md`.
 - **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir CHG-20260709-0017, DEC-0025.
 - **v0.5.0** — 2026-07-07 — la méthode se met à jour dans les projets existants : manifest d'artefacts (`.myprojectos/manifest`), détection distante (`check-update.sh`), application sécurisée (`init-project.sh --update-method` avec sauvegarde dans `99_archive/`). Cycle de travail itératif codifié (`docs/cycle-de-travail.md`), skill assistant portée à 7 modes (cadrage guidé, adoption d'un projet existant, mise à jour), protocole agent `docs/INSTALL-AGENT.md`, intégration du RETEX comptabilité (`SUJETS.md`, source fraîche prioritaire), navigation Knowledge outillée (orphelins, liens cassés, budgets de taille), exemples complets Life et Code, CI GitHub Actions, corrections de fiabilité. Voir CHG-20260707-1100.
@@ -26,6 +27,15 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260712-1110 — Canonisation de `98_configuration/` : gouvernance et handoff inter-agents (T-S.1 à T-S.5)
+
+- `structures/core-tree.md` : `98_configuration/` ajouté au schéma et au tableau des rôles, optionnel, tous types.
+- `docs/NAMING-CONVENTIONS.md` : `98_configuration/` documenté (portée, ce qui n'y va pas) ; consigne « vérifier qu'aucune variante proche n'existe avant de créer un dossier racine » ajoutée (clôt T-R.4).
+- `templates/configuration/HANDOFF_INTERAGENT.md` et `templates/configuration/GOUVERNANCE_INTEGRATION.md` : gabarits génériques extraits de la solution locale LaCIOTAT (`HANDOFF_CLAUDE_HERMES.md`, `GOUVERNANCE_BLUE.md`), posés à la demande (non wirés à `init-project.sh`, comme tous les dossiers numérotés au-delà de `00_inbox/`).
+- `scripts/hooks/_lib.sh` : nouvelle fonction `root_prefix()`. `hook-pre-write.sh` : refuse désormais aussi la création d'un dossier racine dont le préfixe `NN_` entre en collision avec un dossier existant, même si les noms ne se ressemblent pas (ex. `98_config` à côté de `98_configuration`). `check-project.sh` inchangé : sa section « Dossiers racine » (9b) détectait déjà génériquement ce cas en audit.
+- `skills/my-project-os/SKILL.md` : mention de `98_configuration/` dans la description des extensions ; consigne active en mode Orientation avant toute création de dossier racine.
+- `VERSION` : `0.8.0`. Voir DEC-0026 et `RETEX/retex-laciotat-98-configuration-gouvernance-multiagent.md`.
 
 ### CHG-20260709-2355 — Garde-fous dossiers racine : quasi-doublons détectés et bloqués (T-R.1, T-R.2)
 

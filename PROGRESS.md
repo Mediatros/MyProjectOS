@@ -2,8 +2,8 @@
 projet: MyProjectOS
 type: Core
 statut: en construction
-derniere_maj: 2026-07-10
-prochaine_action: T-R.3/T-R.4 (installeur non aveugle, consigne active), banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11. Signalé : TeamLeader a 10 bloquants préexistants (fichiers sacrés Hybrid jamais greffés, --into-existing à envisager).
+derniere_maj: 2026-07-12
+prochaine_action: T-R.3 (installeur non aveugle), cadrer en RETEX/DEC séparé l'idée « Blue en brique optionnelle » (méthode de nommage/remplissage de cartes proposée par l'utilisateur), banc d'essai Unjque (Phase 6), ou T-B.7 / T-C.11. Signalé : TeamLeader a 10 bloquants préexistants (fichiers sacrés Hybrid jamais greffés, --into-existing à envisager).
 prochaine_echeance:
 ---
 
@@ -40,10 +40,12 @@ Les décisions structurantes sont consignées dans `DECISIONS.md` (format `DEC-X
 
 ## Travail en cours
 
+- v0.8.0 posée le 2026-07-12 (Phase S, T-S.1 à T-S.5) à partir de l'issue GitHub #1 / RETEX LaCIOTAT `98_configuration/` : dossier optionnel canonisé pour la gouvernance d'intégrations tierces partagées entre agents et le handoff asynchrone inter-agents (gabarits génériques `templates/configuration/HANDOFF_INTERAGENT.md` et `GOUVERNANCE_INTEGRATION.md`), garde-fou temps réel étendu aux collisions de préfixe `NN_` dans `hook-pre-write.sh` (referme l'angle mort des abréviations que T-R.1/T-R.2 ne couvraient pas), consigne active dans la skill qui clôt au passage T-R.4. Voir DEC-0026, CHG-20260712-1110. **Reste à faire** : `sh scripts/validate.sh`-équivalent (skill `validate`) pour vérifier par exécution (projet test, hook testé sur une collision de préfixe), puis propagation `--update-method` aux trois projets structurés (LaCIOTAT en premier, à l'origine du RETEX) — pas encore fait.
+- Idée notée par l'utilisateur le 2026-07-12, volontairement **non traitée aujourd'hui** (scope séparé) : transformer l'usage de Blue en brique optionnelle de MyProjectOS, avec une gouvernance de nommage/remplissage de cartes pré-remplie et réutilisable par tout projet qui adopte Blue (au lieu du gabarit générique vide `GOUVERNANCE_INTEGRATION.md`). À cadrer via un nouveau RETEX/DEC quand `GOUVERNANCE_BLUE.md` de LaCIOTAT aura assez vécu pour en extraire ce qui est vraiment générique.
 - v0.7.0 publiée le 2026-07-10 (tag + release GitHub, CI verte) puis propagée via `--update-method` aux trois projets structurés (LaCIOTAT, Comptabilite_globale, TeamLeader, tous 0.6.0 → 0.7.0, migrations consignées dans leur CHANGELOG). Apport : garde-fous dossiers racine (T-R.1/T-R.2). Le nouveau contrôle passe à [ok] sur les trois projets.
 - Historique git réécrit le 2026-07-10 (filter-branch sur main + les 7 tags, force-push, releases intactes) : suppression de tous les trailers `Co-Authored-By: Claude`. Règle permanente : aucune signature Claude/Anthropic dans les commits, PR ou releases.
-- Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1).
-- RETEX LaCIOTAT du 2026-07-09 (`RETEX/retex-laciotat-doublon-archives.md`, CHG-20260709-2350) : un quasi-doublon de dossier racine (`99_archives`/`99_archive`) a traversé les trois couches d'enforcement, qui contrôlaient les fichiers mais pas les dossiers. Phase R : T-R.1 (audit `check-project.sh`) et T-R.2 (barrière `hook-pre-write.sh`) implémentés et testés le 2026-07-09 (CHG-20260709-2355) ; restent T-R.3 (installeur) et T-R.4 (consigne active). Propagé aux projets avec la v0.7.0.
+- Ouvert : T-B.7 (mode revue documentaire périodique), T-C.11 (statuer sur les plans en attente Company OS / SecondBrain PKB / Steward OS, avec T-PLAN-1), T-R.3 (installeur non aveugle).
+- RETEX LaCIOTAT du 2026-07-09 (`RETEX/retex-laciotat-doublon-archives.md`, CHG-20260709-2350) : un quasi-doublon de dossier racine (`99_archives`/`99_archive`) a traversé les trois couches d'enforcement, qui contrôlaient les fichiers mais pas les dossiers. Phase R : T-R.1, T-R.2 (2026-07-09) et T-R.4 (2026-07-12, généralisé via Phase S) faits ; reste T-R.3 (installeur). Propagé aux projets avec la v0.7.0.
 
 ## Besoins Code identifiés (trois couches)
 

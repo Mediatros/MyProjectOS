@@ -61,6 +61,17 @@ normalize_root_name() {
     printf '%s' "$_n" | LC_ALL=C tr '[:upper:]' '[:lower:]' | tr '-' '_' | sed 's/s$//'
 }
 
+# Préfixe numérique à deux chiffres d'un nom de dossier racine (ex. "98" pour
+# "98_configuration"), vide si absent. Attrape les abréviations qu'un simple
+# rapprochement de nom ne verrait pas (ex. "98_config" à côté de
+# "98_configuration") : même préfixe = même rang de lecture visé.
+root_prefix() {
+    case "$1" in
+        [0-9][0-9]_*) printf '%s' "${1%%_*}" ;;
+        *) : ;;
+    esac
+}
+
 # Refuse l'action (PreToolUse) avec une raison, puis sort proprement.
 deny() {
     _reason=$(printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g')

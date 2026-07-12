@@ -17,6 +17,7 @@ MonProjet/
 ├── 02_work/            # travail actif en cours
 ├── 03_documents/       # PDF, emails, pièces jointes
 ├── 04_deliverables/    # livrables finaux
+├── 98_configuration/   # optionnel : gouvernance d'intégrations tierces, handoff inter-agents
 └── 99_archive/         # éléments clôturés ou obsolètes
 ```
 
@@ -41,6 +42,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 | `02_work/` | Notes et fichiers du travail en cours | Cœur de l'activité |
 | `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
+| `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents | Optionnel, créé à la demande dès qu'un projet est piloté par plusieurs agents/outils partagés ; jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
 | `99_archive/` | Éléments clôturés ou obsolètes, anciens CHANGELOG | Conserver, ne pas supprimer |
 
 ## Extensions

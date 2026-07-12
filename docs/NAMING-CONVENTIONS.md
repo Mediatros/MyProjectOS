@@ -56,6 +56,10 @@ Un sous-dossier par domaine (`docs/03_details/facturation/…`) est accepté pou
 ## Dossiers numérotés
 
 Les dossiers de travail sont préfixés par un numéro à deux chiffres pour fixer l'ordre de lecture :
-`00_inbox/`, `01_context/`, `02_work/`, `03_documents/`, `04_deliverables/`, `99_archive/`.
+`00_inbox/`, `01_context/`, `02_work/`, `03_documents/`, `04_deliverables/`, `98_configuration/` (optionnel), `99_archive/`.
 
 Le rôle de chaque dossier est décrit dans `structures/core-tree.md` (et `life-tree.md`, `code-tree.md`).
+
+`98_configuration/` (optionnel, tous types) : gouvernance des intégrations d'outils tiers partagées entre plusieurs agents (`GOUVERNANCE_<OUTIL>.md`) et handoff asynchrone entre agents sans canal de communication direct (`HANDOFF_<AGENT-A>_<AGENT-B>.md`). Gabarits génériques : `templates/configuration/`. N'y va pas : les secrets (restent en `.env`/trousseau) ni le contenu métier du projet (reste dans les dossiers `0X_`).
+
+Avant de créer un dossier à la racine (numéroté ou non) : vérifier dans `structures/*-tree.md` et sur le disque qu'aucune variante proche du nom canonique n'existe déjà (singulier/pluriel, casse, accents, abréviation). Un dossier racine mal nommé attire du contenu pendant des jours avant d'être détecté — voir `RETEX/retex-laciotat-doublon-archives.md`.

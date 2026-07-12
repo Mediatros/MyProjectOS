@@ -84,7 +84,16 @@ But : qu'un quasi-doublon de dossier racine (type `99_archives`/`99_archive`, su
 - [x] **T-R.1** `check-project.sh` : section « Dossiers racine » — avertit sur les quasi-doublons (noms identiques après normalisation minuscules/accents/tirets/`s` final) et sur les collisions de préfixe `NN_` entre dossiers distincts. Pas de liste blanche : les extensions du canon restent légitimes. Fait le 2026-07-09, voir CHG-20260709-2355.
 - [x] **T-R.2** `hook-pre-write.sh` : refuse l'écriture d'un fichier dont le premier segment créerait un dossier racine quasi-doublon d'un dossier existant (`normalize_root_name` dans `_lib.sh`, dupliquée dans `check-project.sh` qui est copié seul). Fait le 2026-07-09, voir CHG-20260709-2355.
 - [ ] **T-R.3** `install.sh` / `init-project.sh` / `--update-method` : avant de créer un dossier canonique, détecter une variante proche existante et signaler au lieu de créer le jumeau en silence.
-- [ ] **T-R.4** Consigne active : règle « pas de variante de dossier racine » dans `docs/NAMING-CONVENTIONS.md` (section Dossiers numérotés) et dans les garde-fous de la skill `my-project-os`.
+- [x] **T-R.4** Consigne active : règle « pas de variante de dossier racine » dans `docs/NAMING-CONVENTIONS.md` (section Dossiers numérotés) et dans les garde-fous de la skill `my-project-os`. Fait le 2026-07-12 en même temps que la Phase S (généralisée à tout dossier racine, pas seulement `99_archive`). Voir CHG-20260712-1110.
+
+### Phase S — RETEX LaCIOTAT : `98_configuration/`, gouvernance et handoff inter-agents
+But : donner une case canonique aux projets pilotés par plusieurs agents (gouvernance d'intégrations tierces partagées, handoff asynchrone). Analyse complète : `RETEX/retex-laciotat-98-configuration-gouvernance-multiagent.md`.
+
+- [x] **T-S.1** `structures/core-tree.md` + `docs/NAMING-CONVENTIONS.md` : canoniser `98_configuration/` (optionnel, tous types). Fait le 2026-07-12, voir CHG-20260712-1110.
+- [x] **T-S.2** `scripts/hooks/_lib.sh` (`root_prefix()`) + `hook-pre-write.sh` : garde-fou temps réel sur les collisions de préfixe numérique `NN_`, au-delà des quasi-doublons de nom déjà couverts (T-R.2). Fait le 2026-07-12, voir CHG-20260712-1110.
+- [x] **T-S.3** `templates/configuration/HANDOFF_INTERAGENT.md` : gabarit générique de handoff asynchrone inter-agents. Fait le 2026-07-12.
+- [x] **T-S.4** `templates/configuration/GOUVERNANCE_INTEGRATION.md` : gabarit générique de gouvernance d'intégration tierce. Fait le 2026-07-12.
+- [x] **T-S.5** Consigne active dans la skill `my-project-os` (mode Orientation). Fait le 2026-07-12, voir CHG-20260712-1110.
 
 ### Phase 6 — Banc d'essai Unjque
 But : valider la méthode sur un vrai projet.

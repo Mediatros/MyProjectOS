@@ -19,6 +19,18 @@
 
 ---
 
+### DEC-0026 — Canoniser `98_configuration/` : gouvernance partagée et handoff inter-agents
+
+- **Date** : 2026-07-12
+- **Contexte** : le RETEX LaCIOTAT du 2026-07-11 (`RETEX/retex-laciotat-98-configuration-gouvernance-multiagent.md`) montre qu'un projet piloté par plusieurs agents distincts (Claude Code, Hermès Agent, Codex) a besoin (1) d'un endroit pour des règles de configuration/gouvernance d'outils tiers partagées entre agents, pour éviter qu'un outil externe (ex. Blue) devienne une source non fiable par divergence silencieuse, et (2) d'un mécanisme d'échange asynchrone entre agents sans canal de communication direct. Aucune case du canon existant (`0X_` métier, `05_correspondances/`, `99_archive/`, `.claude/skills/`) ne convenait (détail dans le RETEX). La solution locale posée dans LaCIOTAT (`98_configuration/` avec `GOUVERNANCE_BLUE.md` et `HANDOFF_CLAUDE_HERMES.md`) est jugée réutilisable.
+- **Options envisagées** :
+  - A. Ne rien canoniser, laisser chaque projet multi-agent réinventer sa solution.
+  - B. Canoniser `98_configuration/` dans `structures/core-tree.md` (optionnel, tous types), documenter la convention dans `docs/NAMING-CONVENTIONS.md`, fournir deux gabarits génériques (`templates/configuration/HANDOFF_INTERAGENT.md`, `templates/configuration/GOUVERNANCE_INTEGRATION.md`), et étendre le garde-fou temps réel de `hook-pre-write.sh` aux collisions de préfixe numérique `NN_` (pas seulement aux quasi-doublons de nom) pour attraper les abréviations (`98_config` à côté de `98_configuration`) que la détection de quasi-doublon existante ne voit pas.
+- **Choix** : option B.
+- **Raison** : A répète l'erreur déjà documentée dans `retex-laciotat-doublon-archives.md` (une convention non canonisée devient une variante par projet). B suit le principe déjà établi (DEC-0002 : dossiers créés à la demande, pas de squelette imposé) et referme un angle mort du garde-fou dossiers racine (T-R.1/T-R.2, v0.7.0) qui ne détectait que les noms quasi-identiques, pas les préfixes partagés par des noms différents.
+- **Conséquences** : `structures/core-tree.md` et `docs/NAMING-CONVENTIONS.md` documentent `98_configuration/` (optionnel) ; `templates/configuration/` accueille les deux gabarits génériques, non wirés à `init-project.sh` (posés à la demande, comme tous les dossiers numérotés au-delà de `00_inbox/`) ; `scripts/hooks/_lib.sh` gagne `root_prefix()`, réutilisée par `hook-pre-write.sh` pour refuser en temps réel une collision de préfixe `NN_` entre deux dossiers racine distincts ; `check-project.sh` n'a pas besoin de changement, sa section « Dossiers racine » (9b) détectait déjà génériquement les collisions de préfixe en audit. La consigne « consulter le canon avant de créer un dossier racine » (T-R.4, restée ouverte depuis le RETEX précédent) est ajoutée dans la skill `my-project-os` et `docs/NAMING-CONVENTIONS.md`, ce qui clôt T-R.4 par la même occasion. Version portée à `0.8.0` (nouvelle capacité = évolution mineure).
+- **Liens** : CHG-20260712-1110, `RETEX/retex-laciotat-98-configuration-gouvernance-multiagent.md`.
+
 ### DEC-0025 — Isolation complète des hooks : copie locale au lieu d'une référence à `MyProjectOS`
 
 - **Date** : 2026-07-04 (consignée le 2026-07-09, récupérée du clone divergent résorbé)

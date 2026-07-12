@@ -25,6 +25,8 @@ Extension **Life** : `PREUVES.md` (`P-XXXX`), `ECHEANCES.md`, `CORRESPONDANCES.m
 Extension **Code** : `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md` (`F-XXX`), `TEST_PLAN.md`, `IMPACT_ANALYSIS.md` (`IA-XXX`), `RELEASE.md`.
 Extension **Knowledge** : `docs/INDEX.md`, `docs/kb_governance.md`, `docs/01_global/`, `docs/02_domains/`, `docs/03_details/`, `docs/runbooks/`, `docs/plan/`, et souvent `SUJETS.md` à la racine (routeur métier). Elle est transverse et peut cohabiter avec Life, Code ou Hybrid.
 
+Dossier optionnel `98_configuration/` (tous types) : gouvernance des intégrations d'outils tiers partagées entre agents (`GOUVERNANCE_<OUTIL>.md`) et handoff asynchrone inter-agents (`HANDOFF_<AGENT-A>_<AGENT-B>.md`), à créer à la demande dès qu'un projet est piloté par plusieurs agents ou dépend d'un outil externe partagé (ex. gestion de tâches). Gabarits : `templates/configuration/`.
+
 Règle d'or : **une information, un seul endroit**. État présent → PROGRESS ; historique daté → CHANGELOG ; pourquoi → DECISIONS ; tâches → TASKS ; preuves → PREUVES. Les autres fichiers référencent par identifiant, ils ne recopient pas.
 
 ## Cycle de travail (toujours)
@@ -70,6 +72,7 @@ Déclencheurs : « Où je range ça ? », un document arrive, une info doit êtr
 - **Une demande métier** (« les dépenses maison », « le dossier Untel ») → si `SUJETS.md` existe, y trouver le sujet canonique, l'ordre de lecture et la **source fraîche prioritaire** avant toute réponse. Ne jamais répondre depuis une synthèse sans avoir vérifié la source fraîche déclarée.
 - **Une information** → l'aiguiller selon la frontière des fichiers sacrés (tableau ci-dessus).
 - **Un document entrant** (PDF, email, pièce) → `00_inbox/` d'abord, puis classer dans le bon dossier numéroté. Renommer selon les conventions : minuscules, tirets, sans accents, daté `YYYY-MM-DD-...` si c'est un document daté.
+- **Un dossier racine à créer** (numéroté ou non) → vérifier d'abord dans `structures/*-tree.md` et sur le disque qu'aucun dossier canonique ou variante proche (singulier/pluriel, casse, accents, abréviation) n'existe déjà. Ne jamais inventer un nom au fil de l'eau ; les hooks refusent les quasi-doublons et les collisions de préfixe `NN_`, mais mieux vaut consulter le canon avant d'écrire.
 - **Une feature Code** → arbitrer parcours **complet** vs **allégé** :
 
 | | Allégé | Complet |
