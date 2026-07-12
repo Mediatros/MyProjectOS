@@ -31,6 +31,13 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 
 ---
 
+### CHG-20260712-2000 — Brique Blue Phase 5 (suite) : propagation externe, gouvernances instanciées, migration D4
+
+- Propagation `--update-method` (0.10.0 → 0.11.0) vers les trois projets structurés : `LaCIOTAT`, `Comptabilite_globale`, `TeamLeader`. `check-project.sh` inchangé après migration sur les trois (LaCIOTAT 0/3, Comptabilite_globale 0/5, TeamLeader 10 bloquants préexistants/2 — rien cassé), entrée `CHG-20260712-2000` consignée dans le `CHANGELOG.md` de chacun.
+- `GOUVERNANCE_BLUE.md` instanciées mises à jour sans écraser leur vécu : `MySecretaire` était déjà à jour (tableau d'équipement posé en Phase 2-3) ; `LaCIOTAT` gagne le piège CLI `tags create --color` (hex obligatoire) et une entrée de journal signalant que la brique Blue complète existe désormais, sans migration forcée (ce projet continue d'utiliser sa skill dédiée `blue-cli-laciotat`, décision laissée à l'utilisateur).
+- Migration D4 : instance personnelle `~/.claude/skills/blue-app-myagent/` créée (scripts copiés depuis `templates/skills/blue-app/scripts/`, `SKILL.md` adapté avec `BLUE_ORG=myagent`, table de routage et détails de workspace repris de l'ancienne skill `blue-cli`), vérifiée en réel (`blue-gql.sh --check` OK, `workspaces list` : 7/7 workspaces retrouvés à l'identique). `~/.claude/skills/blue-cli/` conservée intacte à titre de filet (décision utilisateur en session), non appelée par la nouvelle instance. Simplification actée : le mécanisme `BLUE_ORG` de `blue-app` (config.env régénéré par appel) rend obsolète la « règle d'or » de l'ancienne skill sur le défaut durable `COMPANY_ID`.
+- Ce qui reste, hors décision explicite de l'utilisateur : bascule effective (suppression de `blue-cli/`), publication (tag/release/push) de v0.11.0.
+
 ### CHG-20260712-1900 — Brique Blue Phase 5 (partiel) : câblage méthode interne au dépôt, v0.11.0
 
 - Phase 5 du plan `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` (T-PLAN-4) : application du § 8 (table d'impacts) limitée au câblage interne du dépôt méthode, formalisation des décisions D1-D5 dans `DEC-0029`.

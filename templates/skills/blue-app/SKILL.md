@@ -260,3 +260,5 @@ Tenir à jour le tableau « Accès technique » de `98_configuration/GOUVERNANCE
 ## Provenance
 
 Skill générique du dépôt méthode MyProjectOS (`templates/skills/blue-app/`), instanciée dans chaque projet sous `98_configuration/skills/blue-app/` puis installée par agent selon `INSTALL.md`. Généralise la skill globale personnelle `~/.claude/skills/blue-cli` (organisation `myagent`) une fois cette dernière migrée (voir décision D4 du plan d'origine).
+
+**D4 réalisée le 2026-07-12** : instance personnelle `~/.claude/skills/blue-app-myagent/` créée (copie des scripts + `SKILL.md` adapté : `BLUE_ORG=myagent`, table de routage projet → workspace et détails de workspace repris de l'ancienne skill), vérifiée en réel (`--check` OK, 7/8 workspaces retrouvés à l'identique). `~/.claude/skills/blue-cli/` laissée en place intacte, à titre de filet, non appelée par la nouvelle instance — bascule complète (suppression de l'ancienne) laissée à la discrétion de l'utilisateur après un usage réel de `blue-app-myagent`.
