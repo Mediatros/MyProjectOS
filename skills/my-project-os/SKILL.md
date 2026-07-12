@@ -25,7 +25,7 @@ Extension **Life** : `PREUVES.md` (`P-XXXX`), `ECHEANCES.md`, `CORRESPONDANCES.m
 Extension **Code** : `AGENTS.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md` (`F-XXX`), `TEST_PLAN.md`, `IMPACT_ANALYSIS.md` (`IA-XXX`), `RELEASE.md`.
 Extension **Knowledge** : `docs/INDEX.md`, `docs/kb_governance.md`, `docs/01_global/`, `docs/02_domains/`, `docs/03_details/`, `docs/runbooks/`, `docs/plan/`, et souvent `SUJETS.md` à la racine (routeur métier). Elle est transverse et peut cohabiter avec Life, Code ou Hybrid.
 
-Dossier optionnel `98_configuration/` (tous types) : gouvernance des intégrations d'outils tiers partagées entre agents (`GOUVERNANCE_<OUTIL>.md`) et handoff asynchrone inter-agents (`HANDOFF_<AGENT-A>_<AGENT-B>.md`), à créer à la demande dès qu'un projet est piloté par plusieurs agents ou dépend d'un outil externe partagé (ex. gestion de tâches). Gabarits : `templates/configuration/`.
+Dossier optionnel `98_configuration/` (tous types) : gouvernance des intégrations d'outils tiers partagées entre agents (`GOUVERNANCE_<OUTIL>.md`) et handoff asynchrone inter-agents (`HANDOFF_<AGENT-A>_<AGENT-B>.md`), à créer à la demande dès qu'un projet est piloté par plusieurs agents ou dépend d'un outil externe partagé (ex. gestion de tâches). Gabarits : `templates/configuration/` — préférer une variante pré-remplie par outil si elle existe (ex. `GOUVERNANCE_BLUE.md`) au gabarit générique vide `GOUVERNANCE_INTEGRATION.md`.
 
 Règle d'or : **une information, un seul endroit**. État présent → PROGRESS ; historique daté → CHANGELOG ; pourquoi → DECISIONS ; tâches → TASKS ; preuves → PREUVES. Les autres fichiers référencent par identifiant, ils ne recopient pas.
 
@@ -135,6 +135,7 @@ Le but : que l'utilisateur ne se perde ni dans la définition du besoin, ni dans
 
    (Depuis un clone local du dépôt méthode : `sh <REPO>/scripts/init-project.sh` avec les mêmes flags.)
 7. **Pré-remplir `PROJECT.md`** avec les réponses, le soumettre à relecture. Un `PROJECT.md` en gabarit est un cadrage non terminé.
+8. **Proposer un outil de suivi visuel.** Demander : « Utilises-tu un outil de suivi de tâches ? » Présenter Blue (blue.cc) en une phrase : une interface visuelle qui reflète `TASKS.md`, consultable depuis un téléphone, pratique pour un pilotage humain sans rouvrir l'agent. Question fermée : « veux-tu que j'active Blue sur ce projet ? » Si oui, poser `98_configuration/GOUVERNANCE_BLUE.md` à partir de `templates/configuration/GOUVERNANCE_BLUE.md` (voir `docs/NAMING-CONVENTIONS.md`) et guider le remplissage des IDs (organisation, workspace, lists, tags, custom field). Si non, ne rien poser : dossier optionnel, à la demande.
 
 **Volet Code** (projet Code ou Hybrid), dans cet ordre et sans sauter d'étape :
 
@@ -154,7 +155,8 @@ Suivre le protocole `docs/INSTALL-AGENT.md` du dépôt méthode, section « Mét
 3. **Proposition de mapping** présentée à l'humain, avec questions fermées. **Aucun déplacement avant validation** : la réorganisation est une action sensible.
 4. **Exécution** : greffe `--into-existing` (ne pose que les fichiers manquants), puis uniquement les déplacements validés.
 5. **Remplissage assisté** de `PROJECT.md` et `PROGRESS.md` depuis les traces, marqué « à confirmer », soumis à relecture.
-6. **Rapport** : entrée `CHG-` dans le `CHANGELOG.md` du projet, puis `sh scripts/check-project.sh` (zéro bloquant attendu).
+6. **Proposer un outil de suivi visuel** : même question et même déroulé qu'en Mode 5, étape 8 (Blue via `98_configuration/GOUVERNANCE_BLUE.md`), une fois `TASKS.md` peuplé.
+7. **Rapport** : entrée `CHG-` dans le `CHANGELOG.md` du projet, puis `sh scripts/check-project.sh` (zéro bloquant attendu).
 
 ## Mode 7 — Mise à jour de la méthode
 

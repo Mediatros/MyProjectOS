@@ -19,6 +19,35 @@
 
 ---
 
+### DEC-0028 — Blue proposé activement par la skill assistant (Mode 5 et Mode 6)
+
+- **Date** : 2026-07-12
+- **Contexte** : DEC-0027 rend le gabarit `GOUVERNANCE_BLUE.md` disponible, mais rien ne le propose : un agent ne l'utilise que si l'utilisateur amène le sujet Blue le premier. L'utilisateur demande l'inverse : que la skill assistant pose la question elle-même en cadrage de projet (Mode 5) et en adoption de projet existant (Mode 6), avec une courte présentation de Blue, et propose d'activer immédiatement `98_configuration/GOUVERNANCE_BLUE.md` en cas de oui.
+- **Options envisagées** :
+  - A. Conditionner la proposition à la détection de Blue sur la machine (CLI `blue` ou skill `blue-cli` présente), pour rester neutre envers les adoptants du dépôt public MyProjectOS qui n'ont pas de compte Blue.
+  - B. Proposer Blue par défaut à tout adoptant de la méthode, sans détection, en Mode 5 (cadrage) et Mode 6 (adoption).
+- **Choix** : option B, tranché explicitement par l'utilisateur malgré le caractère public du dépôt (`https://github.com/Mediatros/MyProjectOS`).
+- **Raison** : décision utilisateur explicite après qu'on lui a présenté l'alternative (neutralité vis-à-vis des autres adoptants vs simplicité). La question posée reste fermée et non engageante (« utilises-tu un outil de suivi ? ») : un adoptant sans Blue répond non et rien ne se passe, le coût d'une proposition non pertinente est faible face au bénéfice pour l'usage principal du dépôt (l'utilisateur lui-même, qui dogfoode la méthode).
+- **Conséquences** : `skills/my-project-os/SKILL.md` — Mode 5 (Cadrage), nouvelle étape 8 après le pré-remplissage de `PROJECT.md` : présenter Blue en une phrase, question fermée, activation immédiate du gabarit si oui. Mode 6 (Adoption), nouvelle étape 6 (avant le rapport) : même proposition une fois `TASKS.md` peuplé. Aucun changement de `init-project.sh`/`check-project.sh` (l'activation reste un geste de session, pas un flag d'installation — cohérent avec DEC-0002/DEC-0027 : dossier optionnel, à la demande, seule la *proposition* devient systématique). Version portée à `0.10.0` (nouvelle capacité comportementale = évolution mineure). Point de vigilance : si le dépôt gagne des adoptants externes, cette proposition par défaut sera revisitée (piste A gardée en mémoire).
+- **Liens** : CHG-20260712-1145.
+
+---
+
+### DEC-0027 — Blue en brique optionnelle : gabarit pré-rempli `GOUVERNANCE_BLUE.md`
+
+- **Date** : 2026-07-12
+- **Contexte** : idée notée le 2026-07-12 (avant DEC-0026), volontairement différée : transformer l'usage de Blue en brique optionnelle de MyProjectOS, avec une gouvernance de nommage/remplissage de cartes pré-remplie et réutilisable, au lieu de repartir à chaque fois du gabarit générique vide `GOUVERNANCE_INTEGRATION.md`. Condition posée à l'époque : attendre que `GOUVERNANCE_BLUE.md` de LaCIOTAT ait « assez vécu » pour en extraire ce qui est vraiment générique. Le jour même, comparaison avec un second projet indépendant utilisant Blue sur un compte différent (`Unjque_Projet/.claude/skills/blue-cli-unjque`, compte `unjque`, hors méthode MyProjectOS — pas de `TASKS.md`/`PROJECT.md` à sa racine) : les deux ont découvert indépendamment les mêmes pièges CLI (`records update` exige `-w` sinon *Internal server error* ; description avec retour à la ligne/caractères spéciaux → *Unterminated string* ; checklist en deux commandes) et le même principe de nommage (tag = domaine, checklist dès que plusieurs étapes). Confirmation qu'une partie est vraiment générique (niveau outil), le reste étant spécifique au mode d'usage.
+- **Options envisagées** :
+  - A. Ne rien extraire, laisser chaque projet repartir du gabarit générique vide.
+  - B. Gabarit unique couvrant deux modes (miroir `TASKS.md` façon LaCIOTAT, et registre autonome façon Unjque).
+  - C. Gabarit `templates/configuration/GOUVERNANCE_BLUE.md` scopé au seul mode « miroir `TASKS.md` ↔ Blue », le seul cohérent avec `TASKS.md` comme fichier sacré de la méthode ; les pièges CLI confirmés par les deux projets (niveau outil, indépendants du mode) y sont intégrés comme sous-section technique.
+- **Choix** : option C.
+- **Raison** : A répète l'erreur déjà actée en DEC-0026 (convention non canonisée = redécouverte à chaque projet). B aurait documenté un mode observé uniquement hors méthode (Unjque n'a pas de `TASKS.md`), sans valeur pour un projet piloté par MyProjectOS, au prix d'un gabarit plus long — écarté après clarification avec l'utilisateur. C ne canonise que ce qui est confirmé par deux sources indépendantes (pièges CLI) ou directement dérivé du fichier sacré `TASKS.md` (workflow de miroir), sans figer prématurément un usage à observation unique (principe déjà tenu en DEC-0002).
+- **Conséquences** : `templates/configuration/GOUVERNANCE_BLUE.md` ajouté, non wiré à `init-project.sh` (posé à la demande, comme `GOUVERNANCE_INTEGRATION.md` et `HANDOFF_INTERAGENT.md`). `docs/NAMING-CONVENTIONS.md` et `skills/my-project-os/SKILL.md` mentionnent qu'une variante pré-remplie par outil prime sur le gabarit générique vide quand elle existe. Pas de changement de `check-project.sh`/`init-project.sh` (même raisonnement que DEC-0026 : dossier et contenu optionnels, non détectables comme obligatoires). Version portée à `0.9.0` (nouvelle capacité = évolution mineure). Le gabarit reste silencieusement daté par nature (IDs et pièges CLI valables à la vérification citée) : à rafraîchir si de nouveaux projets Blue révèlent des pièges supplémentaires.
+- **Liens** : CHG-20260712-1130.
+
+---
+
 ### DEC-0026 — Canoniser `98_configuration/` : gouvernance partagée et handoff inter-agents
 
 - **Date** : 2026-07-12

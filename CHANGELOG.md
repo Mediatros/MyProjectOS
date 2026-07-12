@@ -17,6 +17,8 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.10.0** — 2026-07-12 — la skill assistant propose désormais Blue activement : en Mode 5 (Cadrage d'un nouveau projet) et Mode 6 (Adoption d'un projet existant), une fois `TASKS.md` en place, elle demande « utilises-tu un outil de suivi de tâches ? », présente Blue en une phrase, et active immédiatement `98_configuration/GOUVERNANCE_BLUE.md` en cas de oui. Proposée par défaut à tout adoptant de la méthode (choix explicite malgré le dépôt public), sans wiring dans `init-project.sh`/`check-project.sh` : l'activation reste un geste de session, pas un flag d'installation. Voir CHG-20260712-1145, DEC-0028.
+- **v0.9.0** — 2026-07-12 — Blue en brique optionnelle : `templates/configuration/GOUVERNANCE_BLUE.md`, gabarit pré-rempli (nommage, checklists, workflow de miroir `TASKS.md` ↔ Blue, pièges CLI confirmés indépendamment sur deux projets/comptes Blue distincts), à préférer au gabarit générique vide `GOUVERNANCE_INTEGRATION.md` quand l'outil est Blue. `docs/NAMING-CONVENTIONS.md` et la skill assistant signalent qu'une variante pré-remplie par outil prime sur le gabarit générique. Voir CHG-20260712-1130, DEC-0027.
 - **v0.8.0** — 2026-07-12 — canonisation de `98_configuration/`, dossier optionnel pour la gouvernance d'intégrations tierces partagées entre agents et le handoff asynchrone inter-agents, issue du RETEX LaCIOTAT sur l'intégration Blue. `structures/core-tree.md` et `docs/NAMING-CONVENTIONS.md` documentent la convention ; deux gabarits génériques dans `templates/configuration/` (`HANDOFF_INTERAGENT.md`, `GOUVERNANCE_INTEGRATION.md`) ; `hook-pre-write.sh` refuse désormais aussi en temps réel une collision de préfixe numérique `NN_` entre deux dossiers racine distincts (referme l'angle mort des abréviations, ex. `98_config`/`98_configuration`, que la détection de quasi-doublon seule ne voyait pas) ; consigne « consulter le canon avant de créer un dossier racine » ajoutée à la skill, ce qui clôt T-R.4. Voir CHG-20260712-1110, DEC-0026.
 - **v0.7.0** — 2026-07-10 — garde-fous sur les dossiers racine, issus du RETEX LaCIOTAT (un `99_archives/` a vécu deux jours à côté du `99_archive/` canonique sans détection) : `hook-pre-write.sh` refuse en temps réel la création d'un dossier racine quasi-doublon d'un dossier existant (normalisation accents/casse/tirets/`s` final), et `check-project.sh` gagne une section « Dossiers racine » qui avertit sur les quasi-doublons et les collisions de préfixe numérique `NN_`. Voir CHG-20260709-2350, CHG-20260709-2355 et `RETEX/retex-laciotat-doublon-archives.md`.
 - **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir CHG-20260709-0017, DEC-0025.
@@ -27,6 +29,18 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260712-1145 — Blue proposé activement par la skill assistant
+
+- `skills/my-project-os/SKILL.md` — Mode 5 (Cadrage), nouvelle étape 8 : proposer un outil de suivi visuel, présenter Blue en une phrase, question fermée, activation immédiate de `98_configuration/GOUVERNANCE_BLUE.md` si oui.
+- `skills/my-project-os/SKILL.md` — Mode 6 (Adoption), nouvelle étape 6 (avant le rapport) : même proposition une fois `TASKS.md` peuplé.
+- `VERSION` : `0.10.0`. Voir DEC-0028.
+
+### CHG-20260712-1130 — Blue en brique optionnelle : gabarit pré-rempli `GOUVERNANCE_BLUE.md`
+
+- `templates/configuration/GOUVERNANCE_BLUE.md` : nouveau gabarit, variante pré-remplie de `GOUVERNANCE_INTEGRATION.md` scopée au mode « miroir `TASKS.md` ↔ Blue ». Contient la structure de référence (lists/tags/custom field), les règles de nommage et de checklist, le workflow de synchronisation pas à pas, et une section « Pièges CLI connus » confirmée sur deux projets/comptes Blue distincts (`LaCIOTAT`/`myagent` et `Unjque_Projet`/`unjque`). Posé à la demande, non wiré à `init-project.sh`.
+- `docs/NAMING-CONVENTIONS.md` et `skills/my-project-os/SKILL.md` : mention qu'une variante pré-remplie par outil (ex. `GOUVERNANCE_BLUE.md`) prime sur le gabarit générique vide quand elle existe.
+- `VERSION` : `0.9.0`. Voir DEC-0027.
 
 ### CHG-20260712-1110 — Canonisation de `98_configuration/` : gouvernance et handoff inter-agents (T-S.1 à T-S.5)
 
