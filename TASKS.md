@@ -36,6 +36,9 @@
 ## En cours
 
 - [ ] **T-PLAN-1** Relire et valider le plan `PLAN/plans/2026-06-07-company-os-integration.md` avant intégration dans les docs stables.
+- [ ] **T-PLAN-2** Valider le plan `PLAN/plans/2026-07-12-blue-cli-extension-graphql.md` (extension GraphQL de la skill globale `blue-cli` : wiki, documents, formulaires, chat, upload de fichiers) puis lancer l'implémentation Phases 1 à 4. Après application : enrichir `templates/configuration/GOUVERNANCE_BLUE.md` (capacités étendues + routage CLI/GraphQL) via le gate DEC/CHG. Décision humaine.
+- [ ] **T-PLAN-3** Valider le plan `PLAN/plans/2026-07-12-blue-workspace-template.md` (workspace Blue modèle « Convert to Template » pour uniformiser lists/tags/custom field `ID`/réglages d'un projet à l'autre, RETEX MySecretaire, doc Blue sourcée) puis dérouler : essai (§5), et si concluant intégration au gabarit `GOUVERNANCE_BLUE.md` + skill Modes 5/6 via le gate DEC/CHG (§4). Complémentaire de T-PLAN-2. Décision humaine.
+- [ ] **T-PLAN-4** Dérouler le plan `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` (brique Blue complète, englobe T-PLAN-2 et T-PLAN-3 ; décisions D1-D5 tranchées le 2026-07-12). **Phase 1 faite le 2026-07-12** (scripts + secrets, testés en réel). **Phase 2 faite le 2026-07-12** (banc d'essai MySecretaire : skill validée par exécution sur les trois agents — Claude Code/keychain, Codex/keychain, Hermès VPS/file + couche Bitwarden env —, D3 figé sur la copie globale, `INSTALL.md` propagé aux 4 instances, tableau d'équipement rempli, handoff « Équiper un agent » EN_ATTENTE vers Hermès). Voir CHG-20260712-1345. **Phase 3 faite le 2026-07-12** (recettes GraphQL par domaine exécutées en réel sur MySecretaire et figées dans le `SKILL.md` : documents/wiki, formulaires, discussions, chat, status updates, fichiers avec upload presigned validé de bout en bout via le nouveau `scripts/blue-files.sh` ; table de routage complète ; skill `1.1.0` propagée aux 4 instances ; critères T-PLAN-2 § 4 tous satisfaits ; voir CHG-20260712-1658). Restent : Phase 4 (workspace modèle + workflow commentaires), Phase 5 (wiring méthode, gate DEC/CHG, v0.11.0, propagation, migration `blue-cli` — D4 désormais débloquée).
 
 ## À faire
 
@@ -94,6 +97,12 @@ But : donner une case canonique aux projets pilotés par plusieurs agents (gouve
 - [x] **T-S.3** `templates/configuration/HANDOFF_INTERAGENT.md` : gabarit générique de handoff asynchrone inter-agents. Fait le 2026-07-12.
 - [x] **T-S.4** `templates/configuration/GOUVERNANCE_INTEGRATION.md` : gabarit générique de gouvernance d'intégration tierce. Fait le 2026-07-12.
 - [x] **T-S.5** Consigne active dans la skill `my-project-os` (mode Orientation). Fait le 2026-07-12, voir CHG-20260712-1110.
+
+### Phase T — RETEX MySecretaire : bloc d'en-tête PROGRESS.md systématique
+But : que le bloc d'en-tête frontmatter de `PROGRESS.md` (`derniere_maj`, `prochaine_action`, `prochaine_echeance`) existe dans tous les projets et soit mis à jour à chaque mise à jour du fichier, sans dérive. Besoin né de la skill radar de MySecretaire, qui lit ces en-têtes pour produire un tour d'horizon inter-projets à bas coût.
+
+- [ ] **T-T.1** Migrer les `PROGRESS.md` des projets nés avant le template : ajouter le bloc d'en-tête frontmatter. Projets SYNC sans bloc au 2026-07-12 : `Automatisation_Magazine`, `Biblioteca-SaaS`, `Copropriete_Jacques_Dore`, `Gestion_Courrier`, `Lindet_Litige_Final`, `Unjque_Projet` (plus les projets LOCAL non migrés). Passer par le runbook de migration (`docs/versioning.md`) ou `--into-existing`.
+- [ ] **T-T.2** Renforcer l'enforcement de fraîcheur : quand `PROGRESS.md` est modifié dans une session, vérifier que le bloc d'en-tête est présent et que `derniere_maj` porte la date du jour (extension de `hook-stop-progress.sh` ou de `hook-pre-write.sh`) ; statuer si le contrôle `check-project.sh` correspondant passe d'avertissement à bloquant.
 
 ### Phase 6 — Banc d'essai Unjque
 But : valider la méthode sur un vrai projet.

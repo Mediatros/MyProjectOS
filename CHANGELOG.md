@@ -30,6 +30,35 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 
 ---
 
+### CHG-20260712-1658 — Brique Blue Phase 3 : recettes GraphQL par domaine validées en réel, script `blue-files.sh`
+
+- Phase 3 du plan `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` (T-PLAN-4, reprend T-PLAN-2 Phases 2-3) déroulée sur le banc d'essai MySecretaire (workspace `cmrgnpzkp56s4lq016h29rucg`) : chaque recette exécutée avec succès en conditions réelles avant d'être figée, création/relecture/mise à jour/suppression comprises, objets de test `TEST-P3` tous supprimés (workspace revenu à l'état initial, aucun objet préexistant touché).
+- Domaines validés : documents/wiki (`createDocument` avec `wiki: true`, une seule mutation pour les deux), formulaires (`createForm`, `upsertFormField`, `updateForm`, `submitForm` — le `formToken` est le `uid` du formulaire, et une soumission devient un **record** du workspace, pas d'objet « submission »), discussions (message = `createComment` avec `category: DISCUSSION`), chat (`createChat`, `createChatMessage`, relecture par champ imbriqué `messages`), status updates (immuabilité confirmée par introspection : create + delete seulement), fichiers et dossiers.
+- **Upload validé de bout en bout** : les mutations GraphQL `uploadFile`/`uploadFiles` exigent un multipart inutilisable via `blue-gql.sh` ; la voie fiable est REST `GET /uploads` → PUT presigné → mutation `createFile` (sans elle, le binaire reste invisible). Nouveau script `templates/skills/blue-app/scripts/blue-files.sh` (upload/download encapsulés, POSIX, secrets via `blue-secrets.sh`, jamais échoés), testé en réel : upload → listing → download → diff identique → suppression.
+- Pièges consignés dans le `SKILL.md` : trois enveloppes de pagination, trois types de retour de suppression, `String!` vs `ID!`, `companyId` des mutations = ID d'organisation (slug refusé) alors que les filtres l'acceptent, timeout > 30 s de `deleteStatusUpdate` alors que la suppression aboutit (toujours relister avant de réessayer).
+- `templates/skills/blue-app/SKILL.md` : recettes par domaine + pièges transverses + table de routage complète (dont Portable Documents non validé et subscriptions hors périmètre), version de skill `1.1.0` ; `INSTALL.md` : prérequis. Propagation aux 4 instances (canonique MySecretaire, `.claude`, `.codex`, VPS Hermès `/root/.hermes/skills/blue-app/`).
+- Critères d'acceptation T-PLAN-2 § 4 : tous satisfaits (« fichier visible dans l'UI » vérifié par l'API `files` ; contrôle visuel possible par l'utilisateur). Pas de bump de `VERSION` : le wiring méthode reste porté par la Phase 5. Restent Phase 4 (workspace modèle + workflow commentaires) et Phase 5.
+
+### CHG-20260712-1345 — Brique Blue Phase 2 : skill `blue-app` validée sur les trois agents (banc d'essai MySecretaire)
+
+- Phase 2 du plan `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` (T-PLAN-4) déroulée en réel sur MySecretaire : copie canonique posée dans `98_configuration/skills/blue-app/` (synchronisée Syncthing vers le VPS), installations vérifiées par exécution pour Claude Code (`.claude/skills/`, backend `keychain`), Codex 0.144.1 (`.codex/skills/`, découverte confirmée par `codex exec`) et Hermès (copie globale `/root/.hermes/skills/blue-app/`, listée « local, enabled » par `hermes skills list`). Même skill, zéro modification entre plateformes.
+- Secrets VPS posés en SSH direct sans écho (`/root/.config/blue/secrets.env`, 600) ; `--check` et `records list` OK depuis le VPS avec le backend `file`. Constat : la couche Bitwarden d'Hermès applique déjà `BLUE_TOKEN_ID`/`BLUE_TOKEN_SECRET` en session → la voie env (priorité 1) couvre Hermès sans configuration, le fichier 600 devient un repli.
+- D3 figé : les deux niveaux de skills Hermès existent (global et par profil), la copie globale est confirmée ; `templates/skills/blue-app/INSTALL.md` mis à jour (chemin vérifié, note couche Bitwarden, vérification de découverte) et propagé aux 4 instances (empreintes identiques).
+- Côté MySecretaire : tableau d'équipement dans `GOUVERNANCE_BLUE.md`, entrée de handoff « Équiper un agent » vers Hermès (vérification en session attendue), CHG-20260712-1340 dans son CHANGELOG.
+- Pas de bump de version : le wiring méthode (gabarits gouvernance/handoff, skill assistant, NAMING-CONVENTIONS, v0.11.0) reste porté par la Phase 5 du plan.
+
+### CHG-20260712-1250 — Plan « brique Blue complète » consigné (skill agnostique, secrets, handoff, commentaires)
+
+- `PLAN/plans/2026-07-12-blue-brique-complete-skill-agnostique.md` : nouveau plan (proposition, non appliquée) qui englobe et amende T-PLAN-2 et T-PLAN-3. Apports : skill technique portable `templates/skills/blue-app/` (standard agentskills.io, supporté par Claude Code, Codex depuis déc. 2025 et Hermès — sources dans le plan), couche secrets multi-backend (trousseau macOS, Bitwarden `bws`, fichier 600 pour VPS headless, variables d'env en repli universel, jamais de secret dans le dossier synchronisé), copie canonique par projet dans `98_configuration/skills/`, registre d'équipement des agents dans `GOUVERNANCE_BLUE.md`, entrée de handoff pré-rédigée « Équiper un agent » (généralisation du précédent MySecretaire), noms d'agents canoniques (divergence `HANDOFF_CLAUDE_HERMES`/`HANDOFF_CLAUDECODE_HERMES` constatée), et workflow commentaires : une demande écrite par l'humain en commentaire d'une carte Blue est relevée, exécutée (via `TASKS.md` d'abord) et confirmée par un commentaire de feedback.
+- Constats vérifiés en live le 2026-07-12 : query GraphQL `templates` et mutation `convertWorkspaceToTemplate` existent (la doc Blue dit `convertProjectToTemplate` : le schéma fait foi), ce qui referme le point 5.4 de T-PLAN-3 ; ligne « Codex : pas de skills » de la skill assistant identifiée comme obsolète.
+- `PLAN/README.md` : plan référencé dans « Plans disponibles ». `TASKS.md` : nouvelle tâche `T-PLAN-4` (valider T-PLAN-4 vaut arbitrage de T-PLAN-2/3/4).
+
+### CHG-20260712-1223 — Plan d'extension GraphQL de la skill globale `blue-cli` consigné
+
+- `PLAN/plans/2026-07-12-blue-cli-extension-graphql.md` : nouveau plan (proposition, non appliquée). Constat vérifié par tests réels : le token du trousseau macOS fonctionne tel quel sur l'API GraphQL de Blue (`api.blue.app/graphql`, 128 queries / 304 mutations), qui couvre ce que la CLI v0.6.6 n'expose pas (wiki/documents, formulaires, discussions, chat, upload de fichiers, status updates). Plan en 4 phases : wrapper `blue-gql.sh` sans secret sur disque, recettes validées par domaine, routage CLI d'abord / GraphQL pour le reste, validation de bout en bout.
+- `PLAN/README.md` : plan référencé dans « Plans disponibles ».
+- `TASKS.md` : nouvelle tâche `T-PLAN-2` (validation humaine puis implémentation ; enrichissement différé de `GOUVERNANCE_BLUE.md`).
+
 ### CHG-20260712-1145 — Blue proposé activement par la skill assistant
 
 - `skills/my-project-os/SKILL.md` — Mode 5 (Cadrage), nouvelle étape 8 : proposer un outil de suivi visuel, présenter Blue en une phrase, question fermée, activation immédiate de `98_configuration/GOUVERNANCE_BLUE.md` si oui.
