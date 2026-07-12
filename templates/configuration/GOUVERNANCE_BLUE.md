@@ -87,6 +87,7 @@ Un commentaire reste réservé au **contexte/historique ponctuel** ; une checkli
 - Ne jamais réinjecter tel quel dans un nouveau record du texte de description capturé depuis `records get` : cette commande réécrit à l'affichage les URLs/noms de fichiers nus en `texte [http://texte]` (pur artefact d'affichage terminal, pas la donnée réelle) — le recopier pollue durablement la description stockée.
 - Une **checklist ne se crée pas en une seule commande** : créer le checklist d'abord (récupérer son ID), puis ajouter les items un par un.
 - `tags create --color` **refuse les noms de couleur** (ex. `red`, `blue`) malgré l'exemple d'aide de la CLI (`--color red`) : erreur `Invalid color: expected a hex string`. Toujours passer un hex (ex. `--color "#EF4444"`).
+- `tags add` **remplace** la liste de tags du record au lieu de la compléter (issue MyProjectOS#2). Le wrapper `blue-cli.sh` de la skill `blue-app` (≥ 1.2.0) fusionne automatiquement les tags existants avant l'appel ; en cas d'appel **direct** à la CLI `blue` (hors wrapper), repasser tous les tag-ids voulus (existants + nouveaux) dans un seul `--tag-ids id1,id2,...`.
 
 ## Journal des changements
 

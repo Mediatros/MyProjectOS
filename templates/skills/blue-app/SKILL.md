@@ -1,7 +1,7 @@
 ---
 name: blue-app
 description: Piloter Blue (blue.cc) sur un projet MyProjectOS — tâches, records, wiki, documents, formulaires, fichiers, commentaires. Active cette skill pour toute opération Blue sur le workspace d'un projet : synchronisation TASKS.md, création/mise à jour de records, lecture ou dépôt de commentaires, wiki/documents, discussions, fichiers. Générique : aucune organisation, aucun workspace, aucun ID en dur — tout le spécifique projet se lit dans 98_configuration/GOUVERNANCE_BLUE.md.
-version: "1.1.0"
+version: "1.2.0"
 required_environment_variables:
   - BLUE_TOKEN_ID
   - BLUE_TOKEN_SECRET
@@ -41,7 +41,7 @@ Procédure d'installation et de configuration détaillée : voir `INSTALL.md` à
 Interface fixe, à ne pas contourner par des appels directs à `blue` ou `curl` :
 
 - **`scripts/blue-secrets.sh`** — sourcé (jamais exécuté seul), exporte `BLUE_TOKEN_ID`/`BLUE_TOKEN_SECRET` selon le backend actif. Utilisé par les deux scripts suivants, pas d'usage direct par l'agent.
-- **`scripts/blue-cli.sh <args blue...>`** — wrapper de la CLI `blue`. Exige `BLUE_ORG` (organisation, lue dans la gouvernance du projet). Transmet tous ses arguments tels quels à `blue` :
+- **`scripts/blue-cli.sh <args blue...>`** — wrapper de la CLI `blue`. Exige `BLUE_ORG` (organisation, lue dans la gouvernance du projet). Transmet ses arguments tels quels à `blue`, à une exception près : sur `tags add`, il lit d'abord les tags existants du record et fusionne les tag-ids, car la CLI **remplace** la liste au lieu de la compléter (bug tracé dans l'issue MyProjectOS#2 ; si la lecture préalable échoue, l'appel est annulé plutôt que de laisser écraser les tags) :
   ```sh
   BLUE_ORG=<org> scripts/blue-cli.sh records list -w <ws_id> --simple
   BLUE_ORG=<org> scripts/blue-cli.sh records update -r <record_id> -w <ws_id> -t "Nouveau titre"
@@ -86,6 +86,7 @@ Toutes les requêtes ci-dessous ont été exécutées avec succès en conditions
 - `discussionList` (curseur) et `discussions` (offset) coexistent avec des signatures différentes.
 - Les messages d'erreur suggèrent les bons noms de champs (« Did you mean... ») ; l'introspection `__schema` fait foi en cas de doute, pas la doc publique.
 - `deleteStatusUpdate` aboutit côté serveur mais sa réponse peut dépasser le timeout de 30 s du wrapper (exit ≠ 0 à tort) : après un timeout sur cette mutation, **toujours relister avant de réessayer**.
+- **`todoCustomFields` est cassé côté serveur** (confirmé le 2026-07-12, issue MyProjectOS#3) : il retourne `null` aussi bien dans la liste `records(filter:)` que dans la query unitaire `record(id:)`, quels que soient les arguments. Pour lire les custom fields, sélectionner **`customFields { id name value }`** sur `Record` (`value` est un scalaire JSON portant la valeur réelle ; c'est la sélection qu'utilise la CLI elle-même). La query racine unitaire s'appelle `record(id: String!)`, pas `todo(id:)`.
 
 ### Queries de base
 
@@ -108,6 +109,11 @@ query { statusUpdateList(projectId: "<ws_id>") { statusUpdates { id text categor
 
 # Templates de workspace de l'organisation
 query { templates { items { id name } } }
+
+# Records avec custom fields en masse (ex. clé de correspondance TASKS.md ↔ Blue) —
+# customFields, PAS todoCustomFields (cassé, voir pièges transverses)
+query R($filter: TodosFilter!) { records(filter: $filter) { items { id title customFields { id name value } } } }
+# -v '{"filter":{"companyIds":[],"projectIds":["<ws_id>"]}}'
 ```
 
 ### Documents et wiki
