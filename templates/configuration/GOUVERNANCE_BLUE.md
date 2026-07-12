@@ -86,6 +86,7 @@ Un commentaire reste réservé au **contexte/historique ponctuel** ; une checkli
 - Une **description contenant un retour à la ligne littéral ou certains caractères spéciaux** (ex. apostrophes non échappées) fait échouer `records create`/`update -d/--description` avec `GraphQL error: Syntax Error: Unterminated string`. Toujours aplatir la description sur une seule ligne avant envoi, et échapper/éviter les caractères à risque.
 - Ne jamais réinjecter tel quel dans un nouveau record du texte de description capturé depuis `records get` : cette commande réécrit à l'affichage les URLs/noms de fichiers nus en `texte [http://texte]` (pur artefact d'affichage terminal, pas la donnée réelle) — le recopier pollue durablement la description stockée.
 - Une **checklist ne se crée pas en une seule commande** : créer le checklist d'abord (récupérer son ID), puis ajouter les items un par un.
+- `tags create --color` **refuse les noms de couleur** (ex. `red`, `blue`) malgré l'exemple d'aide de la CLI (`--color red`) : erreur `Invalid color: expected a hex string`. Toujours passer un hex (ex. `--color "#EF4444"`).
 
 ## Journal des changements
 

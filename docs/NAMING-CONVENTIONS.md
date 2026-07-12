@@ -41,6 +41,18 @@ Identifiants stables, jamais réutilisés ni renumérotés.
 - `P-` : chaque preuve relie une affirmation à un document source unique.
 - Les références croisées citent l'identifiant : « voir DEC-0007 », « source P-0042 ».
 
+## Noms d'agents canoniques (handoff inter-agents)
+
+Pour nommer un fichier `HANDOFF_<AGENT-A>_<AGENT-B>.md` (`templates/configuration/HANDOFF_INTERAGENT.md`) ou toute référence à un agent dans la gouvernance : majuscules, sans tiret interne au nom de l'agent.
+
+| Agent | Nom canonique |
+|---|---|
+| Claude Code | `CLAUDECODE` |
+| Hermès Agent | `HERMES` |
+| Codex CLI | `CODEX` |
+
+Un agent futur reprend la même règle : le nom du produit, en majuscules, sans espace ni tiret (ex. un agent « Foo Bar » deviendrait `FOOBAR`). Les fichiers de handoff déjà créés sous un autre nom (ex. `HANDOFF_CLAUDE_HERMES.md`) ne sont pas renommés d'office : la convention vaut pour les créations futures, un renommage se propose projet par projet.
+
 ## Documents Knowledge (niveaux 2 et 3)
 
 Le lien entre un domaine et ses détails est porté par le nom : un document de niveau 3 reprend en préfixe le nom de son domaine parent, séparé par un double tiret.
