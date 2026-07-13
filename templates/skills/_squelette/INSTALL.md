@@ -7,6 +7,7 @@
 
 À dérouler par l'agent AVEC l'utilisateur, avant toute installation :
 
+0. **Préflight d'autonomie (tout ou rien)** : avant de lancer quoi que ce soit, vérifier que l'agent a les droits d'aller au bout — conteneur ? (`[ -f /.dockerenv ]`), privilèges ? (`id -u`, `sudo -n true`), prérequis accessibles ? (démon Docker, gestionnaire de paquets, réseau). Si un contrôle échoue : ne RIEN entamer, dire à l'utilisateur ce qui manque et lui donner les commandes exactes à exécuter lui-même, puis re-vérifier avant de reprendre. Détail : `docs/OUTILS.md` § préflight.
 1. **Vérifier l'existant** : <commande de smoke test — si elle passe, sauter l'onboarding>.
 2. **Guider la création du compte** : URL d'inscription `<url>`, plan gratuit à choisir : `<plan et limites>`. L'email et le mot de passe sont saisis par l'humain, jamais manipulés par l'agent.
 3. **Saisie hors-bande du secret (défaut)** : la valeur d'une clé API ne transite jamais par la conversation. Selon le backend : l'agent crée un secret placeholder et fournit le lien de l'UI web où l'utilisateur colle la vraie valeur (Infisical), ou fournit la commande que l'utilisateur exécute lui-même dans son terminal (trousseau, fichier). Mode **full-auto** possible uniquement sur choix explicite de l'utilisateur, qui accepte alors de transmettre les clés dans la conversation.
