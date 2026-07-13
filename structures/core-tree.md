@@ -44,7 +44,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 | `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
 | `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents | Optionnel, créé à la demande dès qu'un projet est piloté par plusieurs agents/outils partagés ; jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
-| `98_configuration/skills/` | Copie canonique projet d'une skill technique portable (agnostique agent, ex. `blue-app`), synchronisée Syncthing ; chaque agent l'installe ensuite chez lui selon son `INSTALL.md` | Optionnel, posé quand une intégration outillée (ex. Blue) est activée ; source unique, jamais modifiée localement par un agent sans répercuter ici |
+| `98_configuration/skills/` | Copie canonique projet d'une skill technique portable (agnostique agent, ex. `blue-app`, `courrier-manuscrit`) ; chaque agent l'installe ensuite chez lui selon son `INSTALL.md`. Catalogue des outils proposés nativement : `docs/OUTILS.md` du dépôt méthode ; squelette pour en créer : `templates/skills/_squelette/` | Optionnel, posé quand un outil du catalogue est activé ; source unique, jamais modifiée localement par un agent sans répercuter ici |
 | `99_archive/` | Éléments clôturés ou obsolètes, anciens CHANGELOG | Conserver, ne pas supprimer |
 
 ## Extensions
