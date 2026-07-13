@@ -40,6 +40,7 @@
 ## En cours
 
 - [ ] **T-PLAN-1** Relire et valider le plan `PLAN/plans/2026-06-07-company-os-integration.md` avant intégration dans les docs stables.
+- [ ] **T-PLAN-5** Catalogue d'outils natifs `98_configuration/` (`PLAN/plans/2026-07-13-catalogue-outils-98-configuration.md`) : catalogue `docs/OUTILS.md`, squelette de skill portable, brique secrets transverse (`secrets.sh` générique, age sur VPS, voie gratuite obligatoire), outil AgentMail (skill maison dérivée de l'officielle), relevé des handoffs au rituel de reprise. Amendé le même jour (CHG-20260713-1140) : secrets proposés par plateforme, jamais imposés (D3 tranchée), saisie hors-bande. Décisions D1, D2, D4, D5, D6 à trancher par l'utilisateur avant implémentation. Voir CHG-20260713-1120.
 
 ## À faire
 
