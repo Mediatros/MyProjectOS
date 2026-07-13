@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    /* À renseigner à l'installation (voir INSTALL.md) : nom de famille interne
+       et chemin absolu du fichier de police, encodé URL (espaces = %20). */
+    font-family: "<NOM_POLICE>";
+    src: url("file://<CHEMIN_POLICE_ENCODE_URL>");
+  }
+  @page {
+    size: A4;
+    margin: 1.8cm 2.2cm; /* si 2 pages : 1.5cm 2cm */
+  }
+  body {
+    font-family: "<NOM_POLICE>";
+    font-size: 15.5pt;   /* si 2 pages : 14.5pt */
+    line-height: 1.6;    /* si 2 pages : 1.5 */
+    color: #1e2a78;
+  }
+  .expediteur {
+    margin-bottom: 1cm;
+  }
+  .destinataire {
+    text-align: right;
+    margin-bottom: 0.8cm;
+  }
+  h1 {
+    /* JAMAIS de text-decoration: underline (interdit sur un courrier manuscrit) */
+    font-family: "<NOM_POLICE>";
+    font-weight: normal;
+    font-size: 21pt;
+    text-align: center;
+    margin: 0 0 0.9cm 0;
+  }
+  p {
+    text-align: justify;
+    margin: 0 0 0.45cm 0;
+  }
+  .interesse {
+    margin-left: 1.2cm;
+  }
+  /* champs à compléter au stylo */
+  .blanc {
+    display: inline-block;
+    border-bottom: 1px dotted #1e2a78;
+    min-width: 4.2cm;
+  }
+  .blanc-court {
+    display: inline-block;
+    border-bottom: 1px dotted #1e2a78;
+    min-width: 3cm;
+  }
+  .signature {
+    margin-top: 0.8cm;
+  }
+  .pj {
+    margin-top: 1.1cm;
+    font-size: 13pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="expediteur">
+{{EXPEDITEUR : nom<br>adresse<br>tél<br>email}}
+</div>
+
+<!-- optionnel -->
+<div class="destinataire">
+{{DESTINATAIRE}}
+</div>
+
+<h1>{{TITRE DU COURRIER}}</h1>
+
+{{CORPS : une balise <p> par paragraphe, texte brut sans gras/italique/soulignage ;
+paragraphe mis en retrait éventuel : <p class="interesse">...</p> ;
+champ à compléter au stylo : <span class="blanc-court">&nbsp;</span>}}
+
+<p class="signature">Fait à {{VILLE}}, le {{DATE}}</p>
+
+<p>Signature :</p>
+
+<!-- optionnel -->
+<p class="pj">Pièces jointes : {{PIECES JOINTES}}</p>
+
+</body>
+</html>

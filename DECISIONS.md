@@ -19,6 +19,23 @@
 
 ---
 
+### DEC-0030 — Catalogue d'outils natifs : vocabulaire, secrets par plateforme, AgentMail, handoff via PROGRESS (D1-D6)
+
+- **Date** : 2026-07-13
+- **Contexte** : la brique Blue (DEC-0027 à DEC-0029) a inauguré un pattern complet (gouvernance + skill portable + équipage) mais restait un cas unique. L'utilisateur demande que `98_configuration/` devienne le point d'entrée d'un **catalogue d'outils supportés nativement** (suivi Blue, mail AgentMail, secrets, Tailscale, skills utilitaires), chaque outil étant proposé (jamais imposé) avec un onboarding guidé par l'agent, y compris la création du compte. Plan : `PLAN/plans/2026-07-13-catalogue-outils-98-configuration.md` (T-PLAN-5). Six points nécessitaient un arbitrage humain (D1-D6, § 6 du plan) ; tranchés par l'utilisateur le 2026-07-13.
+- **Options envisagées et choix (D1-D6)** :
+  - **D1 — Vocabulaire** : deux niveaux — « outil » partout face à l'utilisateur (catalogue `docs/OUTILS.md`), « brique » en terme interne pour le pattern complet (« brique » seul écarté : jargon ; « outil » seul écarté : collision avec les outils internes de la méthode).
+  - **D2 — Secrets sur VPS** : Infisical **auto-hébergé**, installé automatiquement par l'agent, UI exclusivement accessible via Tailscale (jamais exposée à l'extérieur), lien Tailscale fourni à l'utilisateur ; deux modes au choix explicite de l'utilisateur : full-auto (clés confiées à l'agent dans la conversation) ou hors-bande (saisie dans l'UI). age relégué en repli hors-SaaS d'une ligne (l'option « age recommandé » initiale est écartée : moins pilotable par l'agent, pas d'UI de saisie).
+  - **D3 — Pas de backend de secrets canonique unique** : priorité au gestionnaire que l'utilisateur possède déjà (ex. BSM), sinon proposition par plateforme (trousseau Mac, Infisical VPS, WSL Windows), jamais obligatoire. La méthode est pensée pour n'importe quel adoptant, pas pour la configuration de son auteur.
+  - **D4 — AgentMail** : un seul et unique compte, utilisable par les trois agents. L'agent n'est que le moteur intelligent du projet : l'identité mail appartient au projet/à l'utilisateur (une inbox par agent écartée : contraire à l'objectif agent-agnostique et consommerait tout le free tier).
+  - **D5 — Signal des handoffs** : mention à destination de l'agent cible dans le bloc d'en-tête de `PROGRESS.md` au moment du dépôt, découverte à la lecture rituelle en début de session (notification mail écartée : complexité sans gain, l'agent ne lit de toute façon qu'en session).
+  - **D6 — Windows** : via WSL, mêmes propositions que Linux, zéro portage des scripts POSIX (Credential Manager natif écarté du support : lecture de secret difficile hors PowerShell, inaccessible proprement depuis WSL, aucune machine de test).
+- **Raison** : chaque choix suit les principes établis — simplicité pour un non-développeur, gratuité obligatoire des voies proposées, méthode agent-agnostique, aucun secret dans la conversation par défaut (principe nouveau de **saisie hors-bande**, généralisé à tout onboarding), aucune recette non testée (Windows documenté seulement, Infisical VPS à valider au banc d'essai).
+- **Conséquences** : Phase 1 du plan (ce DEC) : `docs/OUTILS.md` (catalogue, deux familles : outils à compte, skills utilitaires), `templates/skills/_squelette/` (SKILL.md, INSTALL.md avec onboarding, `scripts/secrets.sh` générique multi-backend keychain/bws/infisical/file, testé 7/7), première skill utilitaire `templates/skills/courrier-manuscrit/` (police NON embarquée — licences « Personal Use Only » non redistribuables — et paramétrée à l'installation, chemins dé-personnalisés, prérequis WeasyPrint), skill assistant Mode 5/6 généralisée au catalogue, `structures/core-tree.md` à jour. Version portée à `0.12.0`. Phases restantes : 2 (brique secrets exercée en réel : Tailscale puis Infisical auto-hébergé sur VPS), 3 (AgentMail au banc d'essai), 4 (handoff : mention PROGRESS + relevé au Mode 1).
+- **Liens** : CHG-20260713-1120, CHG-20260713-1140, CHG-20260713-1302, CHG-20260713-1330.
+
+---
+
 ### DEC-0029 — Brique Blue complète : skill technique portable, secrets multi-backend, registre d'équipement (D1-D5)
 
 - **Date** : 2026-07-12
