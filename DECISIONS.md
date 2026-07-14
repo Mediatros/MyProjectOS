@@ -19,6 +19,22 @@
 
 ---
 
+### DEC-0031 — Secrets VPS : SOPS + age remplace Infisical auto-hébergé, saisie hors-LLM via hook `/secret` (supersède D2 de DEC-0030)
+
+- **Date** : 2026-07-13
+- **Contexte** : la D2 de DEC-0030 (Infisical auto-hébergé sur VPS, actée le matin même) a été soumise le jour même à son banc d'essai réel : trois heures d'installation en échec sur le VPS. L'utilisateur tranche : abandon d'Infisical self-host (« on va vite switcher sur une autre option »). Bitwarden Secrets Manager est écarté comme voie de repli (devenu payant). Le besoin, lui, ne change pas : plus de fichiers `.env` en clair éparpillés sur le VPS, gratuité, et pilotage possible depuis la seule interface de l'utilisateur en mobilité (chat Telegram d'Hermès).
+- **Options envisagées** :
+  - A. Persister sur Infisical auto-hébergé (dépannage de l'installation).
+  - B. Vaultwarden auto-hébergé pour garder l'outillage `bws` gratuitement.
+  - C. OpenBao (fork open source de Vault).
+  - D. SOPS + age : boîte à secrets = un fichier dotenv chiffré, sans serveur, backend `sops` ajouté à `secrets.sh`.
+- **Choix** : option D, complétée par deux voies de saisie hors-LLM : le script interactif `scripts/ajout-secret.sh` (Mac ou VPS, saisie masquée) et, côté Hermès, un hook de gateway Telegram `/secret NOM valeur` qui exécute `sops set` de façon déterministe sans que le message n'atteigne le LLM.
+- **Raison** : A est réfutée par l'essai réel (complexité Docker/PostgreSQL/Redis disproportionnée pour un VPS solo, exactement la vigilance notée en DEC-0030). B est impossible : l'API Secrets Manager est sous licence propriétaire Bitwarden, jamais implémentée dans Vaultwarden (discussions #3368 et #5702 du dépôt). C reproduit la famille de complexité de A (serveur, unseal, policies). D est la seule voie sans serveur : deux binaires statiques, un seul secret racine (la clé age, hors dossier projet), fichier chiffré au repos donc synchronisable sans risque (Syncthing/Git), multi-destinataires (clé Mac + clé VPS, révocation par `updatekeys` + `rotate`). Le principe de saisie hors-bande de DEC-0030 est conservé et même renforcé : le hook de gateway intercepte la commande AVANT le LLM (ni contexte, ni logs de session), là où l'UI Infisical ne faisait que contourner la conversation. La D3 de DEC-0030 (pas de backend canonique unique, existant d'abord) reste valable : `sops` devient la voie VPS *proposée*, les backends `keychain`/`bws`/`infisical`/`file` restent supportés par `secrets.sh`.
+- **Conséquences** : `templates/skills/_squelette/scripts/secrets.sh` gagne le backend `sops` (boîte par défaut `~/.config/secrets/secrets.env`, surchargeable par `<PREFIXE>_SOPS_FILE`, clé age au chemin standard de sops) ; nouveau script `scripts/ajout-secret.sh` (deux questions, saisie masquée, validation du nom, création de la boîte au premier usage) ; `docs/OUTILS.md` remplace la ligne Infisical par SOPS + age et réécrit l'arbre des voies (Tailscale reste au catalogue mais n'est plus prérequis de la brique secrets) ; `agents/hermes.md` documente la cible du hook `/secret` (à valider en réel : test à blanc d'interception avant toute vraie valeur, cf. issue hermes-agent #2817 sur des hooks documentés non invoqués) ; la Phase 2 de T-PLAN-5 est remaniée sur ce parcours (Tailscale conservé pour l'accès VPS, plus comme prérequis Infisical). Limite assumée et documentée : la valeur envoyée par `/secret` transite par les serveurs Telegram (pas de chiffrement de bout en bout avec un bot) ; pour un secret critique, la saisie se fait côté Mac. Migration à mener en Phase 2 : inventaire des `.env` du VPS, import dans la boîte, suppression des fichiers en clair après validation humaine. Version portée à `0.13.0`.
+- **Liens** : CHG-20260713-1923.
+
+---
+
 ### DEC-0030 — Catalogue d'outils natifs : vocabulaire, secrets par plateforme, AgentMail, handoff via PROGRESS (D1-D6)
 
 - **Date** : 2026-07-13

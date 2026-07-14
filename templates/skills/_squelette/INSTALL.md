@@ -10,7 +10,7 @@
 0. **Préflight d'autonomie (tout ou rien)** : avant de lancer quoi que ce soit, vérifier que l'agent a les droits d'aller au bout — conteneur ? (`[ -f /.dockerenv ]`), privilèges ? (`id -u`, `sudo -n true`), prérequis accessibles ? (démon Docker, gestionnaire de paquets, réseau). Si un contrôle échoue : ne RIEN entamer, dire à l'utilisateur ce qui manque et lui donner les commandes exactes à exécuter lui-même, puis re-vérifier avant de reprendre. Détail : `docs/OUTILS.md` § préflight.
 1. **Vérifier l'existant** : <commande de smoke test — si elle passe, sauter l'onboarding>.
 2. **Guider la création du compte** : URL d'inscription `<url>`, plan gratuit à choisir : `<plan et limites>`. L'email et le mot de passe sont saisis par l'humain, jamais manipulés par l'agent.
-3. **Saisie hors-bande du secret (défaut)** : la valeur d'une clé API ne transite jamais par la conversation. Selon le backend : l'agent crée un secret placeholder et fournit le lien de l'UI web où l'utilisateur colle la vraie valeur (Infisical), ou fournit la commande que l'utilisateur exécute lui-même dans son terminal (trousseau, fichier). Mode **full-auto** possible uniquement sur choix explicite de l'utilisateur, qui accepte alors de transmettre les clés dans la conversation.
+3. **Saisie hors-bande du secret (défaut)** : la valeur d'une clé API ne transite jamais par la conversation. Selon le backend : script `ajout-secret.sh` exécuté par l'utilisateur ou hook Telegram `/secret` d'Hermès traité hors LLM (sops), ou commande que l'utilisateur exécute lui-même dans son terminal (trousseau, fichier). Mode **full-auto** possible uniquement sur choix explicite de l'utilisateur, qui accepte alors de transmettre les clés dans la conversation.
 4. **Automatiser le reste** : tout ce que l'API permet après coup (<exemples : créer les ressources initiales, poser un webhook>) est fait par l'agent, avec accord explicite pour les actions au niveau du compte.
 5. **Vérifier et consigner** : smoke test, puis ligne au tableau d'équipement.
 
@@ -60,14 +60,16 @@ Commande exécutée par l'utilisateur lui-même (saisie hors-bande) :
 security add-generic-password -a <cle minuscule> -s <prefixe minuscule> -w '<valeur>' -U
 ```
 
-### Infisical (backend `infisical`, recommandé sur VPS — instance auto-hébergée accessible uniquement via Tailscale)
+### SOPS + age (backend `sops`, recommandé sur VPS — DEC-0031)
 
-Prérequis : Tailscale configuré (voir `docs/OUTILS.md`), CLI `infisical` authentifiée (Mac : `infisical login` navigateur ; VPS : machine identity via `INFISICAL_TOKEN`). L'agent crée les secrets en placeholder (`infisical secrets set <PREFIXE>_<CLE>=PLACEHOLDER`), l'utilisateur colle les vraies valeurs dans l'UI web (lien Tailscale fourni par l'agent).
+Prérequis : binaires `sops` et `age` (Mac : `brew install sops age` ; Debian/Ubuntu : `apt install sops age` ou binaires GitHub). Boîte à secrets unique par défaut : `~/.config/secrets/secrets.env` (chiffrée au repos, synchronisable sans risque), clé age au chemin standard `~/.config/sops/age/keys.txt` (chmod 600, HORS du dossier projet, seul secret racine de la machine). Saisie hors-bande des valeurs : script `ajout-secret.sh` du dépôt méthode (deux questions, saisie masquée) ou, chez Hermès, hook Telegram `/secret` (voir `agents/hermes.md`) — jamais par la conversation.
 
 ```sh
-export <PREFIXE>_SECRET_BACKEND=infisical
-export <PREFIXE>_INFISICAL_PROJECT_ID='<id projet Infisical>'   # optionnel si 'infisical init' a lié le dossier
+export <PREFIXE>_SECRET_BACKEND=sops
+export <PREFIXE>_SOPS_FILE="$HOME/.config/secrets/secrets.env"   # optionnel, c'est le défaut
 ```
+
+Le backend `infisical` (cloud) reste supporté par `secrets.sh` si l'utilisateur a déjà un compte Infisical (`<PREFIXE>_SECRET_BACKEND=infisical`, CLI authentifiée, conventions en en-tête de `secrets.sh`).
 
 ### Bitwarden Secrets Manager (backend `bws`, si l'utilisateur l'utilise déjà)
 
@@ -93,7 +95,7 @@ chmod 600 ~/.config/<prefixe minuscule>/secrets.env
 
 ### Windows (documentation seule, non testé)
 
-Passer par WSL et suivre les voies Linux ci-dessus (Infisical ou fichier). Le Credential Manager natif n'est pas outillé par cette skill.
+Passer par WSL et suivre les voies Linux ci-dessus (sops ou fichier). Le Credential Manager natif n'est pas outillé par cette skill.
 
 ## Vérification post-installation
 

@@ -3,10 +3,14 @@
 # À sourcer, jamais exécuter seul :
 #   SECRETS_PREFIX="MONOUTIL" SECRETS_KEYS="TOKEN_ID TOKEN_SECRET" . secrets.sh
 # Produit et exporte les variables <PREFIXE>_<CLE> (ex. MONOUTIL_TOKEN_ID).
-# Ordre de résolution : variables déjà posées > <PREFIXE>_SECRET_BACKEND (keychain|bws|infisical|file).
+# Ordre de résolution : variables déjà posées > <PREFIXE>_SECRET_BACKEND (keychain|sops|bws|infisical|file).
 # Conventions par backend :
 #   keychain  : trousseau macOS, service = <prefixe minuscule> (surchargable : <PREFIXE>_KEYCHAIN_SERVICE),
 #               compte = <cle minuscule>
+#   sops      : boîte à secrets chiffrée SOPS + age (recommandé sur VPS), format dotenv,
+#               défaut ~/.config/secrets/secrets.env, surchargable : <PREFIXE>_SOPS_FILE ;
+#               la clé age est lue par sops lui-même (SOPS_AGE_KEY_FILE, défaut ~/.config/sops/age/keys.txt) ;
+#               le fichier déchiffré définit <PREFIXE>_<CLE>=valeur (valeurs brutes, sans guillemets)
 #   bws       : Bitwarden Secrets Manager ; BWS_ACCESS_TOKEN + <PREFIXE>_BWS_<CLE>_UUID
 #   infisical : CLI infisical authentifiée (login ou INFISICAL_TOKEN) ; nom du secret = <PREFIXE>_<CLE> ;
 #               <PREFIXE>_INFISICAL_PROJECT_ID (optionnel si lié par 'infisical init'),
@@ -57,6 +61,31 @@ if [ -n "$secrets_missing" ]; then
                 }
                 eval "${sp}_${k}=\$val"
             done
+            ;;
+        sops)
+            if ! command -v sops >/dev/null 2>&1; then
+                echo "secrets.sh: backend sops demandé mais la commande 'sops' est introuvable." >&2
+                exit 1
+            fi
+            eval "sops_file=\${${sp}_SOPS_FILE:-$HOME/.config/secrets/secrets.env}"
+            if [ ! -f "$sops_file" ]; then
+                echo "secrets.sh: boîte à secrets introuvable : $sops_file" >&2
+                exit 1
+            fi
+            sops_plain=$(sops -d "$sops_file") || {
+                echo "secrets.sh: échec de déchiffrement de $sops_file (clé age absente ou illisible ?)." >&2
+                exit 1
+            }
+            for k in $secrets_missing; do
+                val=$(printf '%s\n' "$sops_plain" | sed -n "s/^${sp}_${k}=//p" | head -n 1)
+                if [ -z "$val" ]; then
+                    sops_plain=""
+                    echo "secrets.sh: $sops_file ne définit pas ${sp}_${k}." >&2
+                    exit 1
+                fi
+                eval "${sp}_${k}=\$val"
+            done
+            sops_plain=""
             ;;
         bws)
             for c in bws jq; do
@@ -123,7 +152,7 @@ if [ -n "$secrets_missing" ]; then
             done
             ;;
         *)
-            echo "secrets.sh: backend inconnu : $backend (attendu keychain, bws, infisical ou file)." >&2
+            echo "secrets.sh: backend inconnu : $backend (attendu keychain, sops, bws, infisical ou file)." >&2
             exit 1
             ;;
     esac
