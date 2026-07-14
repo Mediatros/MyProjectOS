@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.15.0** — 2026-07-14 — `02_sujets/` devient une suggestion, pas un nom imposé (DEC-0033) : `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé », corrigeant un faux positif confirmé (ex. `02_thematique/`) ; la skill assistant vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, ne propose l'alignement sur `02_sujets/` qu'une fois, et consigne tout refus dans une entrée `DEC-XXXX` du projet pour ne plus jamais le reproposer ; nouveau principe 12 dans `docs/principles.md` (« Suggestion, pas prescription unique »). Voir CHG-20260714-2254, DEC-0033.
 - **v0.14.0** — 2026-07-14 — organisation thématique Life canonisée : `02_sujets/` redéfinit le slot 02 pour les projets Life/Hybrid (sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`), Code garde `02_work/` inchangé ; en Hybrid, `02_sujets/` l'emporte systématiquement (les dossiers dédiés `05_specs/` à `09_scripts/`/`src/` couvrent déjà le travail actif côté code) ; suggestion proactive de la skill assistant et avertissement doux de `check-project.sh` sur l'accumulation de fichiers thématiques à la racine. Garde-fou temps réel ajouté à `hook-pre-write.sh` (PreToolUse Write) : avertissement dès la création du fichier qui porte le compte à 5+, sans attendre un `check-project.sh` manuel — le déclencheur initial du RETEX était un constat purement visuel, sans garde-fou actif au moment des faits. Rétrofit des projets existants : détection et suggestion seulement, jamais de déplacement automatique de fichiers. Voir CHG-20260714-2039, DEC-0032.
 - **v0.13.0** — 2026-07-13 — la brique secrets VPS passe à SOPS + age (DEC-0031, supersède la D2 de DEC-0030 après échec réel de l'installation d'Infisical auto-hébergé) : backend `sops` dans `secrets.sh` (boîte dotenv chiffrée unique, défaut `~/.config/secrets/secrets.env`), script `scripts/ajout-secret.sh` (deux questions, saisie masquée, création de la clé age et de la boîte au premier usage), hook Telegram `/secret` d'Hermès documenté dans `agents/hermes.md` (interception à la gateway, hors LLM, à valider par test à blanc), `docs/OUTILS.md` réaligné (Tailscale n'est plus prérequis de la brique secrets). Voir CHG-20260713-1923.
 - **v0.12.1** — 2026-07-13 — préflight d'autonomie obligatoire avant toute installation d'outil : l'agent vérifie AVANT d'agir qu'il peut aller au bout (conteneur ?, root/sudo ?, démon Docker, gestionnaire de paquets, réseau) ; en cas d'échec, règle tout ou rien : rien n'est entamé, l'utilisateur reçoit les commandes exactes à exécuter lui-même. Câblé dans `docs/OUTILS.md` et l'étape 0 de l'onboarding du squelette `templates/skills/_squelette/INSTALL.md`. Voir CHG-20260713-1520.
@@ -35,6 +36,15 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260714-2254 — 02_sujets/ suggéré, pas imposé : tolérance de nommage + traçage (v0.15.0)
+
+- Déclencheur : test réel de DEC-0032 avec un dossier `02_thematique/` au lieu de `02_sujets/` — faux positif confirmé (avertissement répété alors que le projet est déjà organisé). L'utilisateur refuse tout renommage forcé ou suggéré comme seule issue.
+- `scripts/check-project.sh` (section 2ter) et `scripts/hooks/hook-pre-write.sh` : la détection ne cherche plus littéralement `02_sujets/`, mais tout dossier racine `02_<nom>` autre que `02_work/`. Testé par exécution : plus d'avertissement avec `02_thematique/`, comportement inchangé sur tous les autres scénarios (seuil sans dossier, `02_sujets/` canon, fichier sacré, projet Code, blocages binaire/espace).
+- `skills/my-project-os/SKILL.md` (Mode Orientation) : vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, propose l'alignement sur `02_sujets/` une seule fois si un autre nom est déjà utilisé, et consigne tout refus dans une entrée `DEC-XXXX` du `DECISIONS.md` **du projet** pour ne plus jamais reproposer.
+- `structures/life-tree.md` précise que `02_sujets/` est un nom suggéré, pas imposé.
+- Nouveau principe 12 dans `docs/principles.md` : « Suggestion, pas prescription unique ».
+- Voir DEC-0033.
 
 ### CHG-20260714-2039 — Organisation thématique Life : 02_sujets/ redéfinit le slot 02 (v0.14.0)
 
