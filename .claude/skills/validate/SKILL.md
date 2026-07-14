@@ -56,7 +56,7 @@ Ce qu'a produit la génération vérifiée du 2026-07-09 (Life+Code+Knowledge) :
 
 | Hook | Événement | Comportement |
 |---|---|---|
-| `hook-pre-write.sh` | PreToolUse Write | BLOQUE : nom de fichier avec espaces/accents ; document posé à la racine |
+| `hook-pre-write.sh` | PreToolUse Write | BLOQUE : nom de fichier avec espaces/accents ; document posé à la racine ; dossier racine quasi-doublon/collision de préfixe `NN_`. AVERTIT (systemMessage, non bloquant) depuis DEC-0032 : nouveau `.md` à la racine d'un projet Life/Hybrid portant le compte de fichiers thématiques à 5+ sans `02_sujets/` [verified: executed 2026-07-14] |
 | `hook-stop-progress.sh` | Stop | AVERTIT (systemMessage, non bloquant) si PROGRESS.md pas fraîche ; détecte aussi sans git (dates de fichiers) depuis CHG-20260709-0017 |
 
 sh POSIX, dégradation silencieuse si `python3`/`jq` absents (DEC-0008). Tester un hook = lui passer le JSON d'événement sur stdin et observer exit code + stdout. [read: from docs/enforcement.md, DECISIONS.md]

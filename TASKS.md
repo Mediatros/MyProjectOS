@@ -67,6 +67,7 @@ But : couvrir l'adoption d'un projet déjà peuplé et boucler la détection de 
 - [x] **T-B.5** `scripts/check-update.sh` écrit et copié dans chaque projet (sortie 0/10/1, apports par version, artefacts remplacés). Complété par le manifest `.myprojectos/manifest` et `init-project.sh --update-method` (DEC-0022).
 - [x] **T-B.6** Runbooks de migration dans `docs/versioning.md` (mise à jour d'un projet, migration d'un projet né avant le versionnement, publication d'une release).
 - [ ] **T-B.7** Mode « revue documentaire » périodique de la skill (état condensé + questions fermées de confirmation, déclenchable à la main ou en routine mensuelle).
+- [ ] **T-B.8** Idée à scoper, gardée pour plus tard (2026-07-14) : une skill (ou un mode) qui suggère proactivement des usages et organisations de MyProjectOS en général, au-delà du cas ponctuel `02_sujets/` de DEC-0032. Point ouvert : est-ce une extension du Mode Orientation existant (recommandé lors de la discussion, pour éviter un doublon de déclencheurs avec `my-project-os`), ou un vrai mode de revue périodique proche de T-B.7 ? Décision humaine avant tout scope.
 
 ### Phase C — Navigation à trois niveaux, RETEX et qualité générale
 But : navigation progressive fiable et outillée, retours terrain intégrés, repo à niveau de qualité industrielle. **Terminée le 2026-07-07 (v0.5.0, CHG-20260707-1100), sauf T-C.11.**

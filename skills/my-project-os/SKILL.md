@@ -73,6 +73,11 @@ Déclencheurs : « Où je range ça ? », un document arrive, une info doit êtr
 - **Une information** → l'aiguiller selon la frontière des fichiers sacrés (tableau ci-dessus).
 - **Un document entrant** (PDF, email, pièce) → `00_inbox/` d'abord, puis classer dans le bon dossier numéroté. Renommer selon les conventions : minuscules, tirets, sans accents, daté `YYYY-MM-DD-...` si c'est un document daté.
 - **Un dossier racine à créer** (numéroté ou non) → vérifier d'abord dans `structures/*-tree.md` et sur le disque qu'aucun dossier canonique ou variante proche (singulier/pluriel, casse, accents, abréviation) n'existe déjà. Ne jamais inventer un nom au fil de l'eau ; les hooks refusent les quasi-doublons et les collisions de préfixe `NN_`, mais mieux vaut consulter le canon avant d'écrire.
+- **Un projet Life ou Hybrid dont la racine accumule des fichiers thématiques** (avertissement `hook-pre-write.sh` à 5 fichiers `.md` ou plus, ou constat direct de plusieurs sujets de fond suivis en parallèle) → ne pas se contenter de noter le signal, dérouler la proposition :
+  1. Expliquer en une phrase le pourquoi : ranger par sujet (`02_sujets/`, sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`, voir `structures/life-tree.md`) met de l'ordre dans un projet qui suit plusieurs sujets de fond, et permet ensuite de demander l'état d'un sujet précis d'un coup.
+  2. Proposer un nom de sujet canonique déduit du contexte (nom du fichier concerné, sujet de la conversation en cours), par exemple « je range ça dans un sujet "Succession" (`02_sujets/S03_Succession/`) ? ».
+  3. Sur accord explicite seulement : créer `02_sujets/` si absent, déplacer le(s) fichier(s) concerné(s), mettre à jour `02_sujets/INDEX.md`. Jamais sans confirmation, même après un avertissement du hook.
+- **Une demande sur un sujet déjà rangé dans `02_sujets/`** (« l'état du dossier succession », « où en est la vente ? ») → consulter `02_sujets/INDEX.md` pour trouver le sous-dossier `Sxx_` correspondant avant de répondre, même logique que `SUJETS.md` pour l'extension Knowledge.
 - **Une feature Code** → arbitrer parcours **complet** vs **allégé** :
 
 | | Allégé | Complet |
