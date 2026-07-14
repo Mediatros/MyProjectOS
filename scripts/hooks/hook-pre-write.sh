@@ -70,14 +70,22 @@ case "$REL" in
         esac ;;
 esac
 
-# Organisation thématique (Life/Hybrid), DEC-0032 : écrire un nouveau fichier
-# .md à la racine alors que 02_sujets/ n'existe pas encore et que le seuil (5
-# fichiers thématiques) est atteint ou dépassé avertit sans bloquer (jugement
-# humain, cf. check-project.sh section 2ter et RETEX/retex-laciotat-organisation-par-sujets.md).
+# Organisation thématique (Life/Hybrid), DEC-0032/DEC-0033 : écrire un nouveau
+# fichier .md à la racine alors qu'aucun dossier 02_* (02_sujets/ suggéré, mais
+# un autre nom choisi par l'utilisateur compte aussi) n'existe encore et que le
+# seuil (5 fichiers thématiques) est atteint ou dépassé avertit sans bloquer
+# (jugement humain, cf. check-project.sh section 2ter et
+# RETEX/retex-laciotat-organisation-par-sujets.md).
 case "$REL" in
     */*) : ;;  # pas un fichier de la racine
     *.md)
-        if [ ! -d "$PROJECT_DIR/02_sujets" ] && [ -f "$PROJECT_DIR/PROJECT.md" ]; then
+        _slot02_used=0
+        for _d in "$PROJECT_DIR"/02_*/; do
+            [ -d "$_d" ] || continue
+            [ "$(basename -- "$_d")" = "02_work" ] && continue
+            _slot02_used=1
+        done
+        if [ "$_slot02_used" -eq 0 ] && [ -f "$PROJECT_DIR/PROJECT.md" ]; then
             TYPE=$(sed -n 's/^type:[[:space:]]*//p' "$PROJECT_DIR/PROJECT.md" | head -n 1)
             case "$TYPE" in
                 *Life*|*Hybrid*)
@@ -95,7 +103,7 @@ case "$REL" in
                             done
                             [ -f "$FILE_PATH" ] || _count=$((_count + 1))  # nouveau fichier, pas encore sur disque
                             if [ "$_count" -ge 5 ]; then
-                                warn "MyProjectOS : $_count fichiers .md thématiques à la racine, aucun 02_sujets/. Propose à l'utilisateur de ranger par sujet (02_sujets/Sxx_NomDuSujet/, voir structures/life-tree.md) avec un nom de sujet concret, avant de continuer à empiler des fichiers en racine."
+                                warn "MyProjectOS : $_count fichiers .md thématiques à la racine, aucun dossier 02_* pour les ranger. Propose à l'utilisateur de ranger par sujet (02_sujets/Sxx_NomDuSujet/ suggéré, voir structures/life-tree.md) avec un nom de sujet concret, avant de continuer à empiler des fichiers en racine."
                             fi
                             ;;
                     esac

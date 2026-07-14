@@ -45,3 +45,7 @@ Un agent ne doit pas tout lire par défaut. Il commence par les fichiers sacrés
 ## 11. Dépendances transverses avant action
 
 Une modification n'est jamais traitée comme isolée tant que ses dépendances amont, aval et documentaires n'ont pas été explicitées. Le système doit forcer la question : « qu'est-ce que cela touche aussi ? »
+
+## 12. Suggestion, pas prescription unique
+
+MyProjectOS propose une méthode par défaut (noms, structures, rituels), il ne l'impose pas. Un projet peut légitimement s'en écarter — nommage différent, organisation différente — tant que l'écart est explicite et consigné (typiquement dans le `DECISIONS.md` du projet) plutôt que subi silencieusement. Un garde-fou qui détecte un écart assumé et documenté ne le re-signale pas indéfiniment (voir DEC-0033). Il n'y a pas de méthode parfaite et unique : un adoptant peut suivre MyProjectOS à la lettre ou s'en inspirer seulement.

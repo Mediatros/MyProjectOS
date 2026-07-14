@@ -47,6 +47,7 @@ Le socle Core réserve `02_work/` au « travail actif en cours » (voir `structu
 - **Structure** : un sous-dossier par sujet, nommé `Sxx_NomDuSujet` (deux chiffres, underscore, nom du sujet). `02_sujets/INDEX.md` liste les sujets actifs et leur statut (voir gabarit `templates/extensions/life/INDEX.md`).
 - **Ce qui ne va pas dedans** : les documents classés par nature (courrier, preuve, échéance, modèle) restent dans `05_correspondances/` à `08_modeles/`, même s'ils se rapportent à un sujet de `02_sujets/`. `02_sujets/` range le travail de fond (notes, synthèses, brouillons de dossier), pas les pièces sources.
 - **Exemple réel** : `Copropriete_Jacques_Dore` et `LaCIOTAT` ont chacun créé ce motif indépendamment avant qu'il ne soit canonisé ici (voir `RETEX/retex-laciotat-organisation-par-sujets.md`).
+- **`02_sujets/` est un nom suggéré, pas imposé** (DEC-0033) : un projet peut choisir un autre nom pour ce même dossier (ex. `02_thematique/`) tant que c'est un choix explicite, consigné dans le `DECISIONS.md` du projet. `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé » et n'avertissent plus une fois qu'il existe, quel que soit son nom exact. Seule la lecture d'un sujet par la skill assistant suppose de retrouver ce dossier (et son `INDEX.md`) via le `DECISIONS.md` du projet s'il ne s'appelle pas `02_sujets/`.
 
 ## Règle de cohérence
 

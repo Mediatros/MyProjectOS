@@ -19,6 +19,21 @@
 
 ---
 
+### DEC-0033 — `02_sujets/` est une suggestion, pas un nom imposé : tolérance de nommage + traçage de l'écart
+
+- **Date** : 2026-07-14
+- **Contexte** : en testant DEC-0032, on constate qu'un projet ayant déjà organisé sa racine par sujets sous un autre nom que `02_sujets/` (ex. `02_thematique/`) reçoit quand même l'avertissement « aucun 02_sujets/ », alors qu'il est déjà organisé — un faux positif confirmé par exécution. L'utilisateur refuse tout renommage automatique ou suggéré comme seule option : la méthode doit accompagner, pas prescrire un nom unique. Si l'utilisateur choisit délibérément de garder un autre nom, ce choix doit être respecté et mémorisé pour ne plus être reproposé, y compris après une mise à jour de la méthode.
+- **Options envisagées** :
+  - A. Garder la détection stricte sur le nom `02_sujets/` et laisser le faux positif (documentation seule, « c'est un avertissement, ignore-le »).
+  - B. Renommer automatiquement ou proposer le renommage comme seule issue possible.
+  - C. Rendre la détection tolérante à tout dossier racine `02_<nom>` (hors `02_work/`), et donner à la skill assistant une consigne de proposition unique (jamais répétée) + un mécanisme d'enregistrement de l'écart dans le `DECISIONS.md` du **projet** (pas de la méthode) quand l'utilisateur choisit de garder son propre nom.
+- **Choix** : option C.
+- **Raison** : A laisse un signal faux et non actionnable vivre indéfiniment, contraire au principe « avertissement utile, jamais du bruit ». B contredit frontalement la demande explicite de l'utilisateur et le principe déjà établi que la réorganisation reste un geste humain (DEC-0032). C est cohérent avec la philosophie déjà en place ailleurs dans la méthode (ex. dossiers numérotés « à la demande », DEC-0002) : proposer une fois, respecter le choix, ne jamais insister. Devient le principe 12 de `docs/principles.md` (« Suggestion, pas prescription unique »), généralisable au-delà de ce seul cas.
+- **Conséquences** : `scripts/check-project.sh` (section 2ter) et `scripts/hooks/hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé », quel que soit le nom exact — testé par exécution (plus d'avertissement avec `02_thematique/`, comportement inchangé sur tous les autres scénarios : seuil sans dossier, `02_sujets/` canon, fichier sacré, projet Code, blocages binaire/espace). `skills/my-project-os/SKILL.md` (Mode Orientation) : avant de proposer l'organisation par sujets, vérifier si un dossier `02_*` existe déjà et si le `DECISIONS.md` du projet documente un choix de nom ; sinon proposer une fois l'alignement sur `02_sujets/` ; en cas de refus, consigner immédiatement une entrée `DEC-XXXX` dans le `DECISIONS.md` **du projet** (nom retenu, raison si donnée) pour ne plus jamais reproposer. La lecture d'un sujet (« l'état du dossier X ») cherche `02_sujets/` ou, à défaut, le dossier documenté par le `DECISIONS.md` du projet. `structures/life-tree.md` précise que `02_sujets/` est un nom suggéré, pas imposé. Nouveau principe 12 dans `docs/principles.md`.
+- **Liens** : CHG-20260714-2254.
+
+---
+
 ### DEC-0032 — Slot 02 spécialisé par extension : `02_sujets/` pour Life, `02_work/` inchangé pour Code
 
 - **Date** : 2026-07-14

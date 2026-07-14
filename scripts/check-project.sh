@@ -121,13 +121,23 @@ case "$TYPE" in
 esac
 
 # --- 2ter. Life : organisation thématique (02_sujets/) -----------------------
-# DEC-0032 : au-delà de ~5 fichiers de travail thématiques (hors fichiers
-# sacrés et extensions connues) à la racine, un projet Life gagne à ranger
-# par sujet plutôt qu'à accumuler. Avertissement, jamais bloquant : ranger
-# reste un geste humain (voir RETEX/retex-laciotat-organisation-par-sujets.md).
+# DEC-0032/DEC-0033 : au-delà de ~5 fichiers de travail thématiques (hors
+# fichiers sacrés et extensions connues) à la racine, un projet Life gagne à
+# ranger par sujet plutôt qu'à accumuler. 02_sujets/ est le nom SUGGÉRÉ par la
+# méthode, pas imposé : un dossier 02_<autre-nom> (ex. 02_thematique/) choisi
+# par l'utilisateur suffit à considérer le projet déjà organisé, sans re-nager
+# à chaque fois (voir DECISIONS.md du projet pour la justification du nom).
+# Avertissement, jamais bloquant : ranger reste un geste humain (voir
+# RETEX/retex-laciotat-organisation-par-sujets.md).
 case "$TYPE" in
     *Life*|*Hybrid*)
-        if [ ! -d "$TARGET/02_sujets" ]; then
+        _slot02_used=0
+        for _d in "$TARGET"/02_*/; do
+            [ -d "$_d" ] || continue
+            [ "$(basename -- "$_d")" = "02_work" ] && continue
+            _slot02_used=1
+        done
+        if [ "$_slot02_used" -eq 0 ]; then
             _sacred="PROJECT PROGRESS CHANGELOG TASKS DECISIONS AGENTS CLAUDE PREUVES ECHEANCES CORRESPONDANCES SUJETS README CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE"
             _root_md_count=0
             for _f in "$TARGET"/*.md; do
@@ -137,7 +147,7 @@ case "$TYPE" in
                 _root_md_count=$((_root_md_count + 1))
             done
             if [ "$_root_md_count" -ge 5 ]; then
-                warn "$_root_md_count fichiers .md thématiques à la racine, aucun 02_sujets/ : envisager l'organisation par sujets (structures/life-tree.md)"
+                warn "$_root_md_count fichiers .md thématiques à la racine, aucun dossier 02_* pour les ranger : envisager l'organisation par sujets (02_sujets/ suggéré, structures/life-tree.md)"
             fi
         fi
         ;;
