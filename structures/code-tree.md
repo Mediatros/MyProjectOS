@@ -55,4 +55,6 @@ MonProjet/
 - **Avant de modifier** : remplir `IMPACT_ANALYSIS.md` (fichiers concernés, à ne pas toucher, risques, tests).
 - **Lisibilité agent** : un agent doit pouvoir déterminer rapidement où est la logique métier, les intégrations, les contrats API, les tests, et quels fichiers ne pas toucher.
 
+**Cas Hybrid** : `02_work/` du socle Core est alors redéfini en `02_sujets/` par l'extension Life (organisation par sujets, voir `structures/life-tree.md`, DEC-0032) ; les dossiers ci-dessus (`05_specs/` à `09_scripts/`, `src/`) restent inchangés et couvrent le travail actif côté code.
+
 Nommage : voir `docs/NAMING-CONVENTIONS.md`.

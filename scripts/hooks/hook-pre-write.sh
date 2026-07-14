@@ -70,4 +70,39 @@ case "$REL" in
         esac ;;
 esac
 
+# Organisation thématique (Life/Hybrid), DEC-0032 : écrire un nouveau fichier
+# .md à la racine alors que 02_sujets/ n'existe pas encore et que le seuil (5
+# fichiers thématiques) est atteint ou dépassé avertit sans bloquer (jugement
+# humain, cf. check-project.sh section 2ter et RETEX/retex-laciotat-organisation-par-sujets.md).
+case "$REL" in
+    */*) : ;;  # pas un fichier de la racine
+    *.md)
+        if [ ! -d "$PROJECT_DIR/02_sujets" ] && [ -f "$PROJECT_DIR/PROJECT.md" ]; then
+            TYPE=$(sed -n 's/^type:[[:space:]]*//p' "$PROJECT_DIR/PROJECT.md" | head -n 1)
+            case "$TYPE" in
+                *Life*|*Hybrid*)
+                    _sacred="PROJECT PROGRESS CHANGELOG TASKS DECISIONS AGENTS CLAUDE PREUVES ECHEANCES CORRESPONDANCES SUJETS README CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE"
+                    _new_base=${BASE%.md}
+                    case " $_sacred " in
+                        *" $_new_base "*) : ;;  # fichier sacré ou d'extension connue, hors comptage
+                        *)
+                            _count=0
+                            for _f in "$PROJECT_DIR"/*.md; do
+                                [ -f "$_f" ] || continue
+                                _b=$(basename -- "$_f" .md)
+                                case " $_sacred " in *" $_b "*) continue ;; esac
+                                _count=$((_count + 1))
+                            done
+                            [ -f "$FILE_PATH" ] || _count=$((_count + 1))  # nouveau fichier, pas encore sur disque
+                            if [ "$_count" -ge 5 ]; then
+                                warn "MyProjectOS : $_count fichiers .md thématiques à la racine, aucun 02_sujets/. Propose à l'utilisateur de ranger par sujet (02_sujets/Sxx_NomDuSujet/, voir structures/life-tree.md) avec un nom de sujet concret, avant de continuer à empiler des fichiers en racine."
+                            fi
+                            ;;
+                    esac
+                    ;;
+            esac
+        fi
+        ;;
+esac
+
 exit 0

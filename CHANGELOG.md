@@ -17,6 +17,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.14.0** — 2026-07-14 — organisation thématique Life canonisée : `02_sujets/` redéfinit le slot 02 pour les projets Life/Hybrid (sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`), Code garde `02_work/` inchangé ; en Hybrid, `02_sujets/` l'emporte systématiquement (les dossiers dédiés `05_specs/` à `09_scripts/`/`src/` couvrent déjà le travail actif côté code) ; suggestion proactive de la skill assistant et avertissement doux de `check-project.sh` sur l'accumulation de fichiers thématiques à la racine. Garde-fou temps réel ajouté à `hook-pre-write.sh` (PreToolUse Write) : avertissement dès la création du fichier qui porte le compte à 5+, sans attendre un `check-project.sh` manuel — le déclencheur initial du RETEX était un constat purement visuel, sans garde-fou actif au moment des faits. Rétrofit des projets existants : détection et suggestion seulement, jamais de déplacement automatique de fichiers. Voir CHG-20260714-2039, DEC-0032.
 - **v0.13.0** — 2026-07-13 — la brique secrets VPS passe à SOPS + age (DEC-0031, supersède la D2 de DEC-0030 après échec réel de l'installation d'Infisical auto-hébergé) : backend `sops` dans `secrets.sh` (boîte dotenv chiffrée unique, défaut `~/.config/secrets/secrets.env`), script `scripts/ajout-secret.sh` (deux questions, saisie masquée, création de la clé age et de la boîte au premier usage), hook Telegram `/secret` d'Hermès documenté dans `agents/hermes.md` (interception à la gateway, hors LLM, à valider par test à blanc), `docs/OUTILS.md` réaligné (Tailscale n'est plus prérequis de la brique secrets). Voir CHG-20260713-1923.
 - **v0.12.1** — 2026-07-13 — préflight d'autonomie obligatoire avant toute installation d'outil : l'agent vérifie AVANT d'agir qu'il peut aller au bout (conteneur ?, root/sudo ?, démon Docker, gestionnaire de paquets, réseau) ; en cas d'échec, règle tout ou rien : rien n'est entamé, l'utilisateur reçoit les commandes exactes à exécuter lui-même. Câblé dans `docs/OUTILS.md` et l'étape 0 de l'onboarding du squelette `templates/skills/_squelette/INSTALL.md`. Voir CHG-20260713-1520.
 - **v0.12.0** — 2026-07-13 — catalogue d'outils natifs (T-PLAN-5 Phase 1, DEC-0030) : `docs/OUTILS.md` (deux familles : outils à compte — Blue, AgentMail, Infisical, Tailscale — et skills utilitaires sans compte), squelette de brique `templates/skills/_squelette/` avec `secrets.sh` générique multi-backend (keychain/bws/infisical/file, saisie hors-bande par défaut), première skill utilitaire `templates/skills/courrier-manuscrit/` (PDF au rendu manuscrit, police paramétrée non embarquée), skill assistant généralisée au catalogue en Mode 5/6. Voir CHG-20260713-1330.
@@ -34,6 +35,19 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260714-2039 — Organisation thématique Life : 02_sujets/ redéfinit le slot 02 (v0.14.0)
+
+- Déclencheur : RETEX `retex-laciotat-organisation-par-sujets.md` — deux projets Life (Jacques Doré, LaCIOTAT) avaient réinventé indépendamment un dossier de rangement par sujets, en collision non détectée avec `02_work/` du Core.
+- `structures/life-tree.md` documente `02_sujets/` (override du slot 02 pour Life/Hybrid uniquement, Code garde `02_work/`), sous-dossiers `Sxx_NomDuSujet/`, `02_sujets/INDEX.md`.
+- `structures/core-tree.md` renvoie vers ce cas particulier ; `docs/NAMING-CONVENTIONS.md` fixe le nommage des sous-dossiers `Sxx_`.
+- Cas Hybrid explicité (`structures/core-tree.md`, `life-tree.md`, `code-tree.md`) : `02_sujets/` l'emporte toujours sur `02_work/`, les dossiers dédiés Code (`05_specs/` à `09_scripts/`, `src/`) couvrant déjà le travail actif côté code.
+- `hook-pre-write.sh` (PreToolUse Write) : garde-fou temps réel, avertissement `systemMessage` non bloquant à la création d'un `.md` racine qui porterait le compte de fichiers thématiques à 5+ sans `02_sujets/`. Documenté dans `docs/enforcement.md` (section 5) et `.claude/skills/validate/SKILL.md`.
+- Message du hook et Mode Orientation de `skills/my-project-os/SKILL.md` enrichis (retour utilisateur : l'avertissement doit accompagner, pas seulement constater) : le hook instruit l'agent de proposer un nom de sujet concret, la skill déroule explication → proposition → confirmation explicite avant tout rangement, et ajoute la lecture de `02_sujets/INDEX.md` pour répondre à une demande sur un sujet déjà suivi (même logique que `SUJETS.md`/Knowledge).
+- Gabarit `templates/extensions/life/INDEX.md`, posé à la demande.
+- `skills/my-project-os/SKILL.md` (Mode Orientation) suggère l'organisation par sujets dès que la racine d'un projet Life accumule des fichiers thématiques hors fichiers sacrés.
+- `scripts/check-project.sh` avertit (jamais bloquant) si un projet Life a 5 fichiers `.md` thématiques ou plus à la racine sans `02_sujets/`.
+- Voir DEC-0032.
 
 ### CHG-20260713-1923 — Secrets VPS : bascule Infisical → SOPS + age, saisie hors-LLM (v0.13.0)
 

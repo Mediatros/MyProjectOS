@@ -44,6 +44,11 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 - **Bloque** l'écriture d'un fichier dont le premier segment de chemin créerait un dossier racine **quasi-doublon** d'un dossier existant : noms équivalents après normalisation (accents translittérés, minuscules, tirets ramenés aux underscores, `s` final retiré), par exemple `99_archives/` à côté de `99_archive/`. Dossiers cachés hors périmètre.
 - Origine : RETEX LaCIOTAT (`RETEX/retex-laciotat-doublon-archives.md`), où un tel doublon a vécu deux jours sans détection. Le contrôle à la demande équivalent (quasi-doublons + collisions de préfixe `NN_`) vit dans `check-project.sh`, section « Dossiers racine ».
 
+### 5. Organisation thématique (Life/Hybrid) — `hook-pre-write.sh` (même hook)
+- **Avertit** (`systemMessage`, ne bloque pas) : écrire un nouveau fichier `.md` à la racine d'un projet Life ou Hybrid (`type:` du frontmatter `PROJECT.md`), alors que `02_sujets/` n'existe pas encore et que le compte de fichiers `.md` thématiques à la racine (hors fichiers sacrés et extensions connues) atteint ou dépasse 5 avec ce fichier.
+- Origine : RETEX `RETEX/retex-laciotat-organisation-par-sujets.md` — l'accumulation n'avait été repérée que visuellement par l'utilisateur, sans aucun garde-fou en temps réel (DEC-0032). Le contrôle à la demande équivalent vit dans `check-project.sh`, section « 2ter ».
+- **Fermeté** : avertissement, pas blocage — ranger par sujet reste un jugement humain, comme pour la fraîcheur de `PROGRESS.md`.
+
 ## Câblage
 
 Le projet reste autonome, insensible à un déplacement ou à la disparition du repo méthode : `scripts/init-project.sh` copie les hooks dans `.claude/hooks/` du projet cible, puis écrit (ou fusionne) un `.claude/settings.json` qui les référence via `$CLAUDE_PROJECT_DIR` :
@@ -91,7 +96,7 @@ Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de s
 
 - **Bloquer** (PreToolUse) : émettre sur stdout
   `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"..."}}` et sortir en code 0.
-- **Avertir** (Stop) : émettre `{"systemMessage":"..."}` et sortir en code 0.
+- **Avertir** (Stop, ou PreToolUse sans bloquer depuis DEC-0032) : émettre `{"systemMessage":"..."}` et sortir en code 0. Sur un hook PreToolUse, l'absence de `permissionDecision` vaut laisser-passer : le `systemMessage` s'affiche sans empêcher l'action.
 - **Laisser passer** : sortir en code 0 sans rien émettre.
 
 Cible Claude Code v2.1+.

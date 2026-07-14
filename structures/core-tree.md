@@ -40,7 +40,7 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 |---|---|---|
 | `00_inbox/` | Tout ce qui arrive et n'est pas encore classé | Doit se vider : on classe régulièrement |
 | `01_context/` | Contexte stable, documents de référence du projet | Bouge peu |
-| `02_work/` | Notes et fichiers du travail en cours | Cœur de l'activité |
+| `02_work/` | Notes et fichiers du travail en cours | Cœur de l'activité ; Life/Hybrid peuvent le redéfinir en `02_sujets/` (organisation par sujets), voir `structures/life-tree.md` (DEC-0032) |
 | `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
 | `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents | Optionnel, créé à la demande dès qu'un projet est piloté par plusieurs agents/outils partagés ; jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
@@ -49,9 +49,9 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 
 ## Extensions
 
-- **Life** ajoute les fichiers `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md` et des dossiers dédiés. Voir `structures/life-tree.md`.
+- **Life** ajoute les fichiers `PREUVES.md`, `ECHEANCES.md`, `CORRESPONDANCES.md`, des dossiers dédiés, et redéfinit optionnellement `02_sujets/` (voir ci-dessus). Voir `structures/life-tree.md`.
 - **Code** ajoute `CONSTITUTION.md`, `STACK_VALIDATION.md`, `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`, une section dédiée dans `AGENTS.md` (Core) et des dossiers dédiés. Voir `structures/code-tree.md`.
-- **Hybrid** combine les deux.
+- **Hybrid** combine les deux. Sur le slot `02` spécifiquement, `02_sujets/` (Life) l'emporte sur `02_work/` (Code) : les dossiers dédiés de l'extension Code (`05_specs/` à `09_scripts/`, `src/`) couvrent déjà le besoin de « travail actif » côté code, voir `structures/life-tree.md` (DEC-0032).
 
 ## Nommage
 

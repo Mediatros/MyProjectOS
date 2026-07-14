@@ -119,6 +119,29 @@ case "$TYPE" in
         done
         ;;
 esac
+
+# --- 2ter. Life : organisation thématique (02_sujets/) -----------------------
+# DEC-0032 : au-delà de ~5 fichiers de travail thématiques (hors fichiers
+# sacrés et extensions connues) à la racine, un projet Life gagne à ranger
+# par sujet plutôt qu'à accumuler. Avertissement, jamais bloquant : ranger
+# reste un geste humain (voir RETEX/retex-laciotat-organisation-par-sujets.md).
+case "$TYPE" in
+    *Life*|*Hybrid*)
+        if [ ! -d "$TARGET/02_sujets" ]; then
+            _sacred="PROJECT PROGRESS CHANGELOG TASKS DECISIONS AGENTS CLAUDE PREUVES ECHEANCES CORRESPONDANCES SUJETS README CONSTITUTION STACK_VALIDATION ARCHITECTURE SPECS TEST_PLAN IMPACT_ANALYSIS RELEASE"
+            _root_md_count=0
+            for _f in "$TARGET"/*.md; do
+                [ -f "$_f" ] || continue
+                _base=$(basename -- "$_f" .md)
+                case " $_sacred " in *" $_base "*) continue ;; esac
+                _root_md_count=$((_root_md_count + 1))
+            done
+            if [ "$_root_md_count" -ge 5 ]; then
+                warn "$_root_md_count fichiers .md thématiques à la racine, aucun 02_sujets/ : envisager l'organisation par sujets (structures/life-tree.md)"
+            fi
+        fi
+        ;;
+esac
 if [ -f "$TARGET/docs/INDEX.md" ]; then
     echo "Extension Knowledge :"
     for f in docs/INDEX.md docs/kb_governance.md; do
