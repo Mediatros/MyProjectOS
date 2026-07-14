@@ -15,18 +15,18 @@
 |---|---|---|---|---|
 | **Blue** (blue.cc) | Interface de suivi/pilotage agent ↔ humain : miroir visuel de `TASKS.md`, consultable depuis un téléphone, commentaires de cartes comme canal de demandes | Free tier suffisant pour un usage solo | `GOUVERNANCE_BLUE.md` + skill `blue-app` (CLI + GraphQL + fichiers) | **Disponible**, éprouvé en réel sur plusieurs projets |
 | **AgentMail** (agentmail.to) | Boîte mail de l'agent : recevoir et envoyer des emails par API. Un seul compte pour tous les agents (l'identité mail appartient au projet, pas à l'agent) | Free tier : 3 inboxes, 3 000 emails/mois, 3 Go (vérifié 2026-07-13) | `GOUVERNANCE_AGENTMAIL.md` + skill `agentmail` (dérivée de la skill officielle) | Planifié (T-PLAN-5 Phase 3) |
-| **Infisical** | Gestion des secrets multi-agents. Sur VPS : instance auto-hébergée par l'agent, UI accessible **uniquement via Tailscale**, saisie hors-bande des valeurs dans l'UI web | Gratuit (auto-hébergé ; cloud : free tier 5 identités / 3 projets) | Backend `infisical` de `secrets.sh` + `GOUVERNANCE_SECRETS.md` | Planifié (T-PLAN-5 Phase 2) |
-| **Tailscale** | Réseau privé entre les machines de l'utilisateur (Mac, VPS, iPhone...) : accès sécurisé au VPS, prérequis de l'Infisical auto-hébergé | Plan Personal gratuit (limites à re-vérifier à l'activation) | Fiche d'onboarding ci-dessous (pas de skill : la CLI est l'outil) | **Disponible** (fiche) |
+| **SOPS + age** (brique sans compte) | Gestion des secrets sans serveur : une boîte chiffrée unique (`~/.config/secrets/secrets.env`), plus aucun `.env` en clair éparpillé, fichier synchronisable sans risque (Syncthing/Git). Saisie : script `ajout-secret.sh` (deux questions, saisie masquée) ou hook Telegram `/secret` d'Hermès (traité hors LLM) | Gratuit, open source, aucun compte | Backend `sops` de `secrets.sh` + `scripts/ajout-secret.sh` + doc hook `/secret` (`agents/hermes.md`) | **Disponible** (backend + script) ; hook Hermès et migration des `.env` du VPS à exercer en réel (T-PLAN-5 Phase 2, DEC-0031) |
+| **Tailscale** | Réseau privé entre les machines de l'utilisateur (Mac, VPS, iPhone...) : accès SSH sécurisé au VPS et exposition privée de services | Plan Personal gratuit (limites à re-vérifier à l'activation) | Fiche d'onboarding ci-dessous (pas de skill : la CLI est l'outil) | **Disponible** (fiche) |
 
 ### Gestion des secrets : quelle voie proposer ?
 
 Jamais imposée, toujours gratuite. Dans l'ordre :
 
-1. **L'utilisateur a déjà un gestionnaire de secrets** (Bitwarden Secrets Manager, autre) → s'appuyer dessus (`secrets.sh` supporte `bws` ; extensible).
-2. **Sinon, selon la plateforme du projet** : Mac → trousseau (`security`, natif, zéro compte) ; VPS headless → Infisical auto-hébergé via Tailscale (repli léger : fichier chiffré age, clé hors du dossier projet) ; Windows → via WSL, mêmes voies que Linux.
+1. **L'utilisateur a déjà un gestionnaire de secrets** (Bitwarden Secrets Manager, Infisical cloud, autre) → s'appuyer dessus (`secrets.sh` supporte `bws` et `infisical` ; extensible).
+2. **Sinon, selon la plateforme du projet** : Mac → trousseau (`security`, natif, zéro compte) ; VPS headless → boîte chiffrée SOPS + age (backend `sops`, DEC-0031 — Infisical auto-hébergé abandonné après échec d'installation en réel) ; Windows → via WSL, mêmes voies que Linux.
 3. **Refus de tout ça** → fichier `chmod 600` hors du dossier projet, explicitement dégradé.
 
-Principe transverse de **saisie hors-bande** : par défaut, la valeur d'un secret ne transite jamais par la conversation avec l'agent (UI web Infisical via lien Tailscale, ou commande exécutée par l'utilisateur dans son terminal). Le mode full-auto (clés confiées à l'agent dans la conversation) n'est possible que sur choix explicite de l'utilisateur. Le projet ne consigne que les NOMS de backend et de clés, jamais une valeur.
+Principe transverse de **saisie hors-bande** : par défaut, la valeur d'un secret ne transite jamais par la conversation avec l'agent. Voies : le script `scripts/ajout-secret.sh` exécuté par l'utilisateur (saisie masquée), le hook Telegram `/secret` d'Hermès (intercepté à la gateway, jamais vu par le LLM, voir `agents/hermes.md`), ou une commande fournie par l'agent et exécutée par l'utilisateur dans son terminal (trousseau, fichier). Le mode full-auto (clés confiées à l'agent dans la conversation) n'est possible que sur choix explicite de l'utilisateur. Le projet ne consigne que les NOMS de backend et de clés, jamais une valeur.
 
 ### Fiche Tailscale (onboarding par l'agent)
 
@@ -44,11 +44,11 @@ Principe transverse de **saisie hors-bande** : par défaut, la valeur d'un secre
 
 ## Vérification d'autonomie avant toute installation (préflight, obligatoire)
 
-Avant de lancer l'installation d'un outil (Tailscale, Infisical, un binaire...), l'agent vérifie qu'il a réellement les droits de la mener au bout. Règle **tout ou rien** : aucune installation entamée sans préflight passé, jamais de chantier abandonné à moitié.
+Avant de lancer l'installation d'un outil (Tailscale, sops, un binaire...), l'agent vérifie qu'il a réellement les droits de la mener au bout. Règle **tout ou rien** : aucune installation entamée sans préflight passé, jamais de chantier abandonné à moitié.
 
 1. **Suis-je en conteneur ?** `[ -f /.dockerenv ]` ou `grep -q docker /proc/1/cgroup 2>/dev/null`. Un agent conteneurisé (ex. déploiement Docker d'Hermès) ne peut généralement pas installer sur l'hôte.
 2. **Ai-je les privilèges ?** `id -u` (root ?) ou `sudo -n true` (sudo sans mot de passe ?).
-3. **Les prérequis de la cible sont-ils accessibles ?** Ex. pour Infisical auto-hébergé : `docker info` répond ; pour un paquet : `apt-get`/`brew` utilisable ; accès réseau sortant si téléchargement.
+3. **Les prérequis de la cible sont-ils accessibles ?** Ex. pour un paquet : `apt-get`/`brew` utilisable ; pour un service : le démon requis (Docker...) répond ; accès réseau sortant si téléchargement.
 4. **Verdict AVANT d'agir** : si tout passe, dérouler l'installation. Sinon, s'arrêter là et dire clairement à l'utilisateur : « je ne suis pas assez autonome pour cette action, voici exactement ce qu'il te reste à faire », avec les commandes prêtes à copier-coller (à exécuter par l'utilisateur sur l'hôte, en SSH ou dans son terminal). Reprendre la main seulement une fois l'action faite, en re-vérifiant.
 
 ## Activation dans un projet

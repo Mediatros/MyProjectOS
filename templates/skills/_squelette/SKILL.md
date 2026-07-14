@@ -24,7 +24,7 @@ Sourcer le résolveur générique avant tout appel authentifié :
 SECRETS_PREFIX="<PREFIXE>" SECRETS_KEYS="<CLE1> <CLE2>" . "$(dirname "$0")/secrets.sh"
 ```
 
-Produit les variables `<PREFIXE>_<CLE>` exportées. Ordre de résolution : variables d'environnement déjà posées > backend désigné par `<PREFIXE>_SECRET_BACKEND` (`keychain`, `bws`, `infisical`, `file`). Détail des conventions par backend : en-tête de `scripts/secrets.sh` ; choix et pose du backend : `INSTALL.md`.
+Produit les variables `<PREFIXE>_<CLE>` exportées. Ordre de résolution : variables d'environnement déjà posées > backend désigné par `<PREFIXE>_SECRET_BACKEND` (`keychain`, `sops`, `bws`, `infisical`, `file`). Détail des conventions par backend : en-tête de `scripts/secrets.sh` ; choix et pose du backend : `INSTALL.md`.
 
 ## Commandes / recettes
 

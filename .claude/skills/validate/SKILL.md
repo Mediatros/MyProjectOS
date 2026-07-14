@@ -19,7 +19,8 @@ Depuis la racine du dépôt (`sh` obligatoire, les scripts ne sont pas exécutab
 ```bash
 # 1. Syntaxe de tous les scripts
 for s in scripts/*.sh scripts/hooks/*.sh; do sh -n "$s" && echo "OK $s"; done
-# Attendu : OK sur les 7 scripts. [verified: executed 2026-07-09]
+# Attendu : OK sur les 8 scripts (5 scripts/ dont ajout-secret.sh depuis v0.13.0 + 3 hooks).
+# [verified: executed 2026-07-13]
 
 # 2. Génération de test — répéter pour chaque combinaison touchée
 sh scripts/init-project.sh /tmp/T-core                      # Core seul
