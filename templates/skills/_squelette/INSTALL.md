@@ -20,27 +20,29 @@
 
 ## Installation par agent
 
+Par défaut, Claude Code et Codex installent un **lien symbolique relatif** vers la source canonique plutôt qu'une copie : une seule source à éditer (`98_configuration/skills/<outil>/`), aucune dérive possible entre le canon et les copies installées. Contrepartie assumée : un outil d'archive/zip qui ne préserve pas les liens symboliques (ou ne les déréférence pas correctement) casse l'installation — vérifier après tout transfert (section Vérification post-installation).
+
 ### Claude Code
 
 ```sh
 mkdir -p <projet>/.claude/skills
-cp -r <projet>/98_configuration/skills/<outil> <projet>/.claude/skills/<outil>
+cd <projet>/.claude/skills && ln -s ../../98_configuration/skills/<outil> <outil>
 ```
 
-Installation globale possible (`~/.claude/skills/<outil>/`) si la skill doit être disponible hors du projet.
+Installation globale possible (`~/.claude/skills/<outil>/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet.
 
 ### Codex
 
-```sh
-mkdir -p <projet>/.codex/skills
-cp -r <projet>/98_configuration/skills/<outil> <projet>/.codex/skills/<outil>
-```
+Chemin projet réel vérifié en exécution : `.agents/skills/` (pas `.codex/skills/` — vérifier ce chemin au premier essai plutôt que de le supposer figé, l'outillage Codex évolue).
 
-Installation globale possible (`~/.codex/skills/<outil>/`).
+```sh
+mkdir -p <projet>/.agents/skills
+cd <projet>/.agents/skills && ln -s ../../98_configuration/skills/<outil> <outil>
+```
 
 ### Hermès
 
-Copie unique globale (sert tous les profils ; si Hermès tourne en root, `~` est `/root`) :
+Copie physique unique globale (sert tous les profils ; si Hermès tourne en root, `~` est `/root`) — pas de lien symbolique ici, décision délibérée (DEC-0029 D3) : un lien vers un dossier projet synchronisé serait modifiable par toute session touchant ce dossier, vulnérable aux conflits Syncthing :
 
 ```sh
 cp -r <projet>/98_configuration/skills/<outil> ~/.hermes/skills/<outil>
@@ -102,5 +104,13 @@ Passer par WSL et suivre les voies Linux ci-dessus (sops ou fichier). Le Credent
 ```sh
 <commande de smoke test, exit 0 attendu>
 ```
+
+Pour une installation par lien symbolique (Claude Code, Codex), vérifier aussi que le lien résout bien vers la source canonique, surtout après un transfert (zip, archive, nouvelle machine) :
+
+```sh
+test -L <projet>/.claude/skills/<outil> && ls -L <projet>/.claude/skills/<outil>/SKILL.md
+```
+
+Une commande en échec signale un lien cassé (source déplacée ou non préservée par l'outil de transfert utilisé) : recréer le lien plutôt que d'ignorer l'erreur.
 
 Une fois vérifié, renseigner sa ligne au tableau d'équipement de `98_configuration/GOUVERNANCE_<OUTIL>.md` (agent, chemin d'installation, backend de secrets, date, résultat du test).

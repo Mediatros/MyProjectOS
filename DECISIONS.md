@@ -19,6 +19,36 @@
 
 ---
 
+### DEC-0035 — Clôture de session : répondre d'abord, déléguer la tenue des registres à un sous-agent ensuite
+
+- **Date** : 2026-08-03
+- **Contexte** : le Mode 4 (Clôture) de la skill assistant impose l'ordre « mettre à jour PROGRESS/CHANGELOG/DECISIONS/TASKS » PUIS « produire le résumé ». L'utilisateur signale (hors dépôt méthode, dans une session généraliste) que cet ordre le fait attendre la tenue des registres avant d'obtenir sa réponse, quel que soit l'agent ou le projet concerné, ce qui est contraire à ce qu'il attend : la réponse à sa question passe en premier, la tenue des fichiers sacrés est un travail d'arrière-plan délégué. Le `CLAUDE.md` global de l'utilisateur porte la même ambiguïté (« mettre à jour... avant interruption ou changement de sujet », sans préciser l'ordre relatif à la réponse), et sa section « Délégation aux sous-agents » ne listait pas la tenue des registres MyProjectOS comme tâche déléguable.
+- **Options envisagées** :
+  - A. Statu quo : garder l'ordre actuel, considérer que le résumé de clôture EST la réponse donc qu'il n'y a pas de délai perçu.
+  - B. Inverser l'ordre dans le Mode 4 (produire le résumé d'abord, mettre à jour les fichiers ensuite), en gardant la mise à jour synchrone dans le même tour de l'agent.
+  - C. Inverser l'ordre ET déléguer explicitement la mise à jour des fichiers Core à un sous-agent (lancé en parallèle du résumé ou juste après), avec une mention de confirmation courte une fois la mise à jour faite.
+- **Choix** : option C.
+- **Raison** : A est réfutée par le signalement direct de l'utilisateur, en particulier quand le Mode 4 se déclenche sur un changement de sujet au milieu d'une question ponctuelle plutôt que sur une vraie fin de session. B corrige l'ordre mais garde devant l'utilisateur le coût en tours d'agent de la lecture/écriture des quatre fichiers Core. C aligne la skill sur le principe de délégation déjà établi côté `CLAUDE.md` global (agents `Explore`, `Snipper`, `general-purpose`) et tient le principe 7 « Reprise à froid » sans en faire payer le coût en synchrone à l'utilisateur.
+- **Conséquences** : `skills/my-project-os/SKILL.md`, Mode 4 réordonné (résumé produit en premier, délégation de la mise à jour des fichiers Core à un sous-agent `general-purpose` en parallèle ou juste après, mention de confirmation courte en fin, suggestion de `/clear` inchangée en dernière étape). Nouveau principe 13 dans `docs/principles.md` (« Répondre avant de tenir les registres »). En miroir, hors dépôt méthode, le `CLAUDE.md` global de l'utilisateur (`~/.claude/CLAUDE.md`) est corrigé : section PROGRESS.md reformulée pour lever l'ambiguïté de l'ordre, section Délégation aux sous-agents étendue à la tenue des fichiers de suivi. Aucun changement de `check-project.sh` : l'ordre dans lequel un agent produit ses actions au fil d'une session n'est pas un fait vérifiable a posteriori sur le disque. Version portée à `0.17.0` (nouvelle capacité comportementale, rien ne casse).
+- **Liens** : CHG-20260803-2248.
+
+---
+
+### DEC-0034 — Skills portables : proposition systématique + lien symbolique, correction du chemin Codex
+
+- **Date** : 2026-07-15
+- **Contexte** : le pattern « skill technique portable » (`98_configuration/skills/<skill>/` en source canonique + copie par agent, DEC-0027 à DEC-0030) reste cantonné aux outils du catalogue (`docs/OUTILS.md`) et aux skills utilitaires sans compte. Le dogfood du projet Lino (`LOCAL/Lino`, hors dépôt méthode, neuf skills dont six bespoke, piloté par Claude Code et Codex) fait remonter deux constats vérifiés en exécution (`RETEX/retex-lino-skills-portables-agent-agnostique.md`) : (1) le chemin projet réel de découverte de Codex est `.agents/skills/`, alors que le canon documente encore `.codex/skills/` (hérité de la vérification de la brique Blue, DEC-0029) ; (2) une installation par lien symbolique relatif (au lieu de `cp -r`) élimine toute dérive entre la source canonique et les copies installées, exactement le risque qui avait motivé le dossier `98_configuration/` (RETEX LaCIOTAT, DEC-0026).
+- **Options envisagées** :
+  - A. Statu quo : le pattern reste réservé au catalogue d'outils, activé seulement à la demande explicite pour une skill bespoke ; seules les deux corrections factuelles (chemin Codex, squelette) sont propagées.
+  - B. Rendre le pattern systématique par défaut (proposé à toute nouvelle skill projet), installation par copie physique (`cp -r`, comme aujourd'hui).
+  - C. Rendre le pattern systématique par défaut, installation par lien symbolique relatif pour Claude Code et Codex.
+- **Choix** : option C.
+- **Raison** : la portabilité multi-agents ne se limite pas aux outils catalogués — dès qu'un projet est piloté par plusieurs agents, n'importe quelle skill bespoke rencontre le même besoin (cas vérifié : les six skills métier `lino-*` de Lino). Le lien symbolique supprime la dérive source/copie plutôt que de la déplacer (B la laisse identique au risque déjà documenté). Rester optionnel (A) laisserait chaque projet réinventer sa propre variante, comme Lino l'a fait en dehors du canon.
+- **Conséquences** : `templates/skills/_squelette/INSTALL.md` et `templates/skills/blue-app/INSTALL.md` corrigent le chemin Codex (`.agents/skills/`) et remplacent `cp -r` par `ln -s` (relatif) pour Claude Code et Codex ; Hermès reste en copie physique globale, DEC-0029 D3 non rediscutée (la contrainte anti-conflit Syncthing qui l'a motivée reste valable, aucun contexte nouveau). `skills/my-project-os/SKILL.md` : correction de la ligne 192 (Garde-fous) et nouveau garde-fou permanent — à la création de toute nouvelle skill technique de projet (catalogue ou bespoke), proposer systématiquement la pose en `98_configuration/skills/<skill>/` avec lien symbolique vers l'emplacement natif de chaque agent présent sur le projet, jamais imposé. `structures/core-tree.md` et `docs/OUTILS.md` généralisent la description du dossier `98_configuration/skills/` au-delà du seul catalogue. `scripts/check-project.sh` gagne une section non bloquante détectant un lien symbolique cassé sous `.claude/skills/` ou `.agents/skills/` pointant vers `98_configuration/skills/`. Version portée à `0.16.0` (nouvelle capacité, rien ne casse). Rétrofit des skills déjà installées par copie physique (Blue notamment sur les projets existants) : jamais automatique, à la discrétion de chaque projet.
+- **Liens** : CHG-20260715-1954.
+
+---
+
 ### DEC-0033 — `02_sujets/` est une suggestion, pas un nom imposé : tolérance de nommage + traçage de l'écart
 
 - **Date** : 2026-07-14

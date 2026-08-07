@@ -17,6 +17,14 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **2026-08-07 — RETEX rattrapage d'un parc de skills (projet Mediatros)** : un projet Code+Knowledge vieux de quinze mois, passé de `LOCAL/` à `SYNC/`, a vu ses huit skills devenir muettes d'un coup côté VPS (secrets par `security find-generic-password`, chemins `/Users/jb/...`, scripts macOS). Cinq évolutions proposées, non intégrées : mode « rattrapage » d'un parc existant (artefact `98_configuration/AUDIT_SKILLS.md`), champ `portable:` à quatre valeurs (`oui`/`partiel`/`conditionnel`/`non`), expression du cas « non portable par décision » (frontière de sécurité volontaire qu'un agent diligent finirait par « réparer »), tableau d'inventaire dans le `README.md` de `98_configuration/skills/`, renvoi explicite vers `templates/skills/_squelette/` quand un projet outille sa portabilité. Voir `RETEX/retex-mediatros-retrofit-skills-portables.md`, CHG-20260807-1915.
+
+- **2026-08-04 — Plan Extension Knowledge v2 (hiérarchie à 4 niveaux)** : proposition Hermes d'une hiérarchie documentaire N1 Macro / N2 Méso / N3 Micro / N4 Archives (métaphore de température empruntée à Company OS), à comparer à l'extension Knowledge actuelle (niveaux 1/2/3, `docs/kb_governance.md`) avant toute décision. Sept écarts ouverts recensés (niveau d'archive formel, portée du N1, nommage N3 miroir du N2 parent, budgets, métaphore, enforcement). Document de travail, aucune modification appliquée. Voir `PLAN/plans/2026-08-04-extension-knowledge-v2-4-niveaux.md`, CHG-20260804-0030, T-PLAN-8.
+
+- **2026-08-02 — RETEX faux diagnostic clés BWS (infra Hermes VPS)** : après un rapport d'agent annonçant « clé API AllDebrid inaccessible, token BWS expiré, il faut ré-authentifier », la vérification terrain a prouvé le contraire (token valide, clé déjà injectée via BWS natif Hermes, `invalid_client` issu d'un chemin binaire CLI séparé). Les vraies causes passées des blocages AllDebrid étaient serveur down / magnet périmé / droits NAS, jamais la clé. Alignement des 4 copies répliquées du script (`mysecretaire` divergeait) ; AgentMail (HTTP 200) et TubeOnAI contrôlés sains. Leçons consignées dans `RETEX/retex-alldebrid-faux-diagnostic-cles-bws.md` : « clé inaccessible » = diagnostic à prouver, ne jamais re-authentifier sans preuve, et ressource répliquée entre profils = source canonique unique obligatoire. Voir CHG-20260802-2341.
+
+- **v0.17.0** — 2026-08-03 — clôture de session réordonnée (DEC-0035) : le Mode 4 de la skill assistant produit désormais le résumé **en premier**, puis délègue la mise à jour des fichiers Core (PROGRESS, CHANGELOG, DECISIONS, TASKS) à un sous-agent lancé en parallèle ou juste après, avec une mention de confirmation courte une fois fait — l'utilisateur ne doit plus attendre la tenue des registres pour obtenir sa réponse. Nouveau principe 13 dans `docs/principles.md` (« Répondre avant de tenir les registres »). En miroir hors dépôt méthode, le `CLAUDE.md` global de l'utilisateur est corrigé sur le même principe (section PROGRESS.md, section Délégation aux sous-agents). Voir CHG-20260803-2248, DEC-0035.
+- **v0.16.0** — 2026-07-15 — skills portables : proposition systématique à toute nouvelle skill de projet (catalogue ou bespoke), plus seulement aux outils de `docs/OUTILS.md` ; installation par lien symbolique relatif pour Claude Code et Codex (au lieu de `cp -r`), Hermès inchangé en copie physique globale (DEC-0029 D3) ; correction du chemin réel de découverte projet de Codex (`.agents/skills/`, pas `.codex/skills/`), issue du dogfood `LOCAL/Lino` (`RETEX/retex-lino-skills-portables-agent-agnostique.md`) ; `check-project.sh` détecte un lien symbolique cassé sous `.claude/skills/`/`.agents/skills/`. Voir CHG-20260715-1954, DEC-0034.
 - **v0.15.0** — 2026-07-14 — `02_sujets/` devient une suggestion, pas un nom imposé (DEC-0033) : `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé », corrigeant un faux positif confirmé (ex. `02_thematique/`) ; la skill assistant vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, ne propose l'alignement sur `02_sujets/` qu'une fois, et consigne tout refus dans une entrée `DEC-XXXX` du projet pour ne plus jamais le reproposer ; nouveau principe 12 dans `docs/principles.md` (« Suggestion, pas prescription unique »). Voir CHG-20260714-2254, DEC-0033.
 - **v0.14.0** — 2026-07-14 — organisation thématique Life canonisée : `02_sujets/` redéfinit le slot 02 pour les projets Life/Hybrid (sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`), Code garde `02_work/` inchangé ; en Hybrid, `02_sujets/` l'emporte systématiquement (les dossiers dédiés `05_specs/` à `09_scripts/`/`src/` couvrent déjà le travail actif côté code) ; suggestion proactive de la skill assistant et avertissement doux de `check-project.sh` sur l'accumulation de fichiers thématiques à la racine. Garde-fou temps réel ajouté à `hook-pre-write.sh` (PreToolUse Write) : avertissement dès la création du fichier qui porte le compte à 5+, sans attendre un `check-project.sh` manuel — le déclencheur initial du RETEX était un constat purement visuel, sans garde-fou actif au moment des faits. Rétrofit des projets existants : détection et suggestion seulement, jamais de déplacement automatique de fichiers. Voir CHG-20260714-2039, DEC-0032.
 - **v0.13.0** — 2026-07-13 — la brique secrets VPS passe à SOPS + age (DEC-0031, supersède la D2 de DEC-0030 après échec réel de l'installation d'Infisical auto-hébergé) : backend `sops` dans `secrets.sh` (boîte dotenv chiffrée unique, défaut `~/.config/secrets/secrets.env`), script `scripts/ajout-secret.sh` (deux questions, saisie masquée, création de la clé age et de la boîte au premier usage), hook Telegram `/secret` d'Hermès documenté dans `agents/hermes.md` (interception à la gateway, hors LLM, à valider par test à blanc), `docs/OUTILS.md` réaligné (Tailscale n'est plus prérequis de la brique secrets). Voir CHG-20260713-1923.
@@ -36,6 +44,53 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260807-1915 — RETEX Mediatros consigné : rattrapage d'un parc de skills existant
+
+- Création de `RETEX/retex-mediatros-retrofit-skills-portables.md` (projet `SYNC/Mediatros`, type Code + Knowledge, huit skills).
+- Cas non couvert par le canon : non pas créer une skill portable (DEC-0034), mais rattraper un parc écrit pour une seule machine quand le projet devient multi-agents après coup. Ce cas sera plus fréquent que celui de Lino.
+- Quatre constats : le canon n'outille pas l'audit d'un parc existant ; une non-portabilité peut être une décision de sécurité et le canon ne sait pas l'exprimer ; la portabilité n'est pas binaire (quatre valeurs) ; l'état de portabilité doit se lire sans ouvrir les fichiers.
+- Point d'honnêteté du RETEX : Mediatros a construit sa couche de portabilité sans consulter le canon et s'en écarte trois fois en moins bien (copie physique au lieu du lien symbolique, résolveur de secrets réinventé, identifiant Bitwarden en dur). Correction à la charge de Mediatros, pas du canon. Cause racine retenue : rien ne renvoie vers `templates/skills/_squelette/` quand un projet outille sa portabilité.
+- Cinq évolutions proposées, aucune décidée ni appliquée. Suivi : T-RETEX-1.
+
+### CHG-20260804-0030 — Plan Extension Knowledge v2 ajouté (hiérarchie à 4 niveaux)
+
+- Création de `PLAN/plans/2026-08-04-extension-knowledge-v2-4-niveaux.md` à partir de la fiche `docs/governance/classement-donnees.md` du VPS Hermes.
+- Objet : faire mûrir une hiérarchie N1 Macro (constitution) / N2 Méso (thématique) / N3 Micro (fiche vivante) / N4 Archives (froid), avec budgets, règles de circulation et nommage N3 miroir du N2 parent, puis la comparer formellement à l'extension Knowledge actuelle.
+- Sept écarts ouverts tabulés (§ 4 du plan), dont la question de l'enforcement : la proposition Hermes est purement déclarative là où l'extension actuelle est contrôlée par `check-project.sh`.
+- Aucune modification de `templates/extensions/knowledge/`, `docs/kb_governance.md`, `docs/principles.md` ni `docs/NAMING-CONVENTIONS.md`. `PLAN/README.md` et `TASKS.md` référencent le plan sous `T-PLAN-8`.
+
+### CHG-20260802-2341 — RETEX AllDebrid consigné : faux diagnostic de panne d'auth
+
+- Création de `RETEX/retex-alldebrid-faux-diagnostic-cles-bws.md` (profil Hermes `mysecretaire`, VPS).
+- Un rapport d'agent concluait à un token BWS expiré ; la vérification a prouvé le contraire. L'agent avait testé le chemin binaire `bws` CLI (token périmé) et généralisé au chemin d'injection natif (`registry.apply_all`, 38 secrets appliqués), qui fonctionnait.
+- Trois leçons transverses : « clé inaccessible » est un diagnostic à prouver et non à inférer ; ne jamais ré-authentifier un fournisseur de secrets sans preuve (effet de bord sur tous les autres consommateurs) ; toute ressource répliquée entre profils exige une source canonique unique.
+- Action réalisée hors dépôt méthode : alignement des quatre copies du script (celle de `mysecretaire` divergeait), contrôle sain d'AgentMail et TubeOnAI.
+- Aucune décision structurante MyProjectOS demandée à ce stade. Seule piste touchant le canon : un contrôle d'empreinte anti-dérive des skills répliquées. Suivi : T-RETEX-2.
+
+### CHG-20260803-2248 — Clôture de session réordonnée : réponse d'abord, registres délégués ensuite (v0.17.0)
+
+- Déclencheur : signalement direct de l'utilisateur (hors dépôt méthode) — quel que soit le projet ou l'agent, il obtient sa réponse APRÈS que les fichiers de suivi (PROGRESS, CHANGELOG, TASKS...) ont été mis à jour, ce qui est l'inverse de ce qu'il attend.
+- `skills/my-project-os/SKILL.md`, Mode 4 (Clôture) : le résumé (Fait/Reste/Décisions/Risques/Prochaine action) est produit en premier ; la mise à jour des fichiers Core est déléguée à un sous-agent `general-purpose`, en parallèle ou juste après ; une courte mention de confirmation clôt l'échange, avant la suggestion habituelle de `/clear`.
+- Nouveau principe 13 dans `docs/principles.md` : « Répondre avant de tenir les registres ».
+- En miroir, hors dépôt méthode : `~/.claude/CLAUDE.md` de l'utilisateur — section PROGRESS.md reformulée pour lever l'ambiguïté de l'ordre, section Délégation aux sous-agents étendue à la tenue des fichiers de suivi.
+- Voir DEC-0035.
+
+### CHG-20260731-2341 — Plan d’intégration Agent Memory ajouté
+
+- Création de `PLAN/plans/2026-07-31-agent-memory-integration.md` à partir de l’étude de TencentDB Agent Memory.
+- Identité d’intégration candidate : Markdown/Git restent la mémoire projet canonique ; toute mémoire agentique est dérivée, optionnelle, reconstructible, isolée par projet et soumise à validation humaine.
+- Le plan documente l’articulation avec Mnemosyne et l’index FTS5 candidat, le cycle brut → candidat → validé, les invariants de sécurité, les options d’intégration, les phases, la matrice d’évaluation, les risques et le rollback.
+- Aucun plugin, moteur mémoire, composant Hermes, document stable, script ou hook n’a été installé ou modifié ; l’éventuel POC TencentDB reste conditionné à un nouvel arbitrage explicite.
+- `PLAN/README.md`, `PROGRESS.md` et `TASKS.md` référencent le plan sous `T-PLAN-7`.
+
+### CHG-20260715-1954 — Skills portables : proposition systématique + lien symbolique (v0.16.0)
+
+- Le pattern « skill technique portable » (`98_configuration/skills/<skill>/` + copie par agent) devient un garde-fou permanent de la skill assistant, déclenché à la création de toute nouvelle skill de projet (catalogue ou bespoke), pas seulement aux Modes 5/6.
+- Installation par lien symbolique relatif (`ln -s`) pour Claude Code et Codex, remplaçant `cp -r` : une seule source à éditer, aucune dérive possible. Hermès reste en copie physique globale (DEC-0029 D3, inchangé).
+- Correction du chemin projet réel de découverte de Codex : `.agents/skills/` (le canon documentait encore `.codex/skills/`), vérifié par le dogfood du projet Lino.
+- `scripts/check-project.sh` gagne une section non bloquante détectant un lien symbolique cassé sous `.claude/skills/` ou `.agents/skills/`.
+- Voir DEC-0034, `RETEX/retex-lino-skills-portables-agent-agnostique.md`.
 
 ### CHG-20260714-2254 — 02_sujets/ suggéré, pas imposé : tolérance de nommage + traçage (v0.15.0)
 

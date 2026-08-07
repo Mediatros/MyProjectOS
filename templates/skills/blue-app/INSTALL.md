@@ -9,23 +9,25 @@
 
 ## Installation par agent
 
+Par défaut, Claude Code et Codex installent un **lien symbolique relatif** vers la source canonique plutôt qu'une copie : une seule source à éditer, aucune dérive possible entre le canon et les copies installées (voir DEC-0034). Contrepartie : un outil d'archive/zip qui ne préserve pas les liens casse l'installation — à vérifier après tout transfert.
+
 ### Claude Code
 
 ```sh
 mkdir -p <projet>/.claude/skills
-cp -r <projet>/98_configuration/skills/blue-app <projet>/.claude/skills/blue-app
+cd <projet>/.claude/skills && ln -s ../../98_configuration/skills/blue-app blue-app
 ```
 
-Installation globale possible (`~/.claude/skills/blue-app/`) si la skill doit être disponible hors du projet.
+Installation globale possible (`~/.claude/skills/blue-app/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet.
 
 ### Codex
 
-```sh
-mkdir -p <projet>/.codex/skills
-cp -r <projet>/98_configuration/skills/blue-app <projet>/.codex/skills/blue-app
-```
+Chemin projet réel vérifié en exécution (dogfood Lino, 2026-07-15) : `.agents/skills/` (pas `.codex/skills/` comme documenté précédemment).
 
-Installation globale possible (`~/.codex/skills/blue-app/`).
+```sh
+mkdir -p <projet>/.agents/skills
+cd <projet>/.agents/skills && ln -s ../../98_configuration/skills/blue-app blue-app
+```
 
 ### Hermès
 
@@ -89,6 +91,6 @@ $env:BLUE_TOKEN_SECRET = Get-Secret -Name blue-auth-token -AsPlainText
 BLUE_ORG=<org> scripts/blue-gql.sh --check
 ```
 
-Attendu : message OK, exit 0. En cas d'échec, message clair et exit non nul (backend absent ou mal configuré, pas de faux succès). Vérification de découverte : la skill doit apparaître dans `hermes skills list` (Hermès) ; Codex et Claude Code découvrent le dossier au démarrage de session.
+Attendu : message OK, exit 0. En cas d'échec, message clair et exit non nul (backend absent ou mal configuré, pas de faux succès). Vérification de découverte : la skill doit apparaître dans `hermes skills list` (Hermès) ; Codex et Claude Code découvrent le dossier au démarrage de session. Pour une installation par lien symbolique, vérifier aussi qu'il résout : `test -L <projet>/.claude/skills/blue-app && ls -L <projet>/.claude/skills/blue-app/SKILL.md`.
 
 Une fois vérifié, renseigner sa ligne dans le tableau « Accès technique » de `98_configuration/GOUVERNANCE_BLUE.md` du projet (agent, chemin d'installation, backend de secrets, date).

@@ -103,12 +103,7 @@ Expliquer en langage simple un fichier, une convention, un identifiant, un dossi
 
 Déclencheurs : « On s'arrête », fin de session, changement de sujet, **tâche de l'itération terminée** (dans ce cas tu la proposes toi-même, sans attendre).
 
-1. Mettre à jour les fichiers Core concernés :
-   - `PROGRESS.md` : refléter l'état réel **et** mettre à jour son bloc d'en-tête (`derniere_maj`, `prochaine_action`, `statut`). C'est une règle immuable.
-   - `CHANGELOG.md` : ajouter une entrée `CHG-YYYYMMDD-HHMM` pour ce qui a changé.
-   - `DECISIONS.md` : `DEC-XXXX` pour toute décision structurante prise (contexte, options, choix, raison, conséquences).
-   - `TASKS.md` : cocher les tâches faites, ajouter celles qui apparaissent.
-2. Produire le résumé :
+1. Produire le résumé **en priorité**, avant toute autre action :
 
 ```text
 Fait : <...>
@@ -118,7 +113,13 @@ Risques : <...>
 Prochaine action : <...>
 ```
 
-3. Vérifier mentalement la reprise à froid : « un agent qui ne lit que les fichiers pourrait-il reprendre ? » Si non, compléter PROGRESS.
+2. Déléguer, en parallèle ou juste après le résumé, la mise à jour des fichiers Core à un sous-agent (`general-purpose`, modèle le moins cher qui suffit) :
+   - `PROGRESS.md` : refléter l'état réel **et** mettre à jour son bloc d'en-tête (`derniere_maj`, `prochaine_action`, `statut`). C'est une règle immuable.
+   - `CHANGELOG.md` : ajouter une entrée `CHG-YYYYMMDD-HHMM` pour ce qui a changé.
+   - `DECISIONS.md` : `DEC-XXXX` pour toute décision structurante prise (contexte, options, choix, raison, conséquences).
+   - `TASKS.md` : cocher les tâches faites, ajouter celles qui apparaissent.
+   - Le sous-agent vérifie aussi la reprise à froid : « un agent qui ne lit que les fichiers pourrait-il reprendre ? » Si non, il complète PROGRESS avant de rendre la main.
+3. Une fois le sous-agent terminé, ajouter une courte mention de confirmation (ex. « PROGRESS.md, CHANGELOG.md à jour ») sans reprendre le contenu déjà donné dans le résumé.
 4. Suggérer de vider le contexte (`/clear`) : la prochaine itération repartira des fichiers.
 
 ## Mode 5 — Cadrage (et initialisation)
@@ -189,6 +190,7 @@ Workflow imposé, jamais raccourci :
 - Validation humaine obligatoire avant : suppression massive, réorganisation de dossiers, changement de stack, déploiement, push Git important, mise à jour de la méthode, action juridique ou administrative sensible.
 - `PROGRESS.md` n'est jamais un journal. L'historique daté va dans `CHANGELOG.md`.
 - Pour une demande métier dans un projet Knowledge : `SUJETS.md` d'abord, source fraîche prioritaire avant toute synthèse.
-- Une skill disponible pour un agent ne l'est pas forcément pour un autre (Claude Code : `.claude/skills/` ou `~/.claude/skills/` ; Codex, support natif depuis déc. 2025 : `.codex/skills/` ou `~/.codex/skills/` ; Hermès, standard agentskills.io : `~/.hermes/skills/` en source de vérité, avec des `~/.hermes/profiles/<profil>/skills/` possibles selon le déploiement — vérifier le chemin réel au premier essai plutôt que de le supposer). Ne suppose jamais qu'une skill posée pour un agent l'est pour un autre.
+- Une skill disponible pour un agent ne l'est pas forcément pour un autre (Claude Code : `.claude/skills/` ou `~/.claude/skills/` ; Codex, support natif depuis déc. 2025 : `.agents/skills/` en projet, vérifié par exécution ; Hermès, standard agentskills.io : `~/.hermes/skills/` en source de vérité, avec des `~/.hermes/profiles/<profil>/skills/` possibles selon le déploiement — vérifier le chemin réel au premier essai plutôt que de le supposer). Ne suppose jamais qu'une skill posée pour un agent l'est pour un autre.
+- À la création de toute nouvelle skill technique dans un projet (outil du catalogue ou skill bespoke), proposer systématiquement de la poser en source canonique `98_configuration/skills/<skill>/` avec un lien symbolique relatif vers l'emplacement natif de chaque agent présent sur le projet (Claude Code, Codex ; Hermès reste en copie physique, conflits Syncthing sinon). Jamais imposé : une réponse négative suffit, pas de re-proposition à chaque session.
 - Ne jamais committer sans demande explicite. Messages en français, format `type: description`.
 - Ce que tu fais par bonne volonté n'est pas garanti : les règles vraiment non négociables sont tenues par les hooks, pas par toi seul.
