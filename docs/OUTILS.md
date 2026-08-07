@@ -57,4 +57,4 @@ Geste de session (jamais un flag d'installation) : la skill assistant propose le
 
 Ce même geste ne se limite pas aux outils du catalogue (DEC-0034) : à la création de **toute** nouvelle skill technique dans un projet multi-agents, catalogue ou bespoke, l'agent propose de la poser en source canonique `98_configuration/skills/<skill>/`. Installation par défaut : **lien symbolique relatif** vers cette source pour Claude Code (`.claude/skills/`) et Codex (`.agents/skills/`, chemin projet vérifié en exécution) — une seule copie à éditer, aucune dérive possible. Hermès reste en copie physique globale (décision délibérée, DEC-0029 D3 : un lien vers un dossier projet synchronisé serait vulnérable aux conflits Syncthing).
 
-Pour créer une nouvelle brique : partir de `templates/skills/_squelette/`.
+Pour créer une nouvelle brique : partir de `templates/skills/_squelette/`. Le dispositif complet (source canonique, installation par agent, champs `platforms:` et `portable:`, restriction par décision, tableau de bord du parc, rattrapage d'un parc existant) est décrit dans `docs/skills-portables.md`.

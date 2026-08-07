@@ -102,6 +102,7 @@ MyProjectOS/
 - [Cycle de travail](docs/cycle-de-travail.md) — une tâche par itération, clôture, contexte vidé, reprise à froid.
 - [Installation par un agent](docs/INSTALL-AGENT.md) — création sur dossier vierge ou adoption d'un projet existant.
 - [Versionnement](docs/versioning.md) — comment la méthode se numérote, se met à jour dans les projets, et comment publier une release.
+- [Skills portables](docs/skills-portables.md) — où vit une skill de projet, comment chaque agent l'installe, et comment dire qu'elle ne tourne pas partout.
 - [Conventions de nommage](docs/NAMING-CONVENTIONS.md) — fichiers, dossiers, identifiants.
 - [Glossaire](docs/glossary.md) — le vocabulaire commun.
 
