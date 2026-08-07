@@ -14,6 +14,8 @@ Rappel du principe 9 (`docs/principles.md`) : une règle qui dépend de la bonne
 
 Les règles vraiment non négociables vivent dans la couche hooks.
 
+**Comment une règle arrive dans une couche** : elle n'y naît pas, elle y monte. L'échelle de promotion (correction locale → RETEX → procédure → skill → hook/check) et les cinq exigences de chaque montée de cran sont décrites dans `docs/governance.md`, section « Boucle de correction gouvernée ». Les hooks livrés ci-dessous ont tous cette généalogie : chacun cite le RETEX ou la décision qui l'a fait naître.
+
 ## Choix d'implémentation
 
 - **Runtime** : `sh` POSIX, sans dépendance obligatoire. Portable Mac et VPS (Hermès). Extraction JSON via `python3` ou `jq` si présents ; sinon le hook ne bloque rien (dégradation silencieuse, jamais de blocage du flux de travail).
@@ -88,7 +90,8 @@ Il signale, sans rien modifier :
 - **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
 - **placeholders** de gabarit non substitués (nom du projet resté en balise) ;
 - **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
-- **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD`.
+- **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD` ;
+- **RETEX** (si un dossier `RETEX/` existe) : statut absent ou hors des cinq valeurs fermées, et RETEX déclaré fermé sans référence `DEC-XXXX`/`CHG-` justifiant la clôture.
 
 Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de sortie 1 s'il existe au moins un bloquant, 0 sinon. Comme les hooks, le script reste informatif et ne bloque jamais un flux de travail.
 

@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du projet `/Users/jb/Documents/MyProjects/SYNC/Mediatros` (type Code + Knowledge).
 > Date : 2026-08-07.
-> Statut : proposé, non intégré au canon à ce jour.
+> Statut : ouvert. Consigné le 2026-08-07 (CHG-20260807-1915), les cinq évolutions proposées restent à arbitrer (T-RETEX-1). Aucune modification du squelette avant décision.
 
 ## Objet du RETEX
 

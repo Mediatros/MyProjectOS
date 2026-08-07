@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du dogfood MyProjectOS sur `/Users/jb/Documents/MyProjects/SYNC/LaCIOTAT` (type Life).
 > Date : 2026-07-14.
-> Statut : correction locale appliquée (DEC-0012 dans LaCIOTAT) ; évolution générique intégrée dans MyProjectOS via DEC-0032 (2026-07-14, v0.14.0).
+> Statut : integre. Correction locale appliquée (DEC-0012 dans LaCIOTAT) ; évolution générique intégrée via DEC-0032 (v0.14.0, `02_sujets/` canonisé), puis amendée par DEC-0033 (v0.15.0, suggestion et non prescription après le faux positif `02_thematique/`).
 
 ## Objet du RETEX
 

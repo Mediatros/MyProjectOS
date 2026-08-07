@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du dogfood MyProjectOS sur `/home/<user>/projects/Comptabilite_globale`.
 > Date : 2026-06-14.
-> Statut : constats terrain à convertir en évolutions génériques de MyProjectOS.
+> Statut : en-cours. La section 1 (routeur de sujets) est intégrée via `SUJETS.md` et la règle de source fraîche prioritaire (CHG-20260707-1100, v0.5.0), complétée depuis par `02_sujets/` (DEC-0032). Les trois autres sections « Évolution générique attendue » (déclaration de densité par sujet, section standard des templates, procédure de migration des projets antérieurs au versionnement) n'ont jamais été instruites.
 
 ## Objet du RETEX
 

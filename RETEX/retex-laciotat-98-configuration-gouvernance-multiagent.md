@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du dogfood MyProjectOS sur `/Users/jb/Documents/MyProjects/SYNC/LaCIOTAT` (type Life).
 > Date : 2026-07-11.
-> Statut : solution locale posée et en usage, évolutions génériques à évaluer pour MyProjectOS.
+> Statut : integre. Le dossier `98_configuration/` est canonisé (DEC-0026, CHG-20260712-1110, v0.8.0) avec ses deux gabarits génériques, l'extension du garde-fou aux collisions de préfixe `NN_` et la consigne de la skill qui clôt T-R.4.
 
 ## Objet du RETEX
 

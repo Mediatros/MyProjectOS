@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du profil Hermes `mysecretaire` (agent manager) sur le VPS.
 > Date : 2026-08-02.
-> Statut : alignement effectué ; sans décision structurante MyProjectOS demandée pour l'instant, récapitulatif des options en fin de document.
+> Statut : ouvert. L'alignement des copies divergentes est fait côté infrastructure Hermès (CHG-20260802-2341). Sur les trois pistes de fin de document, deux relèvent de la gouvernance Hermès et sortent du canon ; une seule le touche, le contrôle d'empreinte anti-dérive des skills répliquées, à trancher (T-RETEX-2).
 
 ## Objet du RETEX
 

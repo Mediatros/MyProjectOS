@@ -19,6 +19,22 @@
 
 ---
 
+### DEC-0036 — Boucle de correction gouvernée : une échelle de promotion et un statut de clôture pour les RETEX
+
+- **Date** : 2026-08-07
+- **Contexte** : la méthode capitalise déjà par `RETEX/`, `DECISIONS.md`, les skills et les hooks, mais aucune règle ne dit quand une leçon monte en fermeté, ni qui referme un RETEX. Le plan Pro Workflow identifiait ce manque (A3, `PLAN/plans/2026-07-29-pro-workflow-integration.md`, priorité « très haute »). La revue complète du backlog d'évolution du 2026-08-07 l'a démontré sur pièces : sur 7 RETEX, 3 portaient un statut faux ou jamais mis à jour (`98_configuration` et `doublon-archives` marqués « à évaluer » alors qu'ils sont intégrés depuis v0.7.0/v0.8.0 ; comptabilité marqué « à convertir » alors que sa section 1 est intégrée depuis v0.5.0), et 4 plans dormaient sans qu'on sache s'ils avaient été refusés ou simplement oubliés. Le mot « RETEX » n'était même pas défini dans le glossaire, alors que trois documents du canon s'appuient dessus. Aggravant : la veille upstream d'août signale que Harness v5 a ajouté un audit log de déclenchement de règles, c'est-à-dire la traçabilité de l'enforcement, précisément ce qui manquait ici en amont.
+- **Options envisagées** :
+  - A. Statu quo : laisser le jugement de promotion à l'agent au cas par cas, corriger les 3 statuts faux et s'arrêter là.
+  - B. Formaliser l'échelle de promotion dans la documentation seule (`docs/governance.md` + garde-fou de la skill), sans contrôle déterministe.
+  - C. Formaliser l'échelle **et** normaliser le statut des RETEX en valeurs fermées, avec un contrôle dans `check-project.sh` qui signale un statut absent, hors nomenclature, ou fermé sans référence justifiant la clôture.
+  - D. Créer un registre dédié (`LEARNINGS.md`) recensant les leçons et leur état d'avancement.
+- **Choix** : option C.
+- **Raison** : A est réfutée par les faits, c'est exactement le régime qui a produit les 3 statuts faux. B laisse la règle au niveau « documentation » de l'échelle d'enforcement, or DEC-0016 a déjà tranché qu'une règle sans détection concrète est creuse, et l'ironie serait complète pour une règle qui décrit justement comment une règle devient déterministe. D est explicitement écarté par le plan A3 et par l'invariant « aucun nouveau registre obligatoire sans RETEX démontrant le besoin » : les cinq surfaces existantes couvrent les cinq crans, le défaut n'était pas le repérage mais l'absence de statut de clôture. C ajoute le minimum vérifiable, sans nouveau fichier.
+- **Conséquences** : `docs/governance.md` gagne une section « Boucle de correction gouvernée » (échelle à cinq crans correction locale → RETEX → procédure → skill → hook/check ; les cinq exigences de toute montée de cran ; définition du RETEX comme surface et de ses cinq statuts fermés ; règle du refus consigné et non reproposé, prolongement du principe 12 et de DEC-0033 ; interdiction de l'écriture automatique depuis une réponse de modèle et de la création réflexe d'un registre). `docs/enforcement.md` relie les trois couches à cette échelle (une règle n'y naît pas, elle y monte) et documente le nouveau contrôle. `docs/glossary.md` définit enfin « RETEX » et « Boucle de correction gouvernée ». `skills/my-project-os/SKILL.md` gagne deux garde-fous permanents : proposer la montée d'un cran (jamais l'appliquer, un cran à la fois, refus consigné et non reproposé), et ne jamais transformer une réponse de modèle en règle du système. `scripts/check-project.sh` gagne la section 11 « RETEX », non bloquante, active seulement si un dossier `RETEX/` existe. Dogfooding : les 7 RETEX du dépôt sont normalisés, dont les 3 aux statuts faux. Un projet n'a pas de `RETEX/` obligatoire, rien n'est ajouté au Core. Version portée à `0.18.0` (nouvelle capacité, rien ne casse).
+- **Liens** : CHG-20260807-1923, A3 de `PLAN/plans/2026-07-29-pro-workflow-integration.md`, T-PLAN-6. Prolonge DEC-0016 (une règle sans détection est creuse) et DEC-0033 (un écart assumé ne se re-signale pas indéfiniment).
+
+---
+
 ### DEC-0035 — Clôture de session : répondre d'abord, déléguer la tenue des registres à un sous-agent ensuite
 
 - **Date** : 2026-08-03

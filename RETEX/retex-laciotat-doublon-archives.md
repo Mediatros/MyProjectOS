@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du dogfood MyProjectOS sur `/Users/jb/Documents/MyProjects/SYNC/LaCIOTAT` (type Life).
 > Date : 2026-07-09.
-> Statut : constat terrain corrigé localement, évolutions génériques à intégrer dans MyProjectOS.
+> Statut : en-cours. T-R.1 et T-R.2 faits le 2026-07-09 (garde-fou temps réel sur les quasi-doublons de dossier racine, section « Dossiers racine » de `check-project.sh`), T-R.4 clos le 2026-07-12 par la Phase S (DEC-0026, CHG-20260709-2350, v0.7.0). Reste ouvert : T-R.3, l'installeur non aveugle.
 
 ## Objet du RETEX
 

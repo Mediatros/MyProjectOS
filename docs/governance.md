@@ -64,6 +64,59 @@ Puis produire : **État actuel / Dernière action / Prochaine action / Points de
 
 L'agent propose et explique ; l'humain tranche.
 
+## Boucle de correction gouvernée
+
+Une friction rencontrée sur le terrain peut rester une correction locale, ou devenir une règle du système. Sans échelle explicite, les deux dérives se produisent : soit chaque incident est promu en règle globale, soit une leçon utile reste enfouie dans un projet et le problème se reproduit ailleurs.
+
+L'échelle a cinq crans, du plus souple au plus ferme :
+
+```text
+correction locale        le problème est réglé là où il s'est produit, rien d'autre
+  → RETEX                la leçon est réutilisable hors de ce projet
+  → procédure            le geste est répétable : runbook, gabarit, section de doc
+  → skill                l'agent doit l'appliquer de lui-même dans plusieurs contextes
+  → hook / check         la règle ne doit plus dépendre de la bonne volonté de l'agent
+```
+
+On ne saute pas de cran sans raison. Un incident unique ne justifie pas un hook ; un problème qui se reproduit sur trois projets ne se contente pas d'un RETEX.
+
+### Ce qu'exige la montée d'un cran
+
+Chacun de ces cinq points doit être renseigné, sinon la promotion n'est pas instruite :
+
+1. **Fréquence ou impact** qui justifie la généralisation (combien de fois, quelle gravité).
+2. **Preuve du problème réel**, vérifiée par exécution, pas déduite d'une possibilité technique.
+3. **Périmètre** concerné : quels types de projet, quels agents, quelles versions.
+4. **Faux positifs et effets de bord** attendus.
+5. **Décision humaine**, plus le test et le rollback associés.
+
+Ces exigences sont celles du gate d'évolution de la méthode (`DECISIONS.md`, `CHANGELOG.md`, `VERSION`), appliquées à un cas particulier : la promotion d'une leçon.
+
+### Le RETEX comme surface
+
+Un **RETEX** consigne une friction vécue et ce qu'elle apprend au système, au format « problème → correction locale → évolution générique attendue ». Il vit dans `RETEX/` du dépôt méthode. Un projet n'a pas de `RETEX/` obligatoire : il remonte au dépôt méthode ce qui dépasse son propre cas.
+
+Un RETEX porte un **statut à valeurs fermées**, en tête de fichier :
+
+| Statut | Sens |
+|---|---|
+| `ouvert` | leçon consignée, aucune évolution générique instruite à ce jour |
+| `en-cours` | évolution décidée, propagation entamée mais incomplète |
+| `integre` | évolution appliquée au canon ; **exige** une référence `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` |
+| `rejete` | généralisation refusée ; **exige** une référence expliquant le refus |
+| `hors-canon` | le constat vaut, mais il relève d'un autre système (infrastructure, projet tiers) |
+
+Un RETEX fermé (`integre`, `rejete`, `hors-canon`) sans référence est une impasse : plus personne ne sait si la leçon a été traitée ou oubliée. `check-project.sh` le signale, section « RETEX ».
+
+### Le refus se consigne, il ne se repropose pas
+
+Un refus de généralisation est une réponse, pas une absence de réponse. Il se consigne (statut `rejete` avec sa raison, ou entrée `DEC-XXXX` si le refus est structurant) et l'agent ne le remet plus sur la table à chaque session. Prolongement direct du principe 12 et de DEC-0033.
+
+### Ce qui reste interdit
+
+- Aucune écriture automatique dans une surface du système depuis une réponse de modèle. Une leçon est proposée, jamais appliquée d'autorité.
+- Aucun nouveau registre créé par réflexe : `RETEX/`, `DECISIONS.md`, les procédures, les skills et les hooks couvrent déjà les cinq crans. Un registre supplémentaire ne s'envisage qu'après plusieurs RETEX démontrant un défaut de repérage réel.
+
 ## Extension Knowledge
 
 L'extension `knowledge` ajoute une couche documentaire progressive dans `docs/` quand un projet devient trop dense pour être repris uniquement par les fichiers sacrés.

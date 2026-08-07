@@ -17,6 +17,8 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.18.0** — 2026-08-07 — boucle de correction gouvernée (DEC-0036, A3 du plan Pro Workflow) : la méthode dit enfin quand une leçon monte en fermeté, sur une échelle à cinq crans (correction locale → RETEX → procédure → skill → hook/check) et avec cinq exigences par montée de cran (fréquence ou impact, preuve exécutée, périmètre, faux positifs, décision humaine avec test et rollback). Le RETEX devient une surface définie, avec un statut à valeurs fermées (`ouvert`, `en-cours`, `integre`, `rejete`, `hors-canon`) : un statut fermé exige une référence `DEC-`/`CHG-` justifiant la clôture, faute de quoi plus personne ne sait si la leçon a été traitée ou oubliée. `check-project.sh` le contrôle (section 11, non bloquante, active seulement si un dossier `RETEX/` existe). Le refus de généralisation se consigne et ne se repropose plus. Aucun nouveau fichier, aucun ajout au Core. Voir CHG-20260807-1923, DEC-0036.
+
 - **2026-08-07 — RETEX rattrapage d'un parc de skills (projet Mediatros)** : un projet Code+Knowledge vieux de quinze mois, passé de `LOCAL/` à `SYNC/`, a vu ses huit skills devenir muettes d'un coup côté VPS (secrets par `security find-generic-password`, chemins `/Users/jb/...`, scripts macOS). Cinq évolutions proposées, non intégrées : mode « rattrapage » d'un parc existant (artefact `98_configuration/AUDIT_SKILLS.md`), champ `portable:` à quatre valeurs (`oui`/`partiel`/`conditionnel`/`non`), expression du cas « non portable par décision » (frontière de sécurité volontaire qu'un agent diligent finirait par « réparer »), tableau d'inventaire dans le `README.md` de `98_configuration/skills/`, renvoi explicite vers `templates/skills/_squelette/` quand un projet outille sa portabilité. Voir `RETEX/retex-mediatros-retrofit-skills-portables.md`, CHG-20260807-1915.
 
 - **2026-08-04 — Plan Extension Knowledge v2 (hiérarchie à 4 niveaux)** : proposition Hermes d'une hiérarchie documentaire N1 Macro / N2 Méso / N3 Micro / N4 Archives (métaphore de température empruntée à Company OS), à comparer à l'extension Knowledge actuelle (niveaux 1/2/3, `docs/kb_governance.md`) avant toute décision. Sept écarts ouverts recensés (niveau d'archive formel, portée du N1, nommage N3 miroir du N2 parent, budgets, métaphore, enforcement). Document de travail, aucune modification appliquée. Voir `PLAN/plans/2026-08-04-extension-knowledge-v2-4-niveaux.md`, CHG-20260804-0030, T-PLAN-8.
@@ -44,6 +46,18 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+
+### CHG-20260807-1923 — Boucle de correction gouvernée : échelle de promotion et statut des RETEX (v0.18.0)
+
+- Déclencheur : revue complète du backlog d'évolution (7 RETEX, 12 plans) le 2026-08-07. Constat sur pièces : 3 RETEX sur 7 portaient un statut faux ou jamais mis à jour, 4 plans dormaient sans qu'on sache s'ils avaient été refusés ou oubliés, et « RETEX » n'était pas même défini au glossaire alors que trois documents du canon s'appuient dessus. A3 du plan Pro Workflow (priorité « très haute ») a été retenu en premier pour cette raison : c'est le méta-manque, auto-démontré par l'état du backlog.
+- `docs/governance.md`, nouvelle section « Boucle de correction gouvernée » : échelle à cinq crans, cinq exigences par montée de cran, définition du RETEX et de ses cinq statuts fermés, règle du refus consigné et non reproposé, interdictions (écriture automatique depuis une réponse de modèle, création réflexe d'un nouveau registre).
+- `docs/enforcement.md` : les trois couches d'enforcement sont reliées à cette échelle (une règle n'y naît pas, elle y monte, et chaque hook livré cite sa généalogie) ; le nouveau contrôle est documenté.
+- `docs/glossary.md` : entrées « RETEX » et « Boucle de correction gouvernée ».
+- `skills/my-project-os/SKILL.md` : deux garde-fous permanents, proposer la montée d'un cran sans jamais l'appliquer d'autorité (un cran à la fois, refus consigné), et ne jamais transformer une réponse de modèle en règle ou en fait validé du système.
+- `scripts/check-project.sh` : section 11 « RETEX », non bloquante, active seulement si un dossier `RETEX/` existe. Détecte statut absent, statut hors nomenclature, statut fermé sans référence.
+- Vérifié par exécution : les 7 RETEX du dépôt classés correctement après normalisation (critère A3 « rejouer trois RETEX » dépassé), et les trois cas d'échec (fermé sans référence, statut inventé, statut absent) détectés sur un projet de test, les deux cas valides passant.
+- Dogfooding : les 7 statuts du dépôt sont normalisés, dont les 3 qui étaient faux.
+- Voir DEC-0036, T-PLAN-6.
 
 ### CHG-20260807-1915 — RETEX Mediatros consigné : rattrapage d'un parc de skills existant
 

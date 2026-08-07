@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du dogfood MyProjectOS sur `/Users/jb/Documents/MyProjects/LOCAL/Lino` (type Life).
 > Date : 2026-07-15.
-> Statut : intégré via DEC-0034 (même session).
+> Statut : integre. Les trois évolutions retenues sont appliquées via DEC-0034 (CHG-20260715-1954, v0.16.0) : chemin Codex corrigé, installation par lien symbolique relatif, proposition systématique en garde-fou permanent de la skill.
 
 ## Objet du RETEX
 
