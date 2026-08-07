@@ -25,6 +25,8 @@ Vocabulaire commun du système. Une définition par terme.
 - **Niveau 1 / Global** : documentation de vue d'ensemble, lue avant les domaines.
 - **Niveau 2 / Domaines** : documentation par composant, flux, module ou responsabilité.
 - **Niveau 3 / Détails** : documentation technique précise, lue seulement si nécessaire.
+- **RETEX** : retour d'expérience consignant une friction vécue sur un projet et ce qu'elle apprend au système, au format « problème → correction locale → évolution générique attendue ». Vit dans `RETEX/` du dépôt méthode, porte un statut à valeurs fermées (`ouvert`, `en-cours`, `integre`, `rejete`, `hors-canon`).
+- **Boucle de correction gouvernée** : l'échelle par laquelle une leçon monte en fermeté (correction locale → RETEX → procédure → skill → hook/check), avec ce qu'exige chaque montée de cran. Définie dans `docs/governance.md`.
 - **Runbook** : procédure d'action vérifiable avec prérequis, étapes, validation et rollback si pertinent.
 - **Plan Knowledge** : document de travail temporaire avec analyse par niveaux, dépendances transverses, validation et retour arrière.
 - **Understand-Anything** : outil complémentaire de visualisation ou d'analyse d'impact ; il n'est pas source de vérité.

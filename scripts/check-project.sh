@@ -414,6 +414,52 @@ if [ -d "$TARGET/.claude/skills" ] || [ -d "$TARGET/.agents/skills" ]; then
     [ "$_skill_issue" -eq 0 ] && ok "aucun lien symbolique cassé sous .claude/skills ou .agents/skills"
 fi
 
+# --- 11. RETEX : statut de clôture -------------------------------------------
+# DEC-0036 : un RETEX sans statut, ou déclaré fermé sans référence expliquant la
+# clôture, est une impasse — plus personne ne sait si la leçon a été traitée ou
+# oubliée. C'est le cas constaté le 2026-08-07 : trois RETEX portaient un statut
+# faux ou jamais mis à jour. Avertissement, jamais bloquant : la tenue d'un
+# registre de leçons relève du jugement, pas d'une règle mécanique.
+# Le dossier RETEX/ n'est pas obligatoire ; la section ne s'affiche que s'il existe.
+if [ -d "$TARGET/RETEX" ]; then
+    echo "RETEX :"
+    _retex_issue=0
+    _retex_seen=0
+    for _retex in "$TARGET"/RETEX/*.md; do
+        [ -f "$_retex" ] || continue
+        _retex_seen=1
+        _retex_name=$(basename -- "$_retex")
+        # Statut déclaré sur les 10 premières lignes, sous la forme « Statut : <valeur> ».
+        _retex_line=$(head -n 10 "$_retex" | grep -i "statut *:" | head -n 1)
+        if [ -z "$_retex_line" ]; then
+            warn "$_retex_name : aucun statut déclaré (attendu : ouvert, en-cours, integre, rejete ou hors-canon)"
+            _retex_issue=1
+            continue
+        fi
+        _retex_statut=$(printf '%s' "$_retex_line" | sed 's/.*[Ss]tatut *: *//' | cut -c1-40 | tr 'A-Z' 'a-z')
+        case "$_retex_statut" in
+            ouvert*)      ;;
+            en-cours*)    ;;
+            integre*|intégré*|integré*|intégre*|hors-canon*|rejete*|rejeté*)
+                # Statut fermé : une référence DEC-/CHG- doit justifier la clôture.
+                if ! grep -q "DEC-[0-9]\{4\}\|CHG-[0-9]\{8\}-[0-9]\{4\}" "$_retex"; then
+                    warn "$_retex_name : statut fermé sans référence DEC-/CHG- justifiant la clôture"
+                    _retex_issue=1
+                fi
+                ;;
+            *)
+                warn "$_retex_name : statut « $(printf '%s' "$_retex_statut" | cut -c1-30) » hors des valeurs attendues (ouvert, en-cours, integre, rejete, hors-canon)"
+                _retex_issue=1
+                ;;
+        esac
+    done
+    if [ "$_retex_seen" -eq 0 ]; then
+        ok "dossier RETEX/ présent, aucun retour d'expérience à contrôler"
+    elif [ "$_retex_issue" -eq 0 ]; then
+        ok "tous les RETEX portent un statut valide, les statuts fermés sont référencés"
+    fi
+fi
+
 # --- Bilan -------------------------------------------------------------------
 echo ""
 if [ "$FAILS" -eq 0 ] && [ "$WARNS" -eq 0 ]; then
