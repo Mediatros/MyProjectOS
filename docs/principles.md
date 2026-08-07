@@ -49,3 +49,7 @@ Une modification n'est jamais traitée comme isolée tant que ses dépendances a
 ## 12. Suggestion, pas prescription unique
 
 MyProjectOS propose une méthode par défaut (noms, structures, rituels), il ne l'impose pas. Un projet peut légitimement s'en écarter — nommage différent, organisation différente — tant que l'écart est explicite et consigné (typiquement dans le `DECISIONS.md` du projet) plutôt que subi silencieusement. Un garde-fou qui détecte un écart assumé et documenté ne le re-signale pas indéfiniment (voir DEC-0033). Il n'y a pas de méthode parfaite et unique : un adoptant peut suivre MyProjectOS à la lettre ou s'en inspirer seulement.
+
+## 13. Répondre avant de tenir les registres
+
+La réponse à l'utilisateur passe toujours avant la tenue des fichiers de suivi (`PROGRESS.md`, `CHANGELOG.md`, `TASKS.md`, `DECISIONS.md`). Ces fichiers servent la reprise à froid (principe 7), pas l'échange en cours : leur mise à jour se délègue à un sous-agent, en parallèle ou juste après avoir répondu, jamais avant (voir DEC-0035).

@@ -390,6 +390,30 @@ fi
 
 [ "$_root_issue" -eq 0 ] && ok "aucun quasi-doublon ni collision de préfixe parmi les dossiers de premier niveau"
 
+# --- 10. Skills portables : liens symboliques --------------------------------
+# DEC-0034 : Claude Code et Codex installent par lien symbolique relatif vers
+# 98_configuration/skills/<skill>/ plutôt que par copie, pour éliminer toute
+# dérive entre la source canonique et les copies installées. Un outil d'archive
+# ou de transfert qui ne préserve pas les liens les casse silencieusement.
+# Avertissement, jamais bloquant : recréer un lien cassé reste un geste humain.
+# On scanne les dossiers d'installation eux-mêmes (pas la source), sinon un
+# lien cassé par un renommage/déplacement de la source ne serait plus détecté.
+if [ -d "$TARGET/.claude/skills" ] || [ -d "$TARGET/.agents/skills" ]; then
+    echo "Skills portables :"
+    _skill_issue=0
+    for _agentdir in .claude/skills .agents/skills; do
+        [ -d "$TARGET/$_agentdir" ] || continue
+        for _link in "$TARGET/$_agentdir"/*; do
+            [ -e "$_link" ] || [ -L "$_link" ] || continue
+            if [ -L "$_link" ] && [ ! -e "$_link" ]; then
+                warn "$_agentdir/$(basename -- "$_link") : lien symbolique cassé (cible introuvable, vérifier après un transfert)"
+                _skill_issue=1
+            fi
+        done
+    done
+    [ "$_skill_issue" -eq 0 ] && ok "aucun lien symbolique cassé sous .claude/skills ou .agents/skills"
+fi
+
 # --- Bilan -------------------------------------------------------------------
 echo ""
 if [ "$FAILS" -eq 0 ] && [ "$WARNS" -eq 0 ]; then
