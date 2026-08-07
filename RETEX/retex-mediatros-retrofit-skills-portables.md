@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du projet `/Users/jb/Documents/MyProjects/SYNC/Mediatros` (type Code + Knowledge).
 > Date : 2026-08-07.
-> Statut : ouvert. Consigné le 2026-08-07 (CHG-20260807-1915), les cinq évolutions proposées restent à arbitrer (T-RETEX-1). Aucune modification du squelette avant décision.
+> Statut : ouvert. Consigné le 2026-08-07 (CHG-20260807-1915), les six évolutions proposées restent à arbitrer (T-RETEX-1). La deuxième est reconfigurée par DEC-0037 (voir « Ce que la vérification Hermès change » en fin de document) ; les cinq autres sont inchangées.
 
 ## Objet du RETEX
 
@@ -62,6 +62,20 @@ Sur un parc de huit skills, savoir laquelle marche où demandait d'ouvrir huit f
 
 Le tableau a servi de tableau de bord pour la suite du chantier, et de réponse immédiate à « qu'est-ce qu'Hermès peut faire aujourd'hui ? ».
 
+## Constat 5 — Rien ne détecte la dérive de la copie Hermès
+
+> **Ajout postérieur à la rédaction initiale de ce RETEX** (même journée, 2026-08-07). Issu d'une question de l'utilisateur après relecture, pas du chantier Mediatros lui-même. Signalé comme tel pour qui reprend ce fichier : les constats 1 à 4 forment le RETEX d'origine, celui-ci s'y ajoute.
+
+DEC-0034 installe Claude Code et Codex par lien symbolique relatif, et laisse Hermès en copie physique globale. La raison est explicite et n'est pas remise en cause ici : un lien depuis `~/.hermes/skills/` vers un dossier projet synchronisé serait modifiable par toute session touchant ce dossier, et vulnérable aux conflits Syncthing.
+
+S'y ajoute une raison structurelle que le canon ne formule pas, et qui explique mieux l'asymétrie : le lien de Claude Code est **interne au projet** (`.claude/skills/<skill>` → `../../98_configuration/skills/<skill>`), donc relatif, donc il voyage avec le projet — renommage, déplacement, archive. Le dossier de skills d'Hermès est **hors du projet** et global à tous les projets : un lien depuis là exigerait un chemin absolu, qui casse au premier déplacement du projet ou à la première interruption de synchronisation. Une skill absente parce que Syncthing est en pause est un incident plus grave qu'une skill légèrement périmée. La copie physique est donc le bon arbitrage.
+
+Le vrai manque n'est pas la copie, c'est qu'**aucun contrôle ne signale quand elle a divergé de sa source**. Vérifié le 2026-08-07 sur `scripts/check-project.sh` : le script détecte bien un lien symbolique cassé sous `.claude/skills/` ou `.agents/skills/` (ajouté par DEC-0034), et contrôle la taille des fichiers de contexte au titre de la troncature Hermès, mais ne compare jamais une copie installée à sa source canonique. Une copie Hermès qui prend trois mois de retard reste invisible.
+
+Le contrôle est pourtant trivial dès lors que le dossier projet est présent sur la machine qui héberge Hermès, ce qui est le cas nominal d'un projet synchronisé : comparer `~/.hermes/skills/<skill>` à `98_configuration/skills/<skill>` et avertir en cas d'écart. Un `diff -r` et une ligne de sortie, non bloquant, dans l'esprit de la fermeté hybride de `docs/enforcement.md`.
+
+Variante à considérer si le projet dédie un profil Hermès (`~/.hermes/profiles/<profil>/skills/`, motif « un projet = un profil isolé ») : le lien symbolique redevient défendable, puisqu'il ne serait plus global mais scopé au projet. Il resterait un chemin absolu, donc le contrôle de dérive garde son intérêt dans les deux cas.
+
 ## Ce que Mediatros a fait DE TRAVERS, et qui ne doit pas être repris
 
 Point d'honnêteté, pour que ce RETEX ne serve pas à propager une erreur.
@@ -85,3 +99,36 @@ Rien de tout cela n'est décidé ; à arbitrer par le dépôt méthode.
 3. **Cas « non portable par décision »** documenté dans le squelette : où l'écrire, comment le formuler, section « ne pas installer » dans l'`INSTALL.md`, conduite à tenir pour l'agent qui rencontre le besoin depuis la mauvaise machine.
 4. **Tableau d'inventaire** dans le `README.md` de `98_configuration/skills/`, à ajouter au squelette ou à `structures/core-tree.md`.
 5. **Renvoi explicite vers `templates/skills/_squelette/`** dans la skill assistant, au moment où un projet outille ses secrets ou sa portabilité, et pas seulement au moment où il crée une skill. Réponse directe à la cause racine ci-dessus.
+6. **Contrôle de dérive de la copie Hermès** dans `scripts/check-project.sh` (constat 5, ajout postérieur) : comparer chaque `~/.hermes/skills/<skill>` à `98_configuration/skills/<skill>` et avertir en cas d'écart, sans bloquer. Complète le contrôle de lien symbolique cassé déjà posé par DEC-0034 pour Claude Code et Codex, et couvre le seul agent que ce contrôle laisse aujourd'hui sans filet. À ne lancer que si le dossier de skills d'Hermès est présent sur la machine, sinon rester silencieux.
+
+## Ce que la vérification Hermès change à ce RETEX
+
+> **Ajout postérieur du 2026-08-07 au soir**, après vérification du code d'Hermès sur le VPS (DEC-0037, CHG-20260807-2047, preuves dans `PLAN/plans/2026-08-07-verification-limites-hermes-skills.md`). Les constats 1 à 5 et les six évolutions ci-dessus restent tels qu'écrits ; cette section corrige un seul point de conception.
+
+Hermès dispose déjà d'un mécanisme qui traite la cause de ce RETEX, et que personne n'utilisait : un champ de frontmatter filtre activement les skills selon le système d'exploitation.
+
+```yaml
+platforms: [macos]           # écarte la skill sur Linux et Windows
+platforms: [macos, linux]
+```
+
+Validé par exécution le 2026-08-07, 6 cas sur 6. Un second champ existe, `environments:`, mais il est écarté du canon : ses trois valeurs reconnues sont internes à l'infrastructure Hermès et sa détection s'est révélée en faux positif au test.
+
+`skill_matches_platform()` (`agent/skill_utils.py:251`) écarte une skill dont la plateforme ne correspond pas **avant même de la proposer à l'agent** (`agent/skill_commands.py:403-409`). Champ absent ou vide égale compatible partout, donc rien ne casse sur l'existant.
+
+C'est précisément l'incident d'origine : les huit skills de Mediatros, écrites pour macOS, ont été proposées sur le VPS Linux puis ont échoué. Avec `platforms: [macos]`, elles n'auraient jamais été offertes.
+
+**Conséquence sur l'évolution 2.** Le champ `portable:` à quatre valeurs n'est pas abandonné, mais il change de rôle. Au sens de l'échelle de fermeté de DEC-0036, `portable:` est de la documentation, tandis que `platforms:` est un mécanisme. Le partage retenu :
+
+| Besoin | Porté par |
+|---|---|
+| Incompatibilité technique d'OS | `platforms:` (actif, écarte la skill) |
+| `partiel` : une partie des opérations seulement | `portable:` (la machine ne peut pas le déduire) |
+| `conditionnel` : portable une fois des prérequis posés | `portable:` |
+| `non` **par décision** (cas `mainwp-ssh`) | `portable:`, avec la raison et le renvoi au document qui la porte |
+
+Règle qui en découle : toute valeur `non` ou `partiel` dont la cause est technique doit s'accompagner d'un `platforms:` restrictif, sinon le RETEX documente un problème au lieu de l'empêcher.
+
+Point laissé à l'arbitrage : pour `mainwp-ssh`, `platforms: [macos]` produirait le bon comportement (Hermès ne voit pas la skill) mais pour une raison techniquement fausse, puisque la skill tournerait très bien sous Linux et que l'interdiction est une frontière de sécurité volontaire. Effet correct, justification approximative : à trancher.
+
+Limite constatée au passage : le lanceur `hermes skills list` n'extrait du frontmatter que `description`, `version` et `author`. Un champ `portable:` n'apparaîtra donc pas dans cette sortie, ce qui renforce l'intérêt du tableau d'inventaire de l'évolution 4.

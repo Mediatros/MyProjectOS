@@ -20,6 +20,8 @@
 
 ## Installation par agent
 
+**Avant d'installer, vérifier la portabilité.** Si la skill ne tourne pas sur toutes les plateformes, son `SKILL.md` doit porter un champ `platforms:` au frontmatter (voir la section « Portabilité » du `SKILL.md`). Hermès lit ce champ nativement et n'offre pas une skill dont la plateforme ne correspond pas à la machine : c'est le filet qui évite qu'une skill écrite pour macOS soit proposée sur un VPS Linux, puis échoue. Claude Code et Codex ne lisent pas ce champ, la restriction y reste documentaire.
+
 Par défaut, Claude Code et Codex installent un **lien symbolique relatif** vers la source canonique plutôt qu'une copie : une seule source à éditer (`98_configuration/skills/<outil>/`), aucune dérive possible entre le canon et les copies installées. Contrepartie assumée : un outil d'archive/zip qui ne préserve pas les liens symboliques (ou ne les déréférence pas correctement) casse l'installation — vérifier après tout transfert (section Vérification post-installation).
 
 ### Claude Code

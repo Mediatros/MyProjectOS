@@ -20,11 +20,30 @@ Un agent autonome, distinct de Claude Code. Il **n'exécute pas** Harness ni les
 
 ## Fichiers de contexte chargés et limite de troncature
 
-Hermès détecte et charge automatiquement plusieurs fichiers à la racine du projet : `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`. Ils sont injectés dans son prompt système, chacun tronqué par défaut à **20 000 caractères** (paramètre `context_file_max_chars`, configurable côté déploiement Hermès).
+Hermès détecte et charge automatiquement plusieurs fichiers à la racine du projet : `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`. Ils sont injectés dans son prompt système et tronqués au-delà d'une limite.
 
-Un `AGENTS.md` qui dépasse ce seuil est silencieusement coupé : en usage mobile (Hermès comme seul point d'accès, sans historique de conversation Claude Code pour compenser), la partie tronquée devient invisible à l'agent. `scripts/check-project.sh` avertit si `AGENTS.md`/`CLAUDE.md` (ou les autres fichiers listés ci-dessus, s'ils existent) dépassent ce seuil.
+**Cette limite n'est plus fixe** (vérifié dans le code Hermès le 2026-08-07, DEC-0037). Ordre de résolution : un `context_file_max_chars` explicite dans la configuration l'emporte toujours ; sinon la limite est calculée à partir de la fenêtre de contexte du modèle, avec un plancher à **20 000 caractères** et un plafond à 500 000 ; le plancher s'applique aussi quand la fenêtre du modèle n'est pas résolue. Les 20 000 caractères sont donc un repli, plus une limite : sur un modèle à large fenêtre, un `AGENTS.md` de 40 000 caractères passe souvent sans être coupé.
 
-Deux leviers si un projet approche la limite : dégraisser `AGENTS.md` (renvoyer vers `docs/` plutôt que dupliquer le contenu) ou relever `context_file_max_chars` côté configuration Hermès — ce dernier point échappe à ce repo, à documenter dans la config du VPS le jour où le besoin se confirme.
+Un `AGENTS.md` qui dépasse la limite effective est silencieusement coupé (tête et queue conservées, milieu remplacé par un marqueur) : en usage mobile (Hermès comme seul point d'accès, sans historique de conversation Claude Code pour compenser), la partie tronquée devient invisible à l'agent. `scripts/check-project.sh` avertit au-delà de 20 000 caractères. Ce seuil est délibérément conservateur : c'est le repli réel quand la fenêtre du modèle est inconnue, donc le seul chiffre sûr sans connaître le modèle servi.
+
+Trois leviers si un projet approche la limite : dégraisser `AGENTS.md` (renvoyer vers `docs/` plutôt que dupliquer le contenu), relever `context_file_max_chars` côté configuration Hermès, ou servir Hermès avec un modèle à plus grande fenêtre (la limite suit automatiquement). Les deux derniers échappent à ce repo.
+
+**Cette limite ne concerne pas les `SKILL.md`.** La troncature ne s'applique qu'aux cinq fichiers de contexte listés ci-dessus ; les skills sont lues intégralement, sans plafond. Contre-preuve : plusieurs skills livrées avec Hermès dépassent largement 20 000 caractères, l'une d'elles atteignant 74 000. Le budget pertinent pour un `SKILL.md` est celui du standard Agent Skills, soit 500 lignes de corps, au-delà duquel il faut externaliser dans un fichier compagnon.
+
+## Filtrage natif des skills par plateforme
+
+Hermès lit un champ `platforms:` au frontmatter d'un `SKILL.md` et **n'offre pas** une skill dont la plateforme ne correspond pas à la machine courante :
+
+```yaml
+platforms: [macos]           # écartée sur Linux et Windows
+platforms: [macos, linux]
+```
+
+Valeurs reconnues : `macos`, `linux`, `windows`. Champ absent ou vide égale compatible partout, donc rétrocompatible. Le filtre agit au moment de l'offre : un chargement explicite le contourne. Vérifié par exécution le 2026-08-07 (6 cas sur 6, DEC-0037).
+
+C'est le filet contre le scénario du RETEX Mediatros : une skill écrite pour macOS qui arrive sur un VPS Linux par synchronisation, est proposée, puis échoue. Avec `platforms: [macos]`, elle n'est jamais proposée. Claude Code et Codex ne lisent pas ce champ.
+
+Un second champ existe, `environments:` (`kanban`, `docker`, `s6`), **écarté du canon MyProjectOS** : ses valeurs sont internes à l'infrastructure Hermès, et sa détection s'est révélée en faux positif au test (un hôte où Docker est simplement installé est vu comme un conteneur). Un tag non reconnu n'y écarte jamais la skill, donc une faute de frappe n'y filtre rien en silence.
 
 ## Portabilité des garde-fous (ROADMAP, Phase 7)
 
