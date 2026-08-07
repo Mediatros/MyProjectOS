@@ -63,7 +63,19 @@ Prochaine action : <depuis l'en-tête PROGRESS.md ou TASKS.md>
 Points de vigilance : <problèmes ouverts, actions à valider>
 ```
 
-3. Proposer de démarrer l'itération sur la prochaine action, et rien d'autre. Rester court : ne pas recracher le contenu des fichiers, en faire la synthèse.
+3. **Vérifier la version de la méthode**, une fois par session, avant de proposer l'itération :
+
+   ```sh
+   sh scripts/check-update.sh .
+   ```
+
+   C'est le **seul** moment où la question se pose : `check-project.sh` ne peut pas y répondre, son contrôle de version est local et ne voit pas ce qui est publié en amont. Règles :
+   - **sortie `[ok]` ou « version distante introuvable »** (pas de réseau, pas de `curl`/`git`) → ne rien dire, enchaîner. Une reprise ne doit jamais être ralentie ni bloquée par ce contrôle.
+   - **mise à jour disponible** → l'annoncer en une phrase à la fin du bloc d'état, avec le nombre de versions de retard et ce qu'apporte la plus importante, puis proposer le Mode 7. Ne pas dérouler la liste complète des versions.
+   - **refus de l'utilisateur** → ne plus reproposer de la session, et le noter dans `PROGRESS.md` si le retard dépasse trois versions mineures.
+   - Ne jamais appliquer une mise à jour de méthode dans le rituel de reprise : c'est une action validée, elle passe par le Mode 7.
+
+4. Proposer de démarrer l'itération sur la prochaine action, et rien d'autre. Rester court : ne pas recracher le contenu des fichiers, en faire la synthèse.
 
 ## Mode 2 — Orientation
 
@@ -168,7 +180,7 @@ Suivre le protocole `docs/INSTALL-AGENT.md` du dépôt méthode, section « Mét
 
 ## Mode 7 — Mise à jour de la méthode
 
-Déclencheurs : « y a-t-il une mise à jour de la méthode ? », « le projet est-il à jour ? », avertissement de version dans `check-project.sh`.
+Déclencheurs : « y a-t-il une mise à jour de la méthode ? », « le projet est-il à jour ? », et surtout **le constat de retard remonté par l'étape 3 du Mode 1**. Ne pas attendre un avertissement de `check-project.sh` : son contrôle de version est local et ne peut pas signaler qu'une version plus récente existe (DEC-0039).
 
 Workflow imposé, jamais raccourci :
 

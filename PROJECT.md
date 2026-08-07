@@ -2,7 +2,7 @@
 projet: MyProjectOS
 type: Core
 methode: my-project-os
-version_methode: 0.20.0
+version_methode: 0.21.0
 statut: actif
 cree_le: 2026-06-01
 ---

@@ -79,6 +79,22 @@ Le check informe, il ne migre rien et ne bloque rien. La mise à jour d'un proje
 
 Il n'applique jamais rien lui-même. Codes de sortie : `0` à jour, `10` mise à jour disponible, `1` erreur.
 
+### Qui déclenche la détection, et pourquoi ce n'est pas `check-project.sh`
+
+Deux scripts vivent dans chaque projet et il ne faut pas les confondre.
+
+| | `check-project.sh` | `check-update.sh` |
+|---|---|---|
+| Regarde | les fichiers du projet, entre eux | le dépôt méthode, en amont |
+| Réseau | jamais | oui (`curl`, repli `git ls-remote`) |
+| Sur la version, répond à | « mon empreinte et mes artefacts sont-ils cohérents ? » | « une version plus récente existe-t-elle ? » |
+
+`check-project.sh` compare `version_methode:` de `PROJECT.md` au fichier `VERSION` du projet. Ces deux valeurs sont posées ensemble à l'installation et rafraîchies ensemble par `--update-method` : elles ne divergent que si une mise à jour a été interrompue. **Ce contrôle ne peut donc pas détecter un retard**, et il ne prétend plus le faire.
+
+C'est le **rituel de reprise** qui déclenche la détection : l'étape 3 du Mode 1 de la skill assistant lance `check-update.sh` une fois par session, avant de proposer l'itération. Sans réseau, le script le dit et sort en `0` : la reprise n'est jamais ralentie ni bloquée. En cas de retard, l'agent l'annonce en une phrase et propose le Mode 7 ; il n'applique jamais rien de lui-même.
+
+Historique : jusqu'à la v0.20.0, aucun de ces deux mécanismes n'était branché. Le Mode 7 attendait un avertissement de `check-project.sh` qui ne pouvait pas se produire, et `check-update.sh` n'était lancé que si quelqu'un y pensait. Quatre projets ont accumulé jusqu'à neuf versions de retard, chacun s'entendant répondre « version courante » par son propre contrôle. Voir DEC-0039.
+
 ## Le manifest des artefacts méthode
 
 `init-project.sh` pose `.myprojectos/manifest` dans chaque projet : la liste des fichiers qui appartiennent à la **méthode** (hooks, skill, `check-project.sh`, `check-update.sh`, `VERSION`) avec la version d'origine. Cette frontière est déterministe : une mise à jour ne remplace que les fichiers du manifest, jamais le contenu du projet (fichiers sacrés, documents, code).
