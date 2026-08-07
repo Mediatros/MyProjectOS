@@ -71,6 +71,14 @@ if [ -d "$TARGET/templates/core" ] && [ -f "$TARGET/structures/core-tree.md" ]; 
 fi
 
 # --- 0. Alignement avec la version de la méthode -----------------------------
+# Contrôle PUREMENT LOCAL : il compare l'empreinte de PROJECT.md au fichier VERSION
+# du projet, tous deux posés ensemble à l'installation puis rafraîchis ensemble par
+# --update-method. Il détecte donc une mise à jour à moitié appliquée, PAS l'existence
+# d'une version plus récente en amont : sans réseau, c'est impossible à savoir.
+# Ne jamais formuler son verdict en « version courante », c'était le défaut corrigé
+# par DEC-0039 (un projet à neuf versions de retard s'entendait répondre que tout allait
+# bien). La détection amont est le rôle de check-update.sh, rappelé ici et déclenché
+# au rituel de reprise par la skill assistant.
 echo "Version de la méthode :"
 CUR=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
 PRJ=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
@@ -80,9 +88,9 @@ elif [ -z "$PRJ" ] || [ "$PRJ" = "<VERSION>" ]; then
     warn "projet sans empreinte de version (créé avant le versionnement) ; version courante v$CUR"
 else
     case "$(ver_cmp "$PRJ" "$CUR")" in
-        eq) ok "suit MyProjectOS v$PRJ (version courante)" ;;
-        lt) warn "suit MyProjectOS v$PRJ, version courante v$CUR : voir les changements dans le CHANGELOG de la méthode" ;;
-        gt) warn "déclare v$PRJ, plus récent que la version installée v$CUR : mets à jour MyProjectOS" ;;
+        eq) ok "empreinte cohérente : projet installé en v$PRJ (contrôle local ; pour savoir si une version plus récente est publiée : sh scripts/check-update.sh)" ;;
+        lt) warn "PROJECT.md déclare v$PRJ mais les artefacts installés sont en v$CUR : mise à jour à moitié appliquée, relancer --update-method" ;;
+        gt) warn "PROJECT.md déclare v$PRJ, plus récent que les artefacts installés (v$CUR) : mise à jour à moitié appliquée, relancer --update-method" ;;
     esac
 fi
 
