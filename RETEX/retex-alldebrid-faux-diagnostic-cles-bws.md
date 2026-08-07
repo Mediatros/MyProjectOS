@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du profil Hermes `mysecretaire` (agent manager) sur le VPS.
 > Date : 2026-08-02.
-> Statut : ouvert. L'alignement des copies divergentes est fait côté infrastructure Hermès (CHG-20260802-2341). Sur les trois pistes de fin de document, deux relèvent de la gouvernance Hermès et sortent du canon ; une seule le touche, le contrôle d'empreinte anti-dérive des skills répliquées, à trancher (T-RETEX-2).
+> Statut : hors-canon. L'alignement des copies divergentes est fait côté infrastructure Hermès (CHG-20260802-2341). Les trois pistes de fin de document relèvent toutes de la gouvernance Hermès : les deux premières l'étaient déjà, la troisième (contrôle d'empreinte anti-dérive des skills répliquées) l'est devenue le 2026-08-07 par DEC-0038, la mesure ayant établi que `check-project.sh` ne peut pas lire les skills d'Hermès depuis le compte qui l'exécute. La divergence mesurée ce jour-là (15 skills sur 31 entre le profil `mysecretaire` et le dossier global) reste un sujet réel, mais hors du dépôt méthode. T-RETEX-2 close côté canon.
 
 ## Objet du RETEX
 

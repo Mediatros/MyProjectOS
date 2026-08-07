@@ -6,6 +6,7 @@ description: <Ce que la skill permet de faire, en une ou deux phrases orientées
 # <Outil> — <rôle en une ligne>
 
 > Squelette de skill portable MyProjectOS. Remplacer chaque bloc `<...>` puis supprimer cette note.
+> Référence complète du dispositif (source canonique, installation par agent, portabilité, rattrapage d'un parc) : `docs/skills-portables.md` du dépôt méthode.
 > Règles du pattern : agent-agnostique (Claude Code, Codex, Hermès — standard agentskills.io), aucun identifiant ni secret en dur (les IDs vivent dans la gouvernance du projet, les secrets dans un backend via `scripts/secrets.sh`), corps du `SKILL.md` sous 500 lignes (budget officiel Agent Skills — au-delà, externaliser dans un fichier compagnon référencé depuis ce fichier, à un seul niveau de profondeur).
 
 ## Ce que fait cette skill
@@ -33,7 +34,22 @@ Valeurs reconnues : `macos`, `linux`, `windows`. **Champ absent égale compatibl
 Deux cas à ne pas confondre :
 
 - **restriction technique** (la skill ne peut pas tourner ailleurs) : renseigner `platforms:` et expliquer pourquoi en une ligne ci-dessous ;
-- **restriction par décision** (elle pourrait tourner ailleurs, mais on ne le veut pas, par exemple un accès SSH client qu'un agent joignable depuis un téléphone ne doit pas atteindre) : l'écrire comme une décision et non comme un manque, avec la raison et le renvoi au document qui la porte, plus la conduite à tenir pour l'agent qui rencontre le besoin depuis la mauvaise machine (préparer l'intervention, la remettre à l'humain, ne pas contourner).
+- **restriction par décision** (elle pourrait tourner ailleurs, mais on ne le veut pas, par exemple un accès SSH client qu'un agent joignable depuis un téléphone ne doit pas atteindre) : l'écrire comme une décision et non comme un manque, avec la raison et le renvoi au document qui la porte, plus la conduite à tenir pour l'agent qui rencontre le besoin depuis la mauvaise machine (préparer l'intervention, la remettre à l'humain, ne pas contourner). **Ne pas la traduire en `platforms:`** : ce champ dit « ne peut pas tourner ici », pas « ne doit pas être offerte ici », et le jour où l'agent visé tourne sur la plateforme listée, le filtre offrirait la skill précisément dans le cas qu'on voulait interdire. Le mécanisme correct est la non-installation, décrite dans l'`INSTALL.md`.
+
+### Champ `portable:` (optionnel)
+
+`platforms:` ne dit qu'une chose : sur quel système d'exploitation la skill peut tourner. Tout ce que la machine ne peut pas déduire s'écrit dans un champ `portable:` au frontmatter, en clé de premier niveau :
+
+| Valeur | Sens |
+|---|---|
+| `oui` | fonctionne partout une fois le secret disponible (**c'est le défaut : champ absent égale `oui`**) |
+| `partiel` | une partie des opérations seulement, frontière documentée dans l'`INSTALL.md` |
+| `conditionnel` | portable une fois des prérequis identifiés posés, chemin écrit |
+| `non` | non portable **par décision**, ne pas chercher à corriger |
+
+Règle de cohérence : toute valeur `non` ou `partiel` dont la cause est **technique** doit s'accompagner d'un `platforms:` restrictif, sinon la skill documente un problème au lieu de l'empêcher. Le cas inverse (`platforms:` sans `portable:`) est normal.
+
+Ce champ n'est lu par aucun agent, c'est de la documentation destinée à l'humain et au tableau d'inventaire de `98_configuration/skills/README.md`. `hermes skills list` n'extrait que `description`, `version` et `author` : ne pas compter dessus pour le voir.
 
 ## Résolution des secrets
 

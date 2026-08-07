@@ -2,7 +2,7 @@
 
 > Retour d'expérience issu du projet `/Users/jb/Documents/MyProjects/SYNC/Mediatros` (type Code + Knowledge).
 > Date : 2026-08-07.
-> Statut : ouvert. Consigné le 2026-08-07 (CHG-20260807-1915), les six évolutions proposées restent à arbitrer (T-RETEX-1). La deuxième est reconfigurée par DEC-0037 (voir « Ce que la vérification Hermès change » en fin de document) ; les cinq autres sont inchangées.
+> Statut : integre. Arbitré le 2026-08-07 par DEC-0038 (CHG-20260807-2230, v0.20.0), après reconfiguration de l'évolution 2 par DEC-0037. Les évolutions 1 à 5 sont appliquées, avec deux écarts assumés (un seul artefact de parc au lieu de deux, déclencheur du Mode 2 au lieu d'un huitième mode). **L'évolution 6 est écartée sur preuve** : le contrôle serait muet là où il devrait tourner (`Permission denied`) et la dérive qu'il visait n'existe pas (voir « Ce que la mesure a écarté » en fin de document). T-RETEX-1 close.
 
 ## Objet du RETEX
 
@@ -132,3 +132,22 @@ Règle qui en découle : toute valeur `non` ou `partiel` dont la cause est techn
 Point laissé à l'arbitrage : pour `mainwp-ssh`, `platforms: [macos]` produirait le bon comportement (Hermès ne voit pas la skill) mais pour une raison techniquement fausse, puisque la skill tournerait très bien sous Linux et que l'interdiction est une frontière de sécurité volontaire. Effet correct, justification approximative : à trancher.
 
 Limite constatée au passage : le lanceur `hermes skills list` n'extrait du frontmatter que `description`, `version` et `author`. Un champ `portable:` n'apparaîtra donc pas dans cette sortie, ce qui renforce l'intérêt du tableau d'inventaire de l'évolution 4.
+
+## Ce que la mesure a écarté
+
+> **Ajout du 2026-08-07 au moment de l'arbitrage** (DEC-0038, CHG-20260807-2230). Les constats 1 à 5 restent tels qu'écrits ; cette section documente pourquoi l'évolution 6 n'a pas été retenue, pour qu'elle ne soit pas réinstruite.
+
+Le constat 5 supposait que la copie Hermès d'une skill dérive de sa source projet sans que rien ne le signale. Quatre mesures en lecture seule sur le VPS l'ont réfuté.
+
+| Mesure | Résultat |
+|---|---|
+| Lisibilité de `/root/.hermes/skills/` depuis le compte qui exécute `check-project.sh` (`jihad`) | `Permission denied`. Les projets sont sous `/home/jihad/projects/`, les skills d'Hermès sous `/root/.hermes/` |
+| `diff -rq` entre `~/.hermes/skills/blue-app` et sa source `MySecretaire`, seul cas comparable du parc | Aucun écart, versions 1.2.0 des deux côtés, malgré 24 jours d'écart de date de modification |
+| Skills de projet absentes chez Hermès | 8 sur 9, dont les 7 de Mediatros. C'est la conclusion de l'audit de portabilité, pas un défaut |
+| Divergence entre le profil `mysecretaire` et le dossier global d'Hermès | 15 skills sur 31, sur 15 profils portant chacun 31 à 36 skills |
+
+Un contrôle infaisable là où il compte, visant une dérive qui ne se produit pas, et dont la variante « couverture » ne produirait que des faux positifs sur des absences volontaires : les trois raisons se cumulent.
+
+La quatrième ligne est le seul vrai signal, et il tombe hors du dépôt méthode. Elle relève de la gouvernance Hermès, où elle rejoint les deux autres pistes du RETEX AllDebrid. C'est un constat brut et non un diagnostic : la sémantique des profils Hermès n'est pas connue ici, et cette divergence peut être une personnalisation voulue.
+
+Enseignement transposable au-delà du cas : **mesurer le mécanisme avant de l'outiller**. C'est le deuxième RETEX consécutif où une contrainte tenue pour acquise ne survit pas à la vérification, après les 20 000 caractères de DEC-0037, à une version d'intervalle.

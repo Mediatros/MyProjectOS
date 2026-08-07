@@ -73,6 +73,7 @@ Protocole de validation obligatoire avant toute vraie valeur : poser d'abord un 
 
 ## Voir aussi
 
+- `docs/skills-portables.md` — le dispositif complet des skills de projet, dont le filtre `platforms:` et la copie physique côté Hermès.
 - `agents/claude-code.md` — l'agent principal côté Mac.
 - `agents/meta-skill.md` — la skill que Claude Code exécute et qu'Hermès n'exécute pas encore.
 - `docs/governance.md` — les règles communes aux deux agents.

@@ -22,6 +22,13 @@
 
 **Avant d'installer, vérifier la portabilité.** Si la skill ne tourne pas sur toutes les plateformes, son `SKILL.md` doit porter un champ `platforms:` au frontmatter (voir la section « Portabilité » du `SKILL.md`). Hermès lit ce champ nativement et n'offre pas une skill dont la plateforme ne correspond pas à la machine : c'est le filet qui évite qu'une skill écrite pour macOS soit proposée sur un VPS Linux, puis échoue. Claude Code et Codex ne lisent pas ce champ, la restriction y reste documentaire.
 
+**Limites par environnement** (à remplir dès que la skill n'est pas `portable: oui` ; supprimer ce tableau sinon). Une ligne par opération plutôt qu'une phrase de synthèse : c'est ce qui permet à un agent de savoir s'il peut faire *cette* action-là depuis *cette* machine.
+
+| Opération | macOS | Linux / VPS | Blocage et conduite à tenir |
+|---|---|---|---|
+| `<opération 1>` | oui | oui | — |
+| `<opération 2>` | oui | non | `<ce qui manque, et ce que l'agent fait à la place>` |
+
 Par défaut, Claude Code et Codex installent un **lien symbolique relatif** vers la source canonique plutôt qu'une copie : une seule source à éditer (`98_configuration/skills/<outil>/`), aucune dérive possible entre le canon et les copies installées. Contrepartie assumée : un outil d'archive/zip qui ne préserve pas les liens symboliques (ou ne les déréférence pas correctement) casse l'installation — vérifier après tout transfert (section Vérification post-installation).
 
 ### Claude Code
@@ -51,6 +58,18 @@ cp -r <projet>/98_configuration/skills/<outil> ~/.hermes/skills/<outil>
 ```
 
 Vérification de découverte : `hermes skills list`. Mise à jour ultérieure : entrée de handoff « Équiper un agent » (voir `templates/configuration/HANDOFF_INTERAGENT.md`), en recopiant depuis la source projet.
+
+### Ne pas installer pour `<agent>`
+
+<Section à écrire uniquement si la skill porte `portable: non`. La supprimer sinon.>
+
+**Cette skill ne doit pas être installée pour `<agent>`.** C'est une décision, pas un manque de moyens : `<la raison, en une phrase>`. Document qui la porte : `<chemin>`. Ne pas migrer les clés vers un backend accessible depuis cette machine pour « débloquer » la situation.
+
+Si elle s'y trouve déjà, la retirer : `rm -rf <chemin d'installation de l'agent>/<outil>`.
+
+Conduite à tenir pour l'agent qui rencontre ce besoin depuis la mauvaise machine : préparer l'intervention (commandes exactes, contexte, ce qu'il faut vérifier), la remettre à l'humain ou à l'agent habilité, **ne pas contourner**.
+
+Pour Hermès, dont l'installation se fait par copie physique, la non-installation est un mécanisme dur et non une consigne : ce qui n'a pas été copié n'existe pas pour lui. C'est la raison pour laquelle une restriction par décision ne se traduit pas en `platforms:` (voir la section « Portabilité » du `SKILL.md`).
 
 ## Configuration des secrets par environnement
 
