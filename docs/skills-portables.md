@@ -14,6 +14,8 @@ Trois questions en découlent, et ce document répond aux trois.
 2. Comment chaque agent l'installe chez lui ?
 3. Comment dire qu'elle ne tourne pas partout, et faire en sorte que ce soit respecté ?
 
+État au 2026-08-08 : le dispositif fonctionne sur les **quatre agents** utilisés ici, Claude Code, Codex, OpenCode et Hermès. Trois d'entre eux consomment le catalogue par un lien symbolique relatif ou par simple découverte, le quatrième par une déclaration de configuration. Aucun ne demande de copie.
+
 ## 1. Une source canonique par projet
 
 La source de vérité d'une skill de projet est `98_configuration/skills/<outil>/`. C'est le seul endroit qu'on édite.
@@ -39,13 +41,42 @@ Chaque agent installe sa propre copie depuis la source canonique. Les chemins et
 |---|---|---|---|
 | Claude Code | `.claude/skills/<outil>` | lien symbolique **relatif** | interne au projet, donc il voyage avec lui (renommage, déplacement, archive) |
 | Codex | `.agents/skills/<outil>` | lien symbolique **relatif** | idem ; chemin vérifié par exécution, pas `.codex/skills/` |
-| Hermès | `~/.hermes/skills/<outil>` | **copie physique** | le dossier est global et hors du projet : un lien y serait absolu, donc cassé au premier déplacement ou à la première pause de synchronisation |
+| OpenCode | rien à faire | **découverte** | il lit `.claude/skills/` et `.agents/skills/`, donc les liens déjà posés ; son emplacement propre est `.opencode/skill/` |
+| Hermès | déclaration `skills.external_dirs` | **ni copie ni lien** | le catalogue du projet est déclaré en une ligne de configuration du profil, et scanné comme le dossier local |
 
 Le lien symbolique supprime la dérive entre la source et la copie : il n'y a qu'un fichier. La contrepartie est qu'un outil d'archive qui ne préserve pas les liens casse l'installation en silence, ce que `check-project.sh` détecte (section « Skills portables »).
 
-Pour Hermès, la copie est assumée : une skill absente parce que la synchronisation est en pause est un incident plus grave qu'une skill légèrement périmée (DEC-0029 D3, étayé par DEC-0034).
+Pour Hermès, la voie est différente et meilleure, parce qu'elle ne crée aucun second exemplaire. Sa configuration de profil accepte une clé `skills.external_dirs` qui désigne un dossier **du projet** :
 
-**Il n'existe pas de contrôle automatique de dérive de la copie Hermès**, et c'est une décision documentée, pas un oubli. La mesure du 2026-08-07 a établi que le contrôle serait muet là où il devrait tourner : `check-project.sh` s'exécute sous le compte propriétaire du projet, qui ne peut pas lire le dossier de skills d'Hermès quand celui-ci tourne en `root`. Elle a aussi établi que la dérive redoutée ne se produisait pas. Détail et commandes de re-vérification : DEC-0038.
+```sh
+hermes config set skills.external_dirs '<projet>/98_configuration/skills'
+```
+
+Tout le catalogue est alors scanné : chaque skill présente, et chaque skill future, arrive sans installation. Le code marque ces skills « externes », donc en lecture seule pour la maintenance autonome d'Hermès. Aucun lien n'existant, aucune des objections à la copie ne s'applique : ce n'est pas un pointeur de fichiers, c'est une déclaration de configuration, qui survit à un `profile export/import`.
+
+**La copie physique globale est abandonnée** (DEC-0040, qui corrige la justification de DEC-0029 D3 et de DEC-0034). Elle avait un défaut plus grave que la dérive qu'on lui reprochait : sur un déploiement profilé, le dossier scanné est celui du profil actif, donc une skill déposée dans le dossier global n'était **pas offerte à l'agent**. Une restriction par décision reste néanmoins un mécanisme dur chez Hermès, par non-déclaration du catalogue ou par retrait de la skill du catalogue.
+
+Une variante spécifique à un agent, qui n'a pas sa place dans le catalogue générique, s'installe par lien symbolique dans le dossier de skills du profil.
+
+| Cas | Mécanisme Hermès |
+|---|---|
+| Skill générique du catalogue `98_configuration/skills/` | `skills.external_dirs`, une ligne de configuration |
+| Variante spécifique d'un agent, hors catalogue | lien symbolique dans `~/.hermes/profiles/<profil>/skills/` |
+| Copie physique globale | abandonnée : ni scannée en déploiement profilé, ni nécessaire |
+
+Deux pièges vérifiés par exécution, à connaître avant de poser la déclaration. La valeur doit être une **chaîne simple** : `hermes config set` n'écrit que des chaînes, et une valeur qui ressemble à une liste JSON est stockée littéralement, puis résolue en un chemin unique inexistant, ignoré **sans message**. Déclarer plusieurs dossiers suppose une édition manuelle du fichier de configuration. Second piège, la synchronisation ne propage pas le bit d'exécution : les scripts du catalogue arrivent en `644` sur le VPS, donc soit on rétablit les permissions côté VPS, soit les recettes appellent `bash scripts/<script>.sh` plutôt que `./scripts/<script>.sh`.
+
+**Il n'existe pas de contrôle automatique de cette déclaration**, et c'est une limite assumée, pas un oubli. `check-project.sh` s'exécute sous le compte propriétaire du projet, qui ne peut pas lire la configuration d'Hermès quand celui-ci tourne en `root` (mesuré en DEC-0038, toujours vrai). La garantie reste documentaire.
+
+Commande de re-vérification, à exécuter sur le VPS avec les droits d'Hermès. Ne pas utiliser `hermes skills list` pour cela, voir la fin de ce document :
+
+```sh
+cd <repo hermes> && HERMES_HOME=~/.hermes/profiles/<profil> ./.venv/bin/python -c "
+from agent.skill_commands import scan_skill_commands
+cmds = scan_skill_commands()
+print(len(cmds), cmds.get('/<skill>', {}).get('skill_dir'))
+"
+```
 
 ## 3. Dire qu'une skill ne tourne pas partout
 
@@ -129,6 +160,14 @@ Puis appliquer : `platforms:` pour toute incompatibilité **technique**, non-ins
 
 La skill assistant propose ce rattrapage d'elle-même en Mode 2 quand elle détecte le déclencheur. Elle le **propose**, elle ne l'applique pas d'autorité.
 
+### Deux versions d'une même skill : un signal, pas un état
+
+Le motif se reconnaît vite : un projet porte la même skill deux fois, une par agent, à deux endroits différents. C'est le symptôme d'un parc constitué avant la logique de catalogue, quand chaque agent recevait sa propre écriture.
+
+Cas réel mesuré : `radar-projets` existait en version Claude Code et en adaptation Hermès dans le même projet, avec un sous-agent présent d'un côté et absent de l'autre, une description de déclenchement enrichie d'un côté seulement, et une numérotation des usages inversée. Aucune des deux n'était fausse, elles avaient simplement divergé chacune de son côté.
+
+Le motif « une skill par agent » ne se justifie que pour une variante **spécifique** à un agent. Dès qu'un projet en découvre deux qui font la même chose, c'est le signal de fusionner : une skill générique unique dans le catalogue, les agents la découvrant par leur mécanisme respectif, l'ancienne version archivée. Ne pas attendre : ce qui a divergé une fois diverge encore.
+
 ## Ce qui est vérifié, et ce qui ne l'est pas
 
 Ce document distingue ce qui a été prouvé par exécution de ce qui reste une convention. La distinction compte : deux règles tenues pour acquises n'ont pas survécu à la vérification, à une version d'intervalle.
@@ -139,10 +178,22 @@ Ce document distingue ce qui a été prouvé par exécution de ce qui reste une 
 | Le chemin projet de Codex est `.agents/skills/` | **vérifié par exécution** (DEC-0034) |
 | Les `SKILL.md` ne sont jamais tronqués par Hermès | **vérifié** par lecture du code et contre-preuve empirique (DEC-0037) |
 | `check-project.sh` ne peut pas lire les skills d'Hermès depuis le projet | **vérifié par exécution** (DEC-0038) |
+| Hermès offre une skill du catalogue déclarée en `external_dirs`, sans copie ni lien | **vérifié par exécution** sur le registre réel (DEC-0040) |
+| OpenCode découvre `.claude/skills/` et `.agents/skills/` | vérifié par lecture des chemins du binaire v1.18.15, non exercé en session (DEC-0040) |
+| Une skill du dossier global n'est pas offerte sur un déploiement profilé | **vérifié par exécution** (DEC-0040) |
 | Budget de 500 lignes pour le corps d'un `SKILL.md` | convention du standard Agent Skills, non contrôlée ici |
 | Le champ `portable:` | convention interne, lue par personne, non contrôlée |
+| La déclaration `external_dirs` est bien posée sur le profil | non contrôlable depuis le projet, garantie documentaire (DEC-0040) |
 
 Deux règles qui figuraient au canon en ont été retirées faute de mécanisme réel : la limite de 20 000 caractères pour un `SKILL.md` (DEC-0037) et le contrôle de dérive de la copie Hermès (DEC-0038). Avant d'ajouter une contrainte à ce document, **mesurer le mécanisme avant de l'outiller**.
+
+### Et mesurer avec le bon instrument
+
+Une contrainte peut aussi être mesurée de travers, ce qui est plus dangereux qu'une contrainte non mesurée : le chiffre obtenu inspire confiance et personne ne redemande la preuve.
+
+Cas réel, sur le profil d'un même projet : `hermes skills list` renvoie 224 skills, le dossier de skills du profil en contient 174, et le registre réellement offert à l'agent en compte 148. Trois nombres, trois objets différents. Une conclusion tirée du premier pour parler du troisième s'est révélée juste par accident sur un cas et fausse sur l'autre, la contre-preuve étant présente dans les mêmes données sans être relevée (DEC-0040).
+
+Règle : avant de conclure d'une commande d'inspection, **vérifier qu'elle observe bien l'objet dont on parle**. Une commande de confort listant un dossier n'est pas le registre que l'agent consulte au moment d'offrir une skill. Quand la mesure porte sur ce que l'agent voit, l'instrument doit être le chemin de code que l'agent emprunte.
 
 ## Voir aussi
 

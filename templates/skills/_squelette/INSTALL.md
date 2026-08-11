@@ -51,13 +51,35 @@ cd <projet>/.agents/skills && ln -s ../../98_configuration/skills/<outil> <outil
 
 ### Hermès
 
-Copie physique unique globale (sert tous les profils ; si Hermès tourne en root, `~` est `/root`) — pas de lien symbolique ici, décision délibérée (DEC-0029 D3) : un lien vers un dossier projet synchronisé serait modifiable par toute session touchant ce dossier, vulnérable aux conflits Syncthing :
+Ni copie ni lien : le catalogue du projet se **déclare** dans la configuration du profil (DEC-0040). Une seule commande couvre toutes les skills du catalogue, y compris celles qui n'existent pas encore :
 
 ```sh
-cp -r <projet>/98_configuration/skills/<outil> ~/.hermes/skills/<outil>
+hermes config set skills.external_dirs '<projet>/98_configuration/skills'
 ```
 
-Vérification de découverte : `hermes skills list`. Mise à jour ultérieure : entrée de handoff « Équiper un agent » (voir `templates/configuration/HANDOFF_INTERAGENT.md`), en recopiant depuis la source projet.
+Trois précautions, toutes vérifiées par exécution :
+
+- **Une chaîne simple, jamais une liste JSON.** `hermes config set` n'écrit que des chaînes : une valeur entre crochets est stockée littéralement, résolue en un chemin unique inexistant, puis ignorée sans aucun message. Pour déclarer plusieurs dossiers, éditer le fichier de configuration à la main.
+- **Le bit d'exécution ne survit pas à la synchronisation** : les scripts arrivent en `644` côté VPS. Soit on rétablit les permissions sur place, soit les recettes du `SKILL.md` appellent `bash scripts/<script>.sh` plutôt que `./scripts/<script>.sh`.
+- **Ne pas vérifier avec `hermes skills list`**, qui n'observe pas le registre réellement offert à l'agent. Contrôle correct :
+
+  ```sh
+  cd <repo hermes> && HERMES_HOME=~/.hermes/profiles/<profil> ./.venv/bin/python -c "
+  from agent.skill_commands import scan_skill_commands
+  cmds = scan_skill_commands()
+  print(len(cmds), cmds.get('/<outil>', {}).get('skill_dir'))
+  "
+  ```
+
+  La source affichée doit être celle du catalogue du projet.
+
+Une skill qui n'a pas sa place dans le catalogue générique, parce qu'elle est propre à Hermès, s'installe par lien symbolique dans `~/.hermes/profiles/<profil>/skills/`. La copie physique globale dans `~/.hermes/skills/` est abandonnée : sur un déploiement profilé, elle n'est pas offerte à l'agent.
+
+Il n'y a plus de mise à jour à faire : la déclaration pointant sur la source du projet, toute modification du catalogue est prise en compte sans geste.
+
+### OpenCode
+
+Rien à installer : OpenCode découvre `.claude/skills/` et `.agents/skills/`, donc il voit les liens déjà posés pour Claude Code et Codex. Son emplacement propre, si la skill ne doit être offerte qu'à lui, est `.opencode/skill/<outil>` (même mode, lien symbolique relatif).
 
 ### Ne pas installer pour `<agent>`
 
@@ -69,7 +91,7 @@ Si elle s'y trouve déjà, la retirer : `rm -rf <chemin d'installation de l'agen
 
 Conduite à tenir pour l'agent qui rencontre ce besoin depuis la mauvaise machine : préparer l'intervention (commandes exactes, contexte, ce qu'il faut vérifier), la remettre à l'humain ou à l'agent habilité, **ne pas contourner**.
 
-Pour Hermès, dont l'installation se fait par copie physique, la non-installation est un mécanisme dur et non une consigne : ce qui n'a pas été copié n'existe pas pour lui. C'est la raison pour laquelle une restriction par décision ne se traduit pas en `platforms:` (voir la section « Portabilité » du `SKILL.md`).
+Pour Hermès, la non-installation reste un mécanisme dur et non une consigne, mais elle se joue désormais sur la déclaration : une skill qui ne doit pas lui être offerte ne vit pas dans le catalogue déclaré en `external_dirs`, elle est rangée hors de ce dossier. Ce qui n'est pas déclaré n'existe pas pour lui. C'est la raison pour laquelle une restriction par décision ne se traduit pas en `platforms:` (voir la section « Portabilité » du `SKILL.md`).
 
 ## Configuration des secrets par environnement
 

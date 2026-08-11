@@ -54,7 +54,31 @@ Hermès supporte **MCP** et le standard ouvert **agentskills.io** (dossier + `SK
 
 Tant que ce n'est pas fait, le contrat minimal d'Hermès est : **respecter la gouvernance Markdown**. La reprise à froid garantit qu'il peut le faire sans la skill `my-project-os` elle-même (celle-ci reste spécifique au poste Mac, voir « Ses frontières » ci-dessus).
 
-**Premier cas concret réalisé** (brique Blue, 2026-07-12) : une skill *technique* (pas la skill assistant de méthode) portée dans `templates/skills/blue-app/` est installée à l'identique chez Hermès, Claude Code et Codex — preuve que le standard agentskills.io permet bien de partager une capacité entre les trois agents. Emplacement des skills côté Hermès : `~/.hermes/skills/` (source de vérité, copie globale retenue pour `blue-app`) ; des répertoires externes sont aussi déclarables dans `~/.hermes/config.yaml` (`skills.external_dirs`, priorité au local en cas de doublon), écartés pour `blue-app` (skill modifiable par n'importe quelle session touchant le dossier projet, vulnérable aux conflits Syncthing). Le chemin par profil (`~/.hermes/profiles/<profil>/skills/`) coexiste selon le déploiement : vérifier au premier essai plutôt que de le supposer.
+**Premier cas concret réalisé** (brique Blue, 2026-07-12) : une skill *technique* (pas la skill assistant de méthode) portée dans `templates/skills/blue-app/` est installée à l'identique chez Hermès, Claude Code et Codex, preuve que le standard agentskills.io permet bien de partager une capacité entre les trois agents.
+
+## Comment Hermès reçoit les skills d'un projet
+
+La voie canonique est la **déclaration**, pas la copie (DEC-0040). Le catalogue du projet est désigné en une ligne dans la configuration du profil :
+
+```sh
+hermes config set skills.external_dirs '<projet>/98_configuration/skills'
+```
+
+Hermès scanne alors ce dossier comme le sien : toutes les skills du catalogue, présentes et futures, sont offertes sans installation, sans copie et sans lien. Le code les marque « externes », donc en lecture seule pour sa maintenance autonome. La déclaration est une ligne de configuration, elle survit à un `profile export/import`.
+
+**La copie physique globale dans `~/.hermes/skills/` est abandonnée.** Le motif n'est pas la dérive qu'on lui reprochait, mais un défaut plus net : sur un **déploiement profilé** (`~/.hermes/profiles/<profil>/`), le dossier scanné est celui du profil actif, donc une skill déposée dans le dossier global n'est tout simplement pas offerte. Elle existe sur le disque et l'agent ne la voit pas. Une variante propre à un agent, hors catalogue, s'installe par lien symbolique dans le dossier de skills du profil.
+
+Deux pièges vérifiés par exécution. La valeur doit être une **chaîne simple** : `hermes config set` n'écrit que des chaînes, et une valeur ressemblant à une liste JSON est stockée telle quelle, résolue en un chemin unique inexistant, puis ignorée **sans le moindre message**. Déclarer plusieurs dossiers suppose d'éditer le fichier de configuration à la main. Et la synchronisation ne propage pas le bit d'exécution : les scripts du catalogue arrivent en `644`, donc soit les permissions sont rétablies côté VPS, soit les recettes appellent `bash scripts/<script>.sh`.
+
+**Ne pas vérifier avec `hermes skills list`** : cette commande n'observe pas le registre réellement offert. Sur un même profil, elle a renvoyé 224 skills là où le dossier du profil en contenait 174 et où le registre effectif en comptait 148. Le contrôle correct porte sur le chemin de code que l'agent emprunte :
+
+```sh
+cd <repo hermes> && HERMES_HOME=~/.hermes/profiles/<profil> ./.venv/bin/python -c "
+from agent.skill_commands import scan_skill_commands
+cmds = scan_skill_commands()
+print(len(cmds), cmds.get('/<skill>', {}).get('skill_dir'))
+"
+```
 
 ## Saisie de secrets hors-LLM : hook gateway `/secret` (cible DEC-0031, à valider en réel)
 
@@ -73,7 +97,7 @@ Protocole de validation obligatoire avant toute vraie valeur : poser d'abord un 
 
 ## Voir aussi
 
-- `docs/skills-portables.md` — le dispositif complet des skills de projet, dont le filtre `platforms:` et la copie physique côté Hermès.
+- `docs/skills-portables.md` — le dispositif complet des skills de projet, dont le filtre `platforms:` et la déclaration `external_dirs` côté Hermès.
 - `agents/claude-code.md` — l'agent principal côté Mac.
 - `agents/meta-skill.md` — la skill que Claude Code exécute et qu'Hermès n'exécute pas encore.
 - `docs/governance.md` — les règles communes aux deux agents.
