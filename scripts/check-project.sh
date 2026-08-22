@@ -64,10 +64,12 @@ echo "Projet : $(basename -- "$(cd "$TARGET" && pwd)")  —  type déclaré : $T
 # (NAMING-CONVENTIONS.md) volontairement non conformes aux scans de contenu :
 # on les exclut pour que le dogfooding reste propre. Un projet normal n'a pas
 # ces dossiers, l'exclusion ne s'applique donc qu'au repo méthode.
+# 99_archive/ est exclu depuis DEC-0041 : zone froide, consultée sur demande,
+# dont les identifiants CHG-/DEC- ne doivent pas déclencher « cité non défini ».
 EXCLUDES=""
 if [ -d "$TARGET/templates/core" ] && [ -f "$TARGET/structures/core-tree.md" ]; then
-    EXCLUDES="--exclude-dir=templates --exclude-dir=examples --exclude-dir=PLAN --exclude=NAMING-CONVENTIONS.md"
-    echo "  (repo méthode détecté : gabarits, exemples et PLAN/ exclus des scans de contenu)"
+    EXCLUDES="--exclude-dir=templates --exclude-dir=examples --exclude-dir=PLAN --exclude-dir=99_archive --exclude=NAMING-CONVENTIONS.md"
+    echo "  (repo méthode détecté : gabarits, exemples, PLAN/ et 99_archive/ exclus des scans de contenu)"
 fi
 
 # --- 0. Alignement avec la version de la méthode -----------------------------
@@ -318,7 +320,7 @@ if [ -f "$TARGET/docs/INDEX.md" ]; then
     done
 
     # 8b. Liens cassés : chemin cité dans docs/INDEX.md mais introuvable sur disque.
-    _cited_paths=$(grep -oE '(0[123]_[a-z]+|runbooks|plan)/[A-Za-z0-9._/-]+\.md' "$TARGET/docs/INDEX.md" 2>/dev/null | sort -u)
+    _cited_paths=$(grep -oE '(0[123]_[a-z]+|runbooks|plan)/[A-Za-z0-9._/-]+\\.md' "$TARGET/docs/INDEX.md" 2>/dev/null | sort -u)
     if [ -n "$_cited_paths" ]; then
         while IFS= read -r _p; do
             [ -n "$_p" ] || continue
@@ -331,7 +333,36 @@ $_cited_paths
 EOF_KBLINKS
     fi
 
+    # 8b-bis. Liens cassés depuis SUJETS.md (routeur métier) : chemins .md cités mais introuvables.
+    if [ -f "$TARGET/SUJETS.md" ]; then
+        _sujets_paths=$(grep -oE '[A-Za-z0-9_./-]+\\.md' "$TARGET/SUJETS.md" 2>/dev/null | sort -u)
+        if [ -n "$_sujets_paths" ]; then
+            while IFS= read -r _p; do
+                [ -n "$_p" ] || continue
+                case "$_p" in
+                    *.md) ;;
+                    *) continue ;;
+                esac
+                if [ ! -f "$TARGET/$_p" ] && [ ! -f "$TARGET/docs/$_p" ]; then
+                    warn "SUJETS.md cite $_p qui n'existe pas (lien cassé)"
+                    _kb_issue=1
+                fi
+            done <<EOF_KBSJ
+$_sujets_paths
+EOF_KBSJ
+        fi
+    fi
+
     # 8c. Budgets de taille par niveau.
+    # Carte : SUJETS.md + INDEX.md cumulés <= 200 lignes (coût permanent, jamais de substance).
+    _carte_lines=0
+    for _carte_f in "$TARGET/SUJETS.md" "$TARGET/docs/INDEX.md"; do
+        [ -f "$_carte_f" ] && _carte_lines=$((_carte_lines + $(wc -l < "$_carte_f" | tr -d ' ')))
+    done
+    if [ "$_carte_lines" -gt 200 ]; then
+        warn "carte (SUJETS.md + docs/INDEX.md) : $_carte_lines lignes cumulées (> 200) : la carte doit rester une carte (pointeurs uniquement)"
+        _kb_issue=1
+    fi
     for _f in "$TARGET/docs/01_global"/*.md; do
         [ -f "$_f" ] || continue
         _n=$(wc -l < "$_f" | tr -d ' ')
@@ -348,6 +379,18 @@ EOF_KBLINKS
             _kb_issue=1
         fi
     done
+
+    # 8d. Sauvegardes .bak hors zone froide (violation de circulation documentée [chemin serveur]).
+    while IFS= read -r _bak; do
+        [ -n "$_bak" ] || continue
+        case "$_bak" in
+            *99_archive/*|*/99_archive/*) continue ;;
+        esac
+        warn "${_bak#\"$TARGET\"/} : fichier .bak hors 99_archive/ (archiver ou supprimer)"
+        _kb_issue=1
+    done <<EOF_KBBK
+$(find "$TARGET" -name '*.bak*' -not -path '*/99_archive/*' -not -path '*/.git/*' 2>/dev/null)
+EOF_KBBK
 
     [ "$_kb_issue" -eq 0 ] && ok "index aligné avec le disque, budgets de taille respectés"
 fi

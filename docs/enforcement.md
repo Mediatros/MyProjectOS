@@ -90,6 +90,7 @@ Il signale, sans rien modifier :
 - **PROGRESS périmé** : `derniere_maj` absent, illisible, ou plus vieux que 14 jours ;
 - **placeholders** de gabarit non substitués (nom du projet resté en balise) ;
 - **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
+  - `99_archive/` est exclu des scans croisés de contenu depuis DEC-0041 : zone froide consultée sur demande, ses identifiants ne déclenchent pas d'avertissement (repo méthode uniquement) ;
 - **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD` ;
 - **RETEX** (si un dossier `RETEX/` existe) : statut absent ou hors des cinq valeurs fermées, et RETEX déclaré fermé sans référence `DEC-XXXX`/`CHG-` justifiant la clôture.
 

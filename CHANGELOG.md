@@ -4,6 +4,7 @@
 > Chaque entrée porte un identifiant `CHG-YYYYMMDD-HHMM` et reste figée une fois écrite.
 > Frontière : l'état actuel vit dans `PROGRESS.md` ; le pourquoi des choix structurants dans `DECISIONS.md`.
 > Quand le fichier devient long, archiver les entrées anciennes dans `99_archive/CHANGELOG-YYYY.md`.
+> Entrées antérieures au 2026-08-01 : `99_archive/CHANGELOG-2026.md` (zone froide, DEC-0041).
 
 ## Format d'une entrée
 
@@ -17,6 +18,7 @@
 
 La version courante de la méthode est dans `VERSION`. Politique et procédure : `docs/versioning.md`.
 
+- **v0.23.0** — 2026-08-22 — doctrine Knowledge « carte jamais territoire » (DEC-0043) : l'extension Knowledge passe d'une description en « niveaux 1/2/3 » à une doctrine consolidée issue d'un challenge multi-modèles (deepseek-pro, ox-alpha, kimi-k3 ; sol indisponible ce jour, quota Codex). La **carte** (`SUJETS.md` + `docs/INDEX.md`, toujours chargée après les fichiers sacrés Core, ≤ 200 lignes cumulées, pointeurs uniquement) précède les niveaux **Vision** (`01_global/`), **Domaines** (`02_domains/`), **Détails** (`03_details/`) chargés à la demande, au strict nécessaire. La proposition « Knowledge v2 4 niveaux » (plan interne) est arbitrée : **fusion partielle** — rejet de N1=constitution (les fichiers sacrés restent Core), du nommage miroir strict obligatoire, du budget N2 à 500 lignes, de `docs/archive/` ; la zone froide du knowledge est **`99_archive/knowledge/<domaine>/<sujet>.md`** (provenance conservée, une seule zone froide). `templates/extensions/knowledge/docs/kb_governance.md` réécrit (règle de chargement, frontmatter avec graphe `depend_de`/`alimente`, budgets, circulation, anti-dérive, enforcement) ; `structures/knowledge-tree.md` complété ; `scripts/check-project.sh` §8 étendu en warnings (budget carte cumulé, liens cassés depuis `SUJETS.md`, `.bak` hors `99_archive/`) ; `AGENTS.md` racine documente la lecture de la carte au démarrage. La version embarque aussi le README réécrit (identité, 3 questions, fichiers sacrés, extensions, dogfooding) et l'archivage CHANGELOG/PROGRESS étape 1 (DEC-0041). Dette T-PUB-1 close : v0.21.0 absorbée par v0.22.0. Voir CHG-20260822-0918, CHG-20260822-1736, DEC-0043.
 - **v0.22.0** — 2026-08-08 — Hermès reçoit le catalogue de skills par déclaration, plus par copie (DEC-0040). Une skill du projet est désormais offerte à Hermès par une ligne de configuration de profil (`skills.external_dirs`) qui désigne `98_configuration/skills/`, sans copie ni lien, et toute skill future du catalogue arrive sans geste d'installation. La copie physique globale est abandonnée : sur un déploiement profilé, elle pouvait exister sur le disque **sans jamais être offerte à l'agent**. Le dispositif fonctionne dès lors sur les quatre agents en usage, Claude Code, Codex, OpenCode et Hermès. Le Mode 7 gagne une étape : après une mise à jour, offrir le passage du parc de skills en mode portable. Second apport, plus large : le RETEX qui portait cette évolution avait raison sur le fond et tort sur sa preuve, ayant mesuré avec `hermes skills list` (224 skills) ce qui se joue dans le registre réellement offert (148). La règle « mesurer avec l'instrument que l'agent utilise » entre au canon, et le RETEX est corrigé sur place. Voir CHG-20260808-1130, DEC-0040.
 - **v0.21.0** — 2026-08-08 — un projet en retard de méthode le sait enfin (DEC-0039). Quatre projets avaient accumulé jusqu'à **neuf versions de retard** sans alerte, et chacun s'entendait répondre « version courante » par son propre `check-project.sh`. Cause : ce contrôle compare `PROJECT.md` au `VERSION` **du projet**, deux fichiers rafraîchis ensemble, donc il ne peut structurellement pas voir ce qui est publié en amont ; et le Mode 7 de la skill attendait un avertissement de ce contrôle, qui ne pouvait jamais se produire. La détection passe désormais au **rituel de reprise** : le Mode 1 lance `check-update.sh` une fois par session, silencieux si le projet est à jour ou si le réseau manque, annonce en une phrase et propose le Mode 7 en cas de retard, sans jamais rien appliquer de lui-même. Le contrôle local cesse de mentir : il parle d'« empreinte cohérente », rappelle la commande qui voit l'amont, et ses messages d'écart nomment la vraie cause, une mise à jour à moitié appliquée. Vérifié par exécution sur cinq cas, dont le hors-réseau (code 0, jamais bloquant) et le retard réel (code 10). Voir CHG-20260808-0015, DEC-0039.
 
@@ -35,27 +37,82 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **2026-08-02 — RETEX faux diagnostic clés BWS (infra Hermes VPS)** : après un rapport d'agent annonçant « clé API service tiers de téléchargement inaccessible, token BWS expiré, il faut ré-authentifier », la vérification terrain a prouvé le contraire (token valide, clé déjà injectée via BWS natif Hermes, `invalid_client` issu d'un chemin binaire CLI séparé). Les vraies causes passées des blocages service tiers de téléchargement étaient serveur down / magnet périmé / droits NAS, jamais la clé. Alignement des 4 copies répliquées du script (`Projet Beta` divergeait) ; AgentMail (HTTP 200) et TubeOnAI contrôlés sains. Leçons consignées dans le RETEX correspondant : « clé inaccessible » = diagnostic à prouver, ne jamais re-authentifier sans preuve, et ressource répliquée entre profils = source canonique unique obligatoire. Voir CHG-20260802-2341.
 
 - **v0.17.0** — 2026-08-03 — clôture de session réordonnée (DEC-0035) : le Mode 4 de la skill assistant produit désormais le résumé **en premier**, puis délègue la mise à jour des fichiers Core (PROGRESS, CHANGELOG, DECISIONS, TASKS) à un sous-agent lancé en parallèle ou juste après, avec une mention de confirmation courte une fois fait — l'utilisateur ne doit plus attendre la tenue des registres pour obtenir sa réponse. Nouveau principe 13 dans `docs/principles.md` (« Répondre avant de tenir les registres »). En miroir hors dépôt méthode, le `CLAUDE.md` global de l'utilisateur est corrigé sur le même principe (section PROGRESS.md, section Délégation aux sous-agents). Voir CHG-20260803-2248, DEC-0035.
-- **v0.16.0** — 2026-07-15 — skills portables : proposition systématique à toute nouvelle skill de projet (catalogue ou bespoke), plus seulement aux outils de `docs/OUTILS.md` ; installation par lien symbolique relatif pour Claude Code et Codex (au lieu de `cp -r`), Hermès inchangé en copie physique globale (DEC-0029 D3) ; correction du chemin réel de découverte projet de Codex (`.agents/skills/`, pas `.codex/skills/`), issue du dogfood d'un autre projet (voir le RETEX correspondant) ; `check-project.sh` détecte un lien symbolique cassé sous `.claude/skills/`/`.agents/skills/`. Voir CHG-20260715-1954, DEC-0034.
-- **v0.15.0** — 2026-07-14 — `02_sujets/` devient une suggestion, pas un nom imposé (DEC-0033) : `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé », corrigeant un faux positif confirmé (ex. `02_thematique/`) ; la skill assistant vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, ne propose l'alignement sur `02_sujets/` qu'une fois, et consigne tout refus dans une entrée `DEC-XXXX` du projet pour ne plus jamais le reproposer ; nouveau principe 12 dans `docs/principles.md` (« Suggestion, pas prescription unique »). Voir CHG-20260714-2254, DEC-0033.
-- **v0.14.0** — 2026-07-14 — organisation thématique Life canonisée : `02_sujets/` redéfinit le slot 02 pour les projets Life/Hybrid (sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`), Code garde `02_work/` inchangé ; en Hybrid, `02_sujets/` l'emporte systématiquement (les dossiers dédiés `05_specs/` à `09_scripts/`/`src/` couvrent déjà le travail actif côté code) ; suggestion proactive de la skill assistant et avertissement doux de `check-project.sh` sur l'accumulation de fichiers thématiques à la racine. Garde-fou temps réel ajouté à `hook-pre-write.sh` (PreToolUse Write) : avertissement dès la création du fichier qui porte le compte à 5+, sans attendre un `check-project.sh` manuel — le déclencheur initial du RETEX était un constat purement visuel, sans garde-fou actif au moment des faits. Rétrofit des projets existants : détection et suggestion seulement, jamais de déplacement automatique de fichiers. Voir CHG-20260714-2039, DEC-0032.
-- **v0.13.0** — 2026-07-13 — la brique secrets VPS passe à SOPS + age (DEC-0031, supersède la D2 de DEC-0030 après échec réel de l'installation d'Infisical auto-hébergé) : backend `sops` dans `secrets.sh` (boîte dotenv chiffrée unique, défaut `~/.config/secrets/secrets.env`), script `scripts/ajout-secret.sh` (deux questions, saisie masquée, création de la clé age et de la boîte au premier usage), hook Telegram `/secret` d'Hermès documenté dans `agents/hermes.md` (interception à la gateway, hors LLM, à valider par test à blanc), `docs/OUTILS.md` réaligné (Tailscale n'est plus prérequis de la brique secrets). Voir CHG-20260713-1923.
-- **v0.12.1** — 2026-07-13 — préflight d'autonomie obligatoire avant toute installation d'outil : l'agent vérifie AVANT d'agir qu'il peut aller au bout (conteneur ?, root/sudo ?, démon Docker, gestionnaire de paquets, réseau) ; en cas d'échec, règle tout ou rien : rien n'est entamé, l'utilisateur reçoit les commandes exactes à exécuter lui-même. Câblé dans `docs/OUTILS.md` et l'étape 0 de l'onboarding du squelette `templates/skills/_squelette/INSTALL.md`. Voir CHG-20260713-1520.
-- **v0.12.0** — 2026-07-13 — catalogue d'outils natifs (T-PLAN-5 Phase 1, DEC-0030) : `docs/OUTILS.md` (deux familles : outils à compte — Blue, AgentMail, Infisical, Tailscale — et skills utilitaires sans compte), squelette de brique `templates/skills/_squelette/` avec `secrets.sh` générique multi-backend (keychain/bws/infisical/file, saisie hors-bande par défaut), première skill utilitaire `templates/skills/courrier-manuscrit/` (PDF au rendu manuscrit, police paramétrée non embarquée), skill assistant généralisée au catalogue en Mode 5/6. Voir CHG-20260713-1330.
-- **v0.11.1** — 2026-07-12 — correctifs de la brique Blue issus des issues GitHub #2 et #3, skill `blue-app` portée à `1.2.0` : le wrapper `blue-cli.sh` fusionne désormais automatiquement les tags existants sur `tags add` (la CLI `blue` remplace la liste au lieu de la compléter ; si la lecture préalable des tags échoue, l'appel est annulé plutôt que de laisser écraser) ; la lecture des custom fields en masse est figée sur `customFields { id name value }` (`todoCustomFields` confirmé cassé côté serveur Blue, `null` en liste comme en unitaire — `customFields` est la sélection que la CLI utilise elle-même). Mitigation testée en réel (fusion, idempotence, garde-fou record inexistant, passthrough) ; propagation aux instances Projet Beta (canonique projet, `.claude`, `.codex`) et `~/.claude/skills/blue-app-myagent/`, mise à jour de la copie VPS Hermès demandée par handoff. Voir CHG-20260712-2145.
-- **v0.11.0** — 2026-07-12 — Phase 5 de la brique Blue complète (T-PLAN-4, clôturée, englobe T-PLAN-2/T-PLAN-3) : la skill assistant propose la pose de la skill technique `blue-app` en Mode 5/6 après la gouvernance, et corrige la ligne obsolète sur le support de skills par Codex/Hermès ; noms d'agents canoniques (`CLAUDECODE`, `HERMES`, `CODEX`) dans `docs/NAMING-CONVENTIONS.md` ; `agents/hermes.md` documente les chemins skills réels et cite `blue-app` comme premier cas concret de skill partagée entre les trois agents ; `98_configuration/skills/` documenté dans `structures/core-tree.md` ; `templates/configuration/HANDOFF_INTERAGENT.md` gagne le renvoi vers le tableau d'équipement et le modèle d'entrée « Équiper un agent ». Propagé via `--update-method` à Projet Alpha/Projet Delta/Projet Epsilon ; gouvernances Blue instanciées (Projet Alpha, Projet Beta) mises à jour sans écraser leur vécu ; migration D4 réalisée (`~/.claude/skills/blue-app-myagent/`, `blue-cli/` conservée en filet). Voir CHG-20260712-1900, CHG-20260712-2000, DEC-0029.
-- **v0.10.0** — 2026-07-12 — la skill assistant propose désormais Blue activement : en Mode 5 (Cadrage d'un nouveau projet) et Mode 6 (Adoption d'un projet existant), une fois `TASKS.md` en place, elle demande « utilises-tu un outil de suivi de tâches ? », présente Blue en une phrase, et active immédiatement `98_configuration/GOUVERNANCE_BLUE.md` en cas de oui. Proposée par défaut à tout adoptant de la méthode (choix explicite malgré le dépôt public), sans wiring dans `init-project.sh`/`check-project.sh` : l'activation reste un geste de session, pas un flag d'installation. Voir CHG-20260712-1145, DEC-0028.
-- **v0.9.0** — 2026-07-12 — Blue en brique optionnelle : `templates/configuration/GOUVERNANCE_BLUE.md`, gabarit pré-rempli (nommage, checklists, workflow de miroir `TASKS.md` ↔ Blue, pièges CLI confirmés indépendamment sur deux projets/comptes Blue distincts), à préférer au gabarit générique vide `GOUVERNANCE_INTEGRATION.md` quand l'outil est Blue. `docs/NAMING-CONVENTIONS.md` et la skill assistant signalent qu'une variante pré-remplie par outil prime sur le gabarit générique. Voir CHG-20260712-1130, DEC-0027.
-- **v0.8.0** — 2026-07-12 — canonisation de `98_configuration/`, dossier optionnel pour la gouvernance d'intégrations tierces partagées entre agents et le handoff asynchrone inter-agents, issue du RETEX Projet Alpha sur l'intégration Blue. `structures/core-tree.md` et `docs/NAMING-CONVENTIONS.md` documentent la convention ; deux gabarits génériques dans `templates/configuration/` (`HANDOFF_INTERAGENT.md`, `GOUVERNANCE_INTEGRATION.md`) ; `hook-pre-write.sh` refuse désormais aussi en temps réel une collision de préfixe numérique `NN_` entre deux dossiers racine distincts (referme l'angle mort des abréviations, ex. `98_config`/`98_configuration`, que la détection de quasi-doublon seule ne voyait pas) ; consigne « consulter le canon avant de créer un dossier racine » ajoutée à la skill, ce qui clôt T-R.4. Voir CHG-20260712-1110, DEC-0026.
-- **v0.7.0** — 2026-07-10 — garde-fous sur les dossiers racine, issus du RETEX Projet Alpha (un `99_archives/` a vécu deux jours à côté du `99_archive/` canonique sans détection) : `hook-pre-write.sh` refuse en temps réel la création d'un dossier racine quasi-doublon d'un dossier existant (normalisation accents/casse/tirets/`s` final), et `check-project.sh` gagne une section « Dossiers racine » qui avertit sur les quasi-doublons et les collisions de préfixe numérique `NN_`. Voir CHG-20260709-2350, CHG-20260709-2355 et le RETEX correspondant.
-- **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir CHG-20260709-0017, DEC-0025.
-- **v0.5.0** — 2026-07-07 — la méthode se met à jour dans les projets existants : manifest d'artefacts (`.myprojectos/manifest`), détection distante (`check-update.sh`), application sécurisée (`init-project.sh --update-method` avec sauvegarde dans `99_archive/`). Cycle de travail itératif codifié (`docs/cycle-de-travail.md`), skill assistant portée à 7 modes (cadrage guidé, adoption d'un projet existant, mise à jour), protocole agent `docs/INSTALL-AGENT.md`, intégration du RETEX Projet Delta (`SUJETS.md`, source fraîche prioritaire), navigation Knowledge outillée (orphelins, liens cassés, budgets de taille), exemples complets Life et Code, CI GitHub Actions, corrections de fiabilité. Voir CHG-20260707-1100.
-- **v0.4.0** — 2026-07-04 — `check-project.sh` vérifie désormais `AGENTS.md`/`CLAUDE.md` pour tous les types de projet (plus seulement Code/Hybrid) et avertit si un fichier de contexte agent (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`) dépasse 20 000 caractères, seuil de troncature par défaut d'Hermès Agent. Voir CHG-20260704-1200.
-- **v0.3.0** — 2026-07-02 — Phase A du plan d'industrialisation (installation réelle par un agent) : `install.sh` en une commande, `init-project.sh --into-existing`/`--sync`, skill assistant installée à la création, `AGENTS.md`/`CLAUDE.md` posés pour tous les types (l'extension Code fusionne une section au lieu d'écraser), projet créé auto-vérifiable (`check-project.sh` + `VERSION` figée copiés), `LICENSE` MIT, repo méthode remis en conformité avec sa propre gouvernance. Voir CHG-20260702-1851.
+- **v0.16.0** — 2026-07-15 — skills portables : proposition systématique à toute nouvelle skill de projet (catalogue ou bespoke), plus seulement aux outils de `docs/OUTILS.md` ; installation par lien symbolique relatif pour Claude Code et Codex (au lieu de `cp -r`), Hermès inchangé en copie physique globale (DEC-0029 D3) ; correction du chemin réel de découverte projet de Codex (`.agents/skills/`, pas `.codex/skills/`), issue du dogfood d'un autre projet (voir le RETEX correspondant) ; `check-project.sh` détecte un lien symbolique cassé sous `.claude/skills/`/`.agents/skills/`. Voir entrée archivée 20260715-1954, DEC-0034.
+- **v0.15.0** — 2026-07-14 — `02_sujets/` devient une suggestion, pas un nom imposé (DEC-0033) : `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé », corrigeant un faux positif confirmé (ex. `02_thematique/`) ; la skill assistant vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, ne propose l'alignement sur `02_sujets/` qu'une fois, et consigne tout refus dans une entrée `DEC-XXXX` du projet pour ne plus jamais le reproposer ; nouveau principe 12 dans `docs/principles.md` (« Suggestion, pas prescription unique »). Voir entrée archivée 20260714-2254, DEC-0033.
+- **v0.14.0** — 2026-07-14 — organisation thématique Life canonisée : `02_sujets/` redéfinit le slot 02 pour les projets Life/Hybrid (sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`), Code garde `02_work/` inchangé ; en Hybrid, `02_sujets/` l'emporte systématiquement (les dossiers dédiés `05_specs/` à `09_scripts/`/`src/` couvrent déjà le travail actif côté code) ; suggestion proactive de la skill assistant et avertissement doux de `check-project.sh` sur l'accumulation de fichiers thématiques à la racine. Garde-fou temps réel ajouté à `hook-pre-write.sh` (PreToolUse Write) : avertissement dès la création du fichier qui porte le compte à 5+, sans attendre un `check-project.sh` manuel — le déclencheur initial du RETEX était un constat purement visuel, sans garde-fou actif au moment des faits. Rétrofit des projets existants : détection et suggestion seulement, jamais de déplacement automatique de fichiers. Voir entrée archivée 20260714-2039, DEC-0032.
+- **v0.13.0** — 2026-07-13 — la brique secrets VPS passe à SOPS + age (DEC-0031, supersède la D2 de DEC-0030 après échec réel de l'installation d'Infisical auto-hébergé) : backend `sops` dans `secrets.sh` (boîte dotenv chiffrée unique, défaut `~/.config/secrets/secrets.env`), script `scripts/ajout-secret.sh` (deux questions, saisie masquée, création de la clé age et de la boîte au premier usage), hook Telegram `/secret` d'Hermès documenté dans `agents/hermes.md` (interception à la gateway, hors LLM, à valider par test à blanc), `docs/OUTILS.md` réaligné (Tailscale n'est plus prérequis de la brique secrets). Voir entrée archivée 20260713-1923.
+- **v0.12.1** — 2026-07-13 — préflight d'autonomie obligatoire avant toute installation d'outil : l'agent vérifie AVANT d'agir qu'il peut aller au bout (conteneur ?, root/sudo ?, démon Docker, gestionnaire de paquets, réseau) ; en cas d'échec, règle tout ou rien : rien n'est entamé, l'utilisateur reçoit les commandes exactes à exécuter lui-même. Câblé dans `docs/OUTILS.md` et l'étape 0 de l'onboarding du squelette `templates/skills/_squelette/INSTALL.md`. Voir entrée archivée 20260713-1520.
+- **v0.12.0** — 2026-07-13 — catalogue d'outils natifs (T-PLAN-5 Phase 1, DEC-0030) : `docs/OUTILS.md` (deux familles : outils à compte — Blue, AgentMail, Infisical, Tailscale — et skills utilitaires sans compte), squelette de brique `templates/skills/_squelette/` avec `secrets.sh` générique multi-backend (keychain/bws/infisical/file, saisie hors-bande par défaut), première skill utilitaire `templates/skills/courrier-manuscrit/` (PDF au rendu manuscrit, police paramétrée non embarquée), skill assistant généralisée au catalogue en Mode 5/6. Voir entrée archivée 20260713-1330.
+- **v0.11.1** — 2026-07-12 — correctifs de la brique Blue issus des issues GitHub #2 et #3, skill `blue-app` portée à `1.2.0` : le wrapper `blue-cli.sh` fusionne désormais automatiquement les tags existants sur `tags add` (la CLI `blue` remplace la liste au lieu de la compléter ; si la lecture préalable des tags échoue, l'appel est annulé plutôt que de laisser écraser) ; la lecture des custom fields en masse est figée sur `customFields { id name value }` (`todoCustomFields` confirmé cassé côté serveur Blue, `null` en liste comme en unitaire — `customFields` est la sélection que la CLI utilise elle-même). Mitigation testée en réel (fusion, idempotence, garde-fou record inexistant, passthrough) ; propagation aux instances Projet Beta (canonique projet, `.claude`, `.codex`) et `~/.claude/skills/blue-app-myagent/`, mise à jour de la copie VPS Hermès demandée par handoff. Voir entrée archivée 20260712-2145.
+- **v0.11.0** — 2026-07-12 — Phase 5 de la brique Blue complète (T-PLAN-4, clôturée, englobe T-PLAN-2/T-PLAN-3) : la skill assistant propose la pose de la skill technique `blue-app` en Mode 5/6 après la gouvernance, et corrige la ligne obsolète sur le support de skills par Codex/Hermès ; noms d'agents canoniques (`CLAUDECODE`, `HERMES`, `CODEX`) dans `docs/NAMING-CONVENTIONS.md` ; `agents/hermes.md` documente les chemins skills réels et cite `blue-app` comme premier cas concret de skill partagée entre les trois agents ; `98_configuration/skills/` documenté dans `structures/core-tree.md` ; `templates/configuration/HANDOFF_INTERAGENT.md` gagne le renvoi vers le tableau d'équipement et le modèle d'entrée « Équiper un agent ». Propagé via `--update-method` à Projet Alpha/Projet Delta/Projet Epsilon ; gouvernances Blue instanciées (Projet Alpha, Projet Beta) mises à jour sans écraser leur vécu ; migration D4 réalisée (`~/.claude/skills/blue-app-myagent/`, `blue-cli/` conservée en filet). Voir entrée archivée 20260712-1900, entrée archivée 20260712-2000, DEC-0029.
+- **v0.10.0** — 2026-07-12 — la skill assistant propose désormais Blue activement : en Mode 5 (Cadrage d'un nouveau projet) et Mode 6 (Adoption d'un projet existant), une fois `TASKS.md` en place, elle demande « utilises-tu un outil de suivi de tâches ? », présente Blue en une phrase, et active immédiatement `98_configuration/GOUVERNANCE_BLUE.md` en cas de oui. Proposée par défaut à tout adoptant de la méthode (choix explicite malgré le dépôt public), sans wiring dans `init-project.sh`/`check-project.sh` : l'activation reste un geste de session, pas un flag d'installation. Voir entrée archivée 20260712-1145, DEC-0028.
+- **v0.9.0** — 2026-07-12 — Blue en brique optionnelle : `templates/configuration/GOUVERNANCE_BLUE.md`, gabarit pré-rempli (nommage, checklists, workflow de miroir `TASKS.md` ↔ Blue, pièges CLI confirmés indépendamment sur deux projets/comptes Blue distincts), à préférer au gabarit générique vide `GOUVERNANCE_INTEGRATION.md` quand l'outil est Blue. `docs/NAMING-CONVENTIONS.md` et la skill assistant signalent qu'une variante pré-remplie par outil prime sur le gabarit générique. Voir entrée archivée 20260712-1130, DEC-0027.
+- **v0.8.0** — 2026-07-12 — canonisation de `98_configuration/`, dossier optionnel pour la gouvernance d'intégrations tierces partagées entre agents et le handoff asynchrone inter-agents, issue du RETEX Projet Alpha sur l'intégration Blue. `structures/core-tree.md` et `docs/NAMING-CONVENTIONS.md` documentent la convention ; deux gabarits génériques dans `templates/configuration/` (`HANDOFF_INTERAGENT.md`, `GOUVERNANCE_INTEGRATION.md`) ; `hook-pre-write.sh` refuse désormais aussi en temps réel une collision de préfixe numérique `NN_` entre deux dossiers racine distincts (referme l'angle mort des abréviations, ex. `98_config`/`98_configuration`, que la détection de quasi-doublon seule ne voyait pas) ; consigne « consulter le canon avant de créer un dossier racine » ajoutée à la skill, ce qui clôt T-R.4. Voir entrée archivée 20260712-1110, DEC-0026.
+- **v0.7.0** — 2026-07-10 — garde-fous sur les dossiers racine, issus du RETEX Projet Alpha (un `99_archives/` a vécu deux jours à côté du `99_archive/` canonique sans détection) : `hook-pre-write.sh` refuse en temps réel la création d'un dossier racine quasi-doublon d'un dossier existant (normalisation accents/casse/tirets/`s` final), et `check-project.sh` gagne une section « Dossiers racine » qui avertit sur les quasi-doublons et les collisions de préfixe numérique `NN_`. Voir entrée archivée 20260709-2350, entrée archivée 20260709-2355 et le RETEX correspondant.
+- **v0.6.0** — 2026-07-09 — le hook Stop détecte le travail non consigné même sans dépôt git (fichier du projet plus récent que `PROGRESS.md`), utile aux projets Life non versionnés ; skills Claude Code de maintenance du dépôt méthode (`.claude/skills/` : add-extension, evolve-method, validate), issues de la résorption du clone divergent. Voir entrée archivée 20260709-0017, DEC-0025.
+- **v0.5.0** — 2026-07-07 — la méthode se met à jour dans les projets existants : manifest d'artefacts (`.myprojectos/manifest`), détection distante (`check-update.sh`), application sécurisée (`init-project.sh --update-method` avec sauvegarde dans `99_archive/`). Cycle de travail itératif codifié (`docs/cycle-de-travail.md`), skill assistant portée à 7 modes (cadrage guidé, adoption d'un projet existant, mise à jour), protocole agent `docs/INSTALL-AGENT.md`, intégration du RETEX Projet Delta (`SUJETS.md`, source fraîche prioritaire), navigation Knowledge outillée (orphelins, liens cassés, budgets de taille), exemples complets Life et Code, CI GitHub Actions, corrections de fiabilité. Voir entrée archivée 20260707-1100.
+- **v0.4.0** — 2026-07-04 — `check-project.sh` vérifie désormais `AGENTS.md`/`CLAUDE.md` pour tous les types de projet (plus seulement Code/Hybrid) et avertit si un fichier de contexte agent (`AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules`) dépasse 20 000 caractères, seuil de troncature par défaut d'Hermès Agent. Voir entrée archivée 20260704-1200.
+- **v0.3.0** — 2026-07-02 — Phase A du plan d'industrialisation (installation réelle par un agent) : `install.sh` en une commande, `init-project.sh --into-existing`/`--sync`, skill assistant installée à la création, `AGENTS.md`/`CLAUDE.md` posés pour tous les types (l'extension Code fusionne une section au lieu d'écraser), projet créé auto-vérifiable (`check-project.sh` + `VERSION` figée copiés), `LICENSE` MIT, repo méthode remis en conformité avec sa propre gouvernance. Voir entrée archivée 20260702-1851.
 - **v0.2.0** — 2026-06-14 — le check vérifie désormais la conformité de contenu, pas seulement l'empreinte déclarée : `check-project.sh` détecte les dates au format français (`JJ/MM/AAAA`, mois en toutes lettres) et les champs datés du frontmatter hors `YYYY-MM-DD`. Permet de repérer un projet bâti sur l'ancienne convention de date.
 - **v0.1.0** — 2026-06-14 — première version numérotée de la méthode. Regroupe le socle Core, les extensions Life / Code / Knowledge, la skill assistant, les hooks d'enforcement, l'intégration Harness, les outils de cohérence (`check-project.sh`, `build-index.sh`) et l'introduction du versionnement lui-même (fichier `VERSION`, empreinte `version_methode` dans `PROJECT.md`, check d'alignement).
 
 ---
+### CHG-20260816-1800 — writing-unslop conservée localement
 
+- l'utilisateur confirme une légère préférence pour `writing-unslop` et demande qu'elle reste installée dans Hermes comme option locale de réécriture.
+- Distinction figée : conservation locale validée ; candidature MyProjectOS toujours ouverte ; aucune préinstallation, fusion ou modification du canon.
+- Le rapport, T-PLAN-10, l'index des plans et l'état courant reflètent cette décision. Licence toujours à clarifier avant redistribution.
+- Aucun commit ni push.
+
+---
+### CHG-20260816-1756 — Candidature writing-unslop maintenue ouverte
+
+- l'utilisateur décide de garder `writing-unslop` en candidature pour d'autres tests, malgré l'absence de différence utile perçue sur le second essai réel.
+- Portée exacte : skill locale d'évaluation conservée ; aucune préinstallation, aucune fusion avec `humanizer` ou `redaction-humaine-fr`, aucune modification du canon.
+- Prochains cas discriminants : texte IA brut, texte court à couper fortement ou texte personnel avec voix marquée. Licence à clarifier avant toute redistribution.
+- T-PLAN-10, rapport, index des plans et état courant mis à jour. Aucun commit ni push.
+
+---
+### CHG-20260816-1753 — Second test writing-unslop : aucun gain perceptible
+
+- Un email réel destiné à un avocat a été comparé en aveugle entre `redaction-humaine-fr`, `writing-unslop` et `humanizer`, avec le même modèle et la même consigne ; le contenu privé n'est pas reproduit dans le dépôt.
+- Les trois sorties conservent 18/18 éléments sensibles vérifiés et 5/5 questions. l'utilisateur ne perçoit pas de différence importante entre elles.
+- Conclusion probatoire : l'avantage léger de `writing-unslop` sur le texte synthétique ne se retrouve pas sur le texte réel ; les preuves actuelles ne justifient pas une troisième skill préinstallée proche des deux capacités existantes.
+- Restent la clarification de licence et l'arbitrage humain. Aucun changement du canon, aucune version, aucun commit et aucun push.
+
+---
+### CHG-20260816-1721 — Jugement writing-unslop affiné : avantage léger
+
+- Après son premier vote d'égalité, l'utilisateur a précisé que le résultat A était « un peu plus direct et opérationnel » et que le résultat B contenait « un peu plus de blabla ».
+- Le mapping étant A = `writing-unslop` et B = `humanizer`, le premier essai donne un avantage léger à `writing-unslop` sur la concision et le caractère opérationnel, sans démontrer une supériorité générale.
+- Rapport, tâche, index des plans et état courant corrigés ; le second test réel et la clarification de licence restent nécessaires.
+- Aucun changement du canon, aucune version, aucun commit et aucun push.
+
+---
+### CHG-20260816-1720 — Premier jugement humain writing-unslop : égalité
+
+- l'utilisateur a évalué en aveugle les deux sorties du test contrôlé et a choisi « Les deux se valent » ; le mapping révélé ensuite était A = `writing-unslop`, B = `humanizer`.
+- Le résultat est ajouté au rapport T-PLAN-10. Il ne départage pas la qualité perçue sur un texte synthétique chargé de tics IA.
+- Prochaine preuve exigée : texte réel avec voix identifiable, comparaison à trois avec `redaction-humaine-fr`, puis clarification de licence avant tout arbitrage de préinstallation.
+- Aucun changement du canon, aucune version, aucun commit et aucun push.
+
+---
+### CHG-20260816-1708 — Évaluation de writing-unslop ouverte (T-PLAN-10)
+
+- Rapport candidat créé dans un plan interne avec provenance, empreinte source, audit de sécurité, adaptation Hermes privée et protocole comparatif contre `humanizer`.
+- Premier test exécuté sur le même texte et le même modèle : `writing-unslop` retire davantage de motifs explicitement interdits ; `humanizer` préserve davantage le vocabulaire, mais conserve une formule bannie par ses propres règles ; les deux gardent une conclusion générique.
+- La candidate est reliée à la skill existante `redaction-humaine-fr` et à quatre prérequis avant décision : jugement humain en aveugle, second test de voix, clarification de licence et arbitrage du chevauchement.
+- Aucun fichier stable de méthode, template ou skill canonique n'est modifié ; aucune version, publication, commit ou push.
+
+---
+### CHG-20260813-1344 — RETEX préliminaire multi-progress Projet Beta reçu en observation
+
+- Projet Beta a migré localement ses 13 sujets vers un `PROGRESS.md` par sujet et compacté son progrès racine de 25 249 à 3 736 octets (environ −85 %).
+- Le RETEX préliminaire est référencé depuis le projet Projet Beta et la tâche T-RETEX-4 est ouverte ; il reste `en-cours` pendant une observation quotidienne du 2026-08-13 au 2026-08-20.
+- Proposition candidate : activer systématiquement les progrès locaux avec le mode multi-sujets, garder le parent comme vue compacte, et retirer la lecture intégrale de `CHANGELOG.md` du rituel standard sans cesser de l’alimenter.
+- Aucun template, script, skill, règle canonique ni version de MyProjectOS n'est modifié avant le RETEX final et l'arbitrage humain.
+
+---
 ### CHG-20260808-1801 — Plan Agent Plugins v1 portables ajouté (T-PLAN-9)
 
 - Analyse de l'annonce de Luke The Dev du 2026-08-07 et vérification croisée avec la documentation, le dépôt officiel Hermès et l'installation locale : Agent Plugins v1 peut réunir des skills namespacées read-only et des MCP stdio, avec activation explicite et validation avant chargement ; la frontière portable/native est consignée avec les limites de couverture du thread.
@@ -66,7 +123,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **Incident Syncthing/patch détecté au diff et réparé immédiatement** : l'insertion dans `PROGRESS.md` avait remplacé la fin récente de la ligne v0.22.0 (« batterie `validate` complète, 8 scripts, trois générations, 0 bloquant ») par une version plus ancienne (« `check-project.sh` inchangé »). La formulation récente a été restaurée avant validation finale ; aucune autre ligne externe n'a été avalée dans le diff.
 
 ---
-
 ### CHG-20260808-1130 — `external_dirs` canonisé, et le RETEX corrigé sur sa propre preuve (v0.22.0, DEC-0040, T-RETEX-3 close)
 
 - **Le RETEX n'était pas arrivé sur le Mac.** Écrit par Hermès sur le VPS à 01:47, il est resté absent du dépôt local pendant que son `CHG-`, sa tâche et le frontmatter de `PROGRESS.md` arrivaient, eux, par la synchronisation. Rapatrié par copie directe, empreinte identique à la source.
@@ -81,7 +137,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Voir DEC-0040.
 
 ---
-
 ### CHG-20260808-0147 — RETEX skills portables Hermès déposé : `skills.external_dirs` proposé comme voie canonique (T-RETEX-3)
 
 - RETEX déposé (statut ouvert, T-RETEX-3). Issu du chantier Projet Beta du 2026-08-08 (skills portables côté Hermès).
@@ -90,7 +145,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - **Cas radar-projets** : deux versions dérivées de la même skill (Claude Code vs Hermès) fusionnées en une skill générique du catalogue — le motif « une skill par agent » n'a de raison d'être que pour les variantes spécifiques.
 - **Évolutions proposées** : E1 canoniser `external_dirs` dans `docs/skills-portables.md`/`agents/hermes.md`/squelette (corrige la justification de DEC-0034) ; E2 offrir la migration des skills existantes en mode portable **à l'update de méthode** (demande explicite de l'utilisateur : expliquer que le mode portable rend la skill utilisable par tous les agents — Claude Code, Codex, OpenCode, Hermès) ; E3 documenter le motif « deux versions d'une même skill ».
 - Ne rien commiter ni migrer automatiquement : offre documentée, arbitrage humain requis.
-
 ### CHG-20260808-0015 — La détection de mise à jour est rebranchée au rituel de reprise (v0.21.0)
 
 - **Défaut diagnostiqué sur pièces** : `SYNC/Projet Alpha`, projet en v0.11.0 face à une méthode en v0.20.0, affichait `[ok] suit MyProjectOS v0.11.0 (version courante)`. La section 0 de `check-project.sh` compare `version_methode:` de `PROJECT.md` au `VERSION` du projet, or `--update-method` rafraîchit les deux ensemble (`scripts/init-project.sh:141`) : le contrôle vérifie une cohérence interne et ne peut pas détecter un retard, faute de réseau. Le Mode 7 de la skill attendait pourtant un avertissement de ce contrôle. Chaîne rompue aux deux bouts, et `check-update.sh`, qui fonctionne correctement, n'était lancé que si quelqu'un y pensait.
@@ -100,7 +154,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - `docs/versioning.md` : nouvelle section « Qui déclenche la détection, et pourquoi ce n'est pas `check-project.sh` », avec un tableau opposant les deux scripts (ce qu'ils regardent, réseau ou non, à quelle question ils répondent) et l'historique du défaut.
 - **Vérifié par exécution**, cinq cas sur des projets fabriqués pour le test : projet cohérent mais en retard (nouveau message, code 0) ; mise à jour interrompue (avertissement explicite, code 0, non bloquant) ; détection amont sur projet en retard (code **10**) ; hors réseau, dépôt injoignable (message explicite, code **0**) ; projet à jour (code 0). `shellcheck -S warning` passe sur les deux scripts.
 - **Limite assumée** : la garantie reste au niveau « skill », donc dépendante de l'exécution de l'agent. Une garantie déterministe supposerait un contrôle réseau dans un hook, écarté ici comme montée de cran distincte (option D de DEC-0039). **Ironie structurelle** : ce correctif étant lui-même un artefact de méthode, les quatre projets en retard ne le recevront qu'après une mise à jour manuelle ; ensuite ils se signaleront seuls.
-
 ### CHG-20260807-2230 — Arbitrage du RETEX Projet Gamma : cinq évolutions appliquées, la sixième écartée sur mesure (v0.20.0)
 
 - **Mesure préalable sur le VPS, en lecture seule**, exigée par DEC-0036 avant toute montée de cran. Quatre résultats. (1) Le contrôle de dérive proposé est **infaisable** : `check-project.sh` tourne depuis le dossier projet donc sous `l'utilisateur`, et `ls [chemin serveur]` renvoie `Permission denied` ; les projets sont sous `[chemin serveur]`, les skills d'Hermès sous `[chemin serveur]`. (2) La dérive redoutée **n'existe pas** : `blue-app`, seule skill de projet réellement installée chez Hermès, est identique à sa source `Projet Beta` (`diff -rq` sans écart, versions 1.2.0 des deux côtés) malgré 24 jours d'écart de date de modification. (3) L'écart réel est ailleurs et il est **correct** : 8 des 9 skills de projet ne sont pas installées chez Hermès, dont les 7 de Projet Gamma, ce qui est la conclusion même de son audit de portabilité ; un contrôle de couverture ne produirait que des faux positifs. (4) La divergence massive est **hors du dépôt** : 15 skills sur 31 diffèrent entre le profil `Projet Beta` et le dossier global d'Hermès, sur 15 profils. Constat brut, pas diagnostic : MyProjectOS ne connaît pas la sémantique des profils Hermès et ne sait pas si cette divergence est voulue.
@@ -114,7 +167,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - `structures/core-tree.md` : la ligne `98_configuration/skills/` cite le tableau de bord et la règle de relecture au changement d'environnement.
 - `scripts/check-project.sh` : **inchangé**, troisième version consécutive. Voir DEC-0038.
 - Le RETEX Projet Gamma passe au statut `integre`, le RETEX service tiers de téléchargement au statut `hors-canon` : ses trois pistes relèvent toutes de la gouvernance Hermès, la dernière ayant été écartée par la mesure ci-dessus. T-RETEX-1 et T-RETEX-2 sont closes.
-
 ### CHG-20260807-2115 — Application de DEC-0037 : règle inventée retirée, `platforms:` porté au squelette (v0.19.0)
 
 - `templates/skills/_squelette/SKILL.md` : la règle « `SKILL.md` sous 20 000 caractères (seuil de troncature Hermès) » est retirée et remplacée par le budget réel du standard Agent Skills, 500 lignes de corps, avec la consigne d'externaliser dans un fichier compagnon référencé à un seul niveau de profondeur au-delà. Le frontmatter du squelette reste volontairement à `name` + `description` : une première version posait une ligne `platforms:` commentée, écartée après test parce que le lecteur de frontmatter d'Hermès ne traite pas les commentaires YAML et en faisait une clé parasite `'# platforms'`. Le champ est donc documenté dans le corps, à ajouter au frontmatter seulement quand la skill est réellement restreinte, ce qui préserve le défaut voulu (absent égale compatible partout).
@@ -126,7 +178,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Vérifié par exécution : `check-project.sh .` à 0 bloquant et 3 avertissements, strictement identiques à l'état d'avant (2 placeholders de gabarit, 1 référence `CHG-` orpheline citée depuis un RETEX terrain, tous trois préexistants). Cette dernière est un faux positif de nature : le RETEX cite une entrée du CHANGELOG **du projet Projet Alpha**, pas de celui du dépôt méthode, et le contrôle de références croisées ne distingue pas les deux.
 - Vérifié aussi contre le vrai lecteur de frontmatter d'Hermès, en lui soumettant le squelette produit : frontmatter propre (`name`, `description`, aucune clé parasite), skill offerte partout par défaut ; et sur une variante portant `platforms: [macos]`, correctement écartée sur le VPS Linux. Le mécanisme est donc validé de bout en bout sur le fichier réellement livré, pas seulement sur des cas de test.
 - Version portée à `0.19.0` (`VERSION`, empreinte `version_methode` de `PROJECT.md`). Décision : DEC-0037. Preuves : CHG-20260807-2047 et un plan interne.
-
 ### CHG-20260807-2047 — Vérification terrain : les limites Hermès ne sont pas ce que le canon affirmait (DEC-0037)
 
 - Déclencheur : question sur la façon de découper des `SKILL.md` jugés trop gros. Deux fichiers du dépôt dépassaient le seuil de 20 000 caractères prescrit par le squelette, `skills/my-project-os/SKILL.md` (21 245) et `templates/skills/blue-app/SKILL.md` (21 689), ce dernier malgré une vigilance posée en juillet. Avant de découper, la contrainte a été vérifiée.
@@ -139,7 +190,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Conséquences immédiates : le chantier de découpage est annulé (les deux fichiers sont à 40 % et 54 % du budget officiel Anthropic de 500 lignes de corps) ; l'externalisation des recettes de `blue-app` est reclassée en confort ; l'ajout des `SKILL.md` au contrôle de taille de `check-project.sh` est écarté, il aurait outillé une contrainte inexistante, ce que DEC-0036 interdit.
 - Non vérifié, consigné comme tel : la `context_length` effective de `gpt-5.6-sol` n'a pas été mesurée, `skill_matches_platform()` n'a pas été exercé sur une skill de test, et les conclusions reposent sur une lecture statique du code datée du commit cité.
 - Document de preuve et procédure de re-vérification : un plan interne. Décision : DEC-0037.
-
 ### CHG-20260807-1923 — Boucle de correction gouvernée : échelle de promotion et statut des RETEX (v0.18.0)
 
 - Déclencheur : revue complète du backlog d'évolution (7 RETEX, 12 plans) le 2026-08-07. Constat sur pièces : 3 RETEX sur 7 portaient un statut faux ou jamais mis à jour, 4 plans dormaient sans qu'on sache s'ils avaient été refusés ou oubliés, et « RETEX » n'était pas même défini au glossaire alors que trois documents du canon s'appuient dessus. A3 du plan Pro Workflow (priorité « très haute ») a été retenu en premier pour cette raison : c'est le méta-manque, auto-démontré par l'état du backlog.
@@ -151,7 +201,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Vérifié par exécution : les 7 RETEX du dépôt classés correctement après normalisation (critère A3 « rejouer trois RETEX » dépassé), et les trois cas d'échec (fermé sans référence, statut inventé, statut absent) détectés sur un projet de test, les deux cas valides passant.
 - Dogfooding : les 7 statuts du dépôt sont normalisés, dont les 3 qui étaient faux.
 - Voir DEC-0036, T-PLAN-6.
-
 ### CHG-20260807-1915 — RETEX Projet Gamma consigné : rattrapage d'un parc de skills existant
 
 - Création d'un RETEX terrain (projet Code + Knowledge, huit skills).
@@ -160,14 +209,12 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Point d'honnêteté du RETEX : le projet a construit sa couche de portabilité sans consulter le canon et s'en écarte trois fois en moins bien (copie physique au lieu du lien symbolique, résolveur de secrets réinventé, identifiant Bitwarden en dur). Correction à la charge du projet, pas du canon. Cause racine retenue : rien ne renvoie vers `templates/skills/_squelette/` quand un projet outille sa portabilité.
 - Six évolutions proposées, aucune décidée ni appliquée. Suivi : T-RETEX-1.
 - Constat 5 ajouté le même jour par l'utilisateur après relecture, signalé comme ajout postérieur dans le fichier : aucun contrôle ne signale quand la copie physique Hermès d'une skill a divergé de sa source `98_configuration/skills/`. `check-project.sh` détecte un lien symbolique cassé (DEC-0034) mais ne compare jamais une copie installée à sa source, ce qui laisse Hermès seul sans filet. Le constat étaye DEC-0029 D3 au lieu de la contester : le lien de Claude Code est interne au projet donc relatif et voyage avec lui, celui d'Hermès serait global donc absolu. D'où la sixième évolution, qui recouvre T-RETEX-2.
-
 ### CHG-20260804-0030 — Plan Extension Knowledge v2 ajouté (hiérarchie à 4 niveaux)
 
 - Création d'un plan interne à partir d'une fiche de gouvernance du VPS Hermes.
 - Objet : faire mûrir une hiérarchie N1 Macro (constitution) / N2 Méso (thématique) / N3 Micro (fiche vivante) / N4 Archives (froid), avec budgets, règles de circulation et nommage N3 miroir du N2 parent, puis la comparer formellement à l'extension Knowledge actuelle.
 - Sept écarts ouverts tabulés (§ 4 du plan), dont la question de l'enforcement : la proposition Hermes est purement déclarative là où l'extension actuelle est contrôlée par `check-project.sh`.
 - Aucune modification de `templates/extensions/knowledge/`, `docs/kb_governance.md`, `docs/principles.md` ni `docs/NAMING-CONVENTIONS.md`. Le plan est référencé dans l'index des plans internes et dans `TASKS.md` sous `T-PLAN-8`.
-
 ### CHG-20260802-2341 — RETEX service tiers de téléchargement consigné : faux diagnostic de panne d'auth
 
 - Création d'un RETEX terrain (profil Hermes `Projet Beta`, VPS).
@@ -175,7 +222,6 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - Trois leçons transverses : « clé inaccessible » est un diagnostic à prouver et non à inférer ; ne jamais ré-authentifier un fournisseur de secrets sans preuve (effet de bord sur tous les autres consommateurs) ; toute ressource répliquée entre profils exige une source canonique unique.
 - Action réalisée hors dépôt méthode : alignement des quatre copies du script (celle de `Projet Beta` divergeait), contrôle sain d'AgentMail et TubeOnAI.
 - Aucune décision structurante MyProjectOS demandée à ce stade. Seule piste touchant le canon : un contrôle d'empreinte anti-dérive des skills répliquées. Suivi : T-RETEX-2.
-
 ### CHG-20260803-2248 — Clôture de session réordonnée : réponse d'abord, registres délégués ensuite (v0.17.0)
 
 - Déclencheur : signalement direct de l'utilisateur (hors dépôt méthode) — quel que soit le projet ou l'agent, il obtient sa réponse APRÈS que les fichiers de suivi (PROGRESS, CHANGELOG, TASKS...) ont été mis à jour, ce qui est l'inverse de ce qu'il attend.
@@ -184,269 +230,68 @@ La version courante de la méthode est dans `VERSION`. Politique et procédure :
 - En miroir, hors dépôt méthode : `~/.claude/CLAUDE.md` de l'utilisateur — section PROGRESS.md reformulée pour lever l'ambiguïté de l'ordre, section Délégation aux sous-agents étendue à la tenue des fichiers de suivi.
 - Voir DEC-0035.
 
-### CHG-20260731-2341 — Plan d’intégration Agent Memory ajouté
-
-- Création d'un plan interne à partir de l'étude de TencentDB Agent Memory.
-- Identité d’intégration candidate : Markdown/Git restent la mémoire projet canonique ; toute mémoire agentique est dérivée, optionnelle, reconstructible, isolée par projet et soumise à validation humaine.
-- Le plan documente l’articulation avec Mnemosyne et l’index FTS5 candidat, le cycle brut → candidat → validé, les invariants de sécurité, les options d’intégration, les phases, la matrice d’évaluation, les risques et le rollback.
-- Aucun plugin, moteur mémoire, composant Hermes, document stable, script ou hook n’a été installé ou modifié ; l’éventuel POC TencentDB reste conditionné à un nouvel arbitrage explicite.
-- Le plan est référencé dans l'index des plans internes, `PROGRESS.md` et `TASKS.md` sous `T-PLAN-7`.
-
-### CHG-20260715-1954 — Skills portables : proposition systématique + lien symbolique (v0.16.0)
-
-- Le pattern « skill technique portable » (`98_configuration/skills/<skill>/` + copie par agent) devient un garde-fou permanent de la skill assistant, déclenché à la création de toute nouvelle skill de projet (catalogue ou bespoke), pas seulement aux Modes 5/6.
-- Installation par lien symbolique relatif (`ln -s`) pour Claude Code et Codex, remplaçant `cp -r` : une seule source à éditer, aucune dérive possible. Hermès reste en copie physique globale (DEC-0029 D3, inchangé).
-- Correction du chemin projet réel de découverte de Codex : `.agents/skills/` (le canon documentait encore `.codex/skills/`), vérifié par le dogfood d'un autre projet.
-- `scripts/check-project.sh` gagne une section non bloquante détectant un lien symbolique cassé sous `.claude/skills/` ou `.agents/skills/`.
-- Voir DEC-0034 et le RETEX correspondant.
-
-### CHG-20260714-2254 — 02_sujets/ suggéré, pas imposé : tolérance de nommage + traçage (v0.15.0)
-
-- Déclencheur : test réel de DEC-0032 avec un dossier `02_thematique/` au lieu de `02_sujets/` — faux positif confirmé (avertissement répété alors que le projet est déjà organisé). L'utilisateur refuse tout renommage forcé ou suggéré comme seule issue.
-- `scripts/check-project.sh` (section 2ter) et `scripts/hooks/hook-pre-write.sh` : la détection ne cherche plus littéralement `02_sujets/`, mais tout dossier racine `02_<nom>` autre que `02_work/`. Testé par exécution : plus d'avertissement avec `02_thematique/`, comportement inchangé sur tous les autres scénarios (seuil sans dossier, `02_sujets/` canon, fichier sacré, projet Code, blocages binaire/espace).
-- `skills/my-project-os/SKILL.md` (Mode Orientation) : vérifie d'abord le `DECISIONS.md` du projet avant de proposer un rangement, propose l'alignement sur `02_sujets/` une seule fois si un autre nom est déjà utilisé, et consigne tout refus dans une entrée `DEC-XXXX` du `DECISIONS.md` **du projet** pour ne plus jamais reproposer.
-- `structures/life-tree.md` précise que `02_sujets/` est un nom suggéré, pas imposé.
-- Nouveau principe 12 dans `docs/principles.md` : « Suggestion, pas prescription unique ».
-- Voir DEC-0033.
-
-### CHG-20260714-2039 — Organisation thématique Life : 02_sujets/ redéfinit le slot 02 (v0.14.0)
-
-- Déclencheur : un RETEX terrain — deux projets Life avaient réinventé indépendamment un dossier de rangement par sujets, en collision non détectée avec `02_work/` du Core.
-- `structures/life-tree.md` documente `02_sujets/` (override du slot 02 pour Life/Hybrid uniquement, Code garde `02_work/`), sous-dossiers `Sxx_NomDuSujet/`, `02_sujets/INDEX.md`.
-- `structures/core-tree.md` renvoie vers ce cas particulier ; `docs/NAMING-CONVENTIONS.md` fixe le nommage des sous-dossiers `Sxx_`.
-- Cas Hybrid explicité (`structures/core-tree.md`, `life-tree.md`, `code-tree.md`) : `02_sujets/` l'emporte toujours sur `02_work/`, les dossiers dédiés Code (`05_specs/` à `09_scripts/`, `src/`) couvrant déjà le travail actif côté code.
-- `hook-pre-write.sh` (PreToolUse Write) : garde-fou temps réel, avertissement `systemMessage` non bloquant à la création d'un `.md` racine qui porterait le compte de fichiers thématiques à 5+ sans `02_sujets/`. Documenté dans `docs/enforcement.md` (section 5) et `.claude/skills/validate/SKILL.md`.
-- Message du hook et Mode Orientation de `skills/my-project-os/SKILL.md` enrichis (retour utilisateur : l'avertissement doit accompagner, pas seulement constater) : le hook instruit l'agent de proposer un nom de sujet concret, la skill déroule explication → proposition → confirmation explicite avant tout rangement, et ajoute la lecture de `02_sujets/INDEX.md` pour répondre à une demande sur un sujet déjà suivi (même logique que `SUJETS.md`/Knowledge).
-- Gabarit `templates/extensions/life/INDEX.md`, posé à la demande.
-- `skills/my-project-os/SKILL.md` (Mode Orientation) suggère l'organisation par sujets dès que la racine d'un projet Life accumule des fichiers thématiques hors fichiers sacrés.
-- `scripts/check-project.sh` avertit (jamais bloquant) si un projet Life a 5 fichiers `.md` thématiques ou plus à la racine sans `02_sujets/`.
-- Voir DEC-0032.
-
-### CHG-20260713-1923 — Secrets VPS : bascule Infisical → SOPS + age, saisie hors-LLM (v0.13.0)
-
-- Déclencheur : banc d'essai réel de la D2 de DEC-0030 le jour même — trois heures d'installation d'Infisical auto-hébergé en échec sur le VPS, abandon tranché par l'utilisateur. Bitwarden Secrets Manager écarté en repli (devenu payant) ; Vaultwarden vérifié incompatible (API Secrets Manager propriétaire, discussions vaultwarden #3368/#5702) ; OpenBao écarté (même complexité serveur). Décision : SOPS + age, sans serveur. Voir DEC-0031.
-- `templates/skills/_squelette/scripts/secrets.sh` : nouveau backend `sops` — boîte dotenv chiffrée unique (défaut `~/.config/secrets/secrets.env`, surchargeable par `<PREFIXE>_SOPS_FILE`), clé age au chemin standard de sops, message d'erreur dédié si boîte absente, clé illisible ou variable manquante. Backends `keychain`/`bws`/`infisical`/`file` conservés (D3 de DEC-0030 inchangée : l'existant de l'utilisateur prime).
-- `scripts/ajout-secret.sh` : ajout manuel d'un secret pour non-technicien — deux questions (nom normalisé et validé, valeur en saisie masquée `stty -echo`), détection de doublon avec confirmation avant remplacement, génération de la clé age et création de la boîte proposées au premier usage, jamais de valeur affichée ni de fichier en clair.
-- `agents/hermes.md` : nouvelle section « hook gateway `/secret` » — cible d'interception `command:secret` à la gateway Telegram (la valeur n'atteint ni le contexte ni les logs du LLM), suppression du message après `sops set`, protocole de validation par test à blanc obligatoire, limite Telegram documentée (pas de chiffrement de bout en bout avec un bot).
-- Propagation : `docs/OUTILS.md` (ligne SOPS + age au catalogue, arbre des voies réécrit, Tailscale recadré comme accès VPS, exemples du préflight), `templates/skills/_squelette/INSTALL.md` (section sops recommandée VPS, Infisical cloud relégué en une ligne « si déjà utilisé »), `templates/skills/_squelette/SKILL.md` (liste des backends), `TASKS.md` et statut du plan T-PLAN-5 (Phase 2 remaniée : parcours sops + hook + migration des `.env` du VPS).
-- Vérifié par exécution (sops 3.x et age installés sur le Mac via brew pour l'occasion) : backend `sops` testé en réel — valeurs chiffrées au repos (`ENC[AES256_GCM...]`), résolution nominale de deux clés, erreurs propres (clé absente de la boîte, boîte introuvable, exit 1) ; `ajout-secret.sh` testé sur 7 scénarios (ajout, doublon refusé par défaut, remplacement accepté, normalisation `mon-outil-cle` → `MON_OUTIL_CLE`, valeur avec guillemets/antislash/dollar restituée octet pour octet, création de boîte au premier usage, zéro valeur en clair sur le disque) ; batterie `validate` complète passée (syntaxe 13 scripts, génération Hybrid 0 bloquant / 1 avertissement attendu, substitution, empreinte `0.13.0`, isolation hooks).
-- `VERSION` : `0.12.1` → `0.13.0` (nouvelle capacité). Le hook `/secret` d'Hermès reste documentaire : à valider en réel côté VPS (Phase 2).
-
-### CHG-20260713-1520 — Préflight d'autonomie avant toute installation (demande utilisateur, post-v0.12.0)
-
-- Constat de l'utilisateur : un agent déployé en conteneur Docker a rarement les droits d'installer quoi que ce soit lui-même (Tailscale, Infisical, paquets) ; lancer une installation puis l'interrompre laisse « un chantier en cours tout dégueulasse ».
-- Règle **tout ou rien** câblée : avant toute installation demandée, l'agent déroule un préflight d'autonomie — conteneur ? (`/.dockerenv`, cgroup), privilèges ? (`id -u`, `sudo -n true`), prérequis accessibles ? (démon Docker, gestionnaire de paquets, réseau). Si un contrôle échoue : RIEN n'est entamé, l'agent prévient l'utilisateur qu'il n'est pas assez autonome et fournit les commandes exactes à exécuter par l'utilisateur lui-même, puis re-vérifie avant de reprendre.
-- Câblage : `docs/OUTILS.md` (nouvelle section « Vérification d'autonomie avant toute installation »), `templates/skills/_squelette/INSTALL.md` (étape 0 de l'onboarding), plan T-PLAN-5 § 3.3 (point 0). La Phase 2 (Tailscale + Infisical sur VPS) devra dérouler ce préflight en réel.
-- Publié en `v0.12.1` sur décision utilisateur (petite release dédiée plutôt qu'attendre la Phase 2).
-
-### CHG-20260713-1330 — T-PLAN-5 Phase 1 : catalogue d'outils, squelette de skill, `secrets.sh` générique, skill `courrier-manuscrit` (v0.12.0)
-
-- Phase 1 d'un plan interne appliquée sur feu vert utilisateur ; décisions D1-D6 formalisées dans `DEC-0030`.
-- `docs/OUTILS.md` : catalogue des outils proposés nativement, en deux familles — outils à compte (Blue disponible, AgentMail et Infisical planifiés, fiche Tailscale avec onboarding par l'agent) et skills utilitaires sans compte (`courrier-manuscrit`). Contient l'arbre de proposition des secrets (existant d'abord, sinon par plateforme, jamais imposé), le principe de saisie hors-bande et la règle de préséance ; renvoi vers `GOUVERNANCE_INTEGRATION.md` pour tout outil hors catalogue.
-- `templates/skills/_squelette/` : squelette de brique pour les outils futurs — `SKILL.md` type (rappels du pattern : agent-agnostique, rien en dur, < 20 000 caractères), `INSTALL.md` type (onboarding de création de compte avec saisie hors-bande, installation par agent, secrets par environnement), `scripts/secrets.sh` **générique** paramétré par préfixe (`SECRETS_PREFIX`/`SECRETS_KEYS`), backends `keychain`/`bws`/`infisical`/`file`, extrait de `blue-secrets.sh` (qui reste inchangé, bascule de `blue-app` prévue en Phase 2). Testé en réel : 7/7 (priorité env, lecture file, refus permissions 644, clé manquante, backend inconnu, prefix absent, export multi-clés) ; backend `infisical` écrit mais à valider en Phase 2 (banc d'essai).
-- `templates/skills/courrier-manuscrit/` : première skill utilitaire, dérivée de la skill personnelle de l'utilisateur — PDF au rendu manuscrit en deux temps (brouillon Markdown puis WeasyPrint). Générisation faite : police NON embarquée et paramétrée (`<NOM_POLICE>`/`<CHEMIN_POLICE>` renseignés à l'installation, onboarding de choix de police avec liens Google Fonts/dafont et rappel licence), chemins personnels supprimés, référence à une skill privée retirée (règles de style inlinées), équivalents Linux documentés (`pdfinfo`, `pdftoppm`, `~/.local/share/fonts`), smoke test fourni. L'instance personnelle de l'utilisateur n'est pas touchée.
-- `skills/my-project-os/SKILL.md` : Mode 5 étape 8 et Mode 6 étape 6 proposent désormais le catalogue (`docs/OUTILS.md`) au lieu de Blue seul, Blue restant le cas le plus fréquent avec son déroulé complet ; 17 130 caractères (< 20 000). `structures/core-tree.md` : `98_configuration/skills/` renvoie au catalogue et au squelette ; mention Syncthing retirée (configuration personnelle, pas une hypothèse de méthode).
-- Batterie `validate` : syntaxe OK sur les 12 scripts (7 méthode + squelette + 4 blue-app), génération Hybrid de test 0 bloquant / 1 avertissement attendu (DEC-0024), substitution OK, dogfooding repo 0 bloquant (avertissements restants préexistants : empreinte v0.5.0 du repo méthode, placeholders cités par les skills de maintenance, CHG-20260712-1200 externe) ; une date au format français introduite la veille dans CHG-20260713-1140 corrigée en ISO au passage.
-- `templates/skills/redaction-humaine-fr/` : deuxième skill utilitaire, ajoutée sur demande utilisateur dans la même session — rédaction en français de France au rendu humain, niveau 1 « soigné » (défaut) / niveau 2 « relâché » (fautes subtiles crédibles, sur demande explicite uniquement). Déjà générique (aucune donnée personnelle ni dépendance) : copiée telle quelle (11 733 caractères) + `INSTALL.md` (copie simple, smoke test rédactionnel). Synergie rétablie : `courrier-manuscrit` applique son niveau 1 si elle est installée (la référence avait été retirée à la générisation, la skill étant alors privée) ; ligne ajoutée au catalogue `docs/OUTILS.md`.
-- `VERSION` : `0.11.1` → `0.12.0` (nouvelle capacité). Pas de wiring `init-project.sh`/`check-project.sh` : l'activation d'un outil reste un geste de session (même choix que DEC-0028).
-
-### CHG-20260713-1302 — T-PLAN-5 : décisions D1-D6 toutes tranchées, `courrier-manuscrit` et Tailscale ajoutés au périmètre
-
-- Arbitrages de l'utilisateur en session, consignés dans le plan (§ 6) : **D1** deux niveaux de vocabulaire (« outil » face à l'utilisateur, catalogue `docs/OUTILS.md` ; « brique » en terme interne du pattern). **D2** sur VPS : **Infisical auto-hébergé**, installé automatiquement par l'agent, UI exclusivement accessible via Tailscale (jamais exposée à l'extérieur, lien Tailscale fourni à l'utilisateur), deux modes de gestion (full-auto : clés confiées à l'agent dans la conversation, transit LLM accepté ; hors-bande : saisie par l'utilisateur dans l'UI) ; prérequis documenté : Tailscale configuré sur le VPS et le terminal ; age relégué en repli d'une ligne ; vigilance : empreinte Docker/PostgreSQL/Redis à mesurer au banc d'essai. **D4** un seul compte AgentMail pour les trois agents : l'agent n'est que le moteur intelligent du projet, l'identité mail appartient au projet/à l'utilisateur (cohérence agent-agnostique) ; attribution des inboxes par besoin, à définir au banc d'essai. **D5** pas de notification mail des handoffs : au dépôt, mention à destination de l'agent cible dans le bloc d'en-tête de `PROGRESS.md`, découverte à la lecture rituelle en début de session. **D6** Windows via WSL, mêmes propositions que Linux, Credential Manager mentionné non outillé.
-- Nouveau périmètre (demande utilisateur) : deuxième famille au catalogue, les **skills utilitaires sans compte**, avec `courrier-manuscrit` comme première entrée (`templates/skills/courrier-manuscrit/`, Phase 1). Adaptations obligatoires avant publication : police « Pumpkin Custard » NON embarquée (licence Personal Use Only, non redistribuable) et paramétrée, dé-personnalisation des chemins, prérequis WeasyPrint documenté, portabilité Mac-first annoncée.
-- Nouveau périmètre (demande utilisateur, même session) : **Tailscale entre au catalogue** (§ 3.8 du plan) — l'agent vérifie sa présence et sa configuration (`tailscale status`, `tailscale ip -4` sur VPS) et, si absent, guide l'installation avec liens cliquables (tailscale.com/download pour ordinateur, App Store pour iPhone), installe lui-même ce qu'il peut (script officiel sur VPS, brew sur Mac). Authentification hors-bande par construction (`tailscale up` → URL ouverte par l'utilisateur dans son navigateur, aucune clé via l'agent). Préalable systématique du parcours Infisical VPS en Phase 2 ; limites du plan Personal gratuit à re-vérifier au banc d'essai.
-- Historique git public réécrit et force-poussé dans cette même session (voir CHG-20260713-1140) : vérifié, zéro occurrence du prénom sur l'ensemble des révisions, `main` et les 11 tags réalignés, sauvegarde bundle locale hors dépôt.
-- Le plan reste **non appliqué** : toutes les décisions sont tranchées, il ne manque que le feu vert d'implémentation de la Phase 1.
-
-### CHG-20260713-1140 — Amendement T-PLAN-5 : secrets proposés par plateforme (D3 tranchée), saisie hors-bande, anonymisation
-
-- Arbitrage de l'utilisateur en session (D3 tranchée) : **pas de backend de secrets canonique unique**. La méthode doit être pensée pour n'importe quel adoptant, pas pour la configuration de son auteur. Arbre de proposition (§ 3.4 du plan) : 1) si l'utilisateur a déjà un gestionnaire de secrets (ex. Bitwarden Secrets Manager), on s'appuie dessus ; 2) sinon, proposition selon la plateforme du projet : trousseau sur Mac, **Infisical cloud sur VPS headless** (installable et administrable automatiquement par l'agent), solution à déterminer sur Windows (nouvelle décision D6 : Credential Manager pressenti) ; 3) la brique reste une proposition, jamais une obligation, repli fichier 600 documenté comme dégradé. En multi-plateformes, chaque agent utilise le backend de SA plateforme, seuls les noms de clés sont communs.
-- Principe de **saisie hors-bande** posé par l'utilisateur et généralisé à l'onboarding (§ 3.3) : la valeur d'un secret ne transite jamais par la conversation avec le LLM. Avec Infisical : l'agent crée le secret en placeholder par CLI et fournit l'URL cliquable de l'UI web où l'utilisateur colle la vraie valeur. Avec trousseau/age : commande fournie par l'agent, exécutée par l'utilisateur dans son terminal.
-- Parcours Infisical vérifié par recherche web : CLI brew/apt, `infisical login` navigateur sur Mac (token en trousseau), machine identity Universal Auth sur VPS (bootstrap une fois, hors agent), `infisical secrets set NOM=PLACEHOLDER` puis édition web ; pas de deep link par secret (lien projet + navigation guidée) ; carte bancaire au signup non confirmée, à tester en Phase 2. Vigilance : l'ancien dépôt apt Cloudsmith s'arrête le 2026-09-16, utiliser `artifacts-cli.infisical.com`.
-- Anonymisation demandée par l'utilisateur : son prénom est remplacé par « l'utilisateur » dans tous les fichiers du dépôt (public), les chemins VPS deviennent `[chemin serveur]`, la liste nominative des sujets du RETEX Projet Delta est généralisée ; la synchronisation Syncthing entre ses machines est explicitement notée comme configuration personnelle, pas comme hypothèse de la méthode. L'historique git public est réécrit dans la foulée (`filter-branch` sur tous les commits et tags, force-push, releases intactes — même procédure que le 2026-07-10 pour les trailers) afin que le prénom disparaisse aussi des versions historiques des fichiers.
-- Modifié : le plan interne correspondant (toujours non appliqué) + remplacement du prénom dans les fichiers de pilotage et la zone PLAN/.
-
-### CHG-20260713-1120 — Plan consigné : catalogue d'outils natifs pour `98_configuration/` (T-PLAN-5)
-
-- Un nouveau plan interne (proposition, non appliquée) : généraliser le pattern de la brique Blue en un catalogue d'outils supportés nativement (`docs/OUTILS.md`) : Blue (suivi agent ↔ humain), AgentMail (boîte mail de l'agent), gestion des secrets (brique transverse), handoff (relevé au rituel de reprise). Chaque outil = gouvernance pré-remplie + skill portable agentskills.io + section Onboarding (l'agent guide la création du compte, range la clé dans le backend de secrets, smoke test, équipement consigné).
-- Faits vérifiés par recherche web (2026-07-13) : AgentMail free tier 3 inboxes / 3 000 mails/mois, MCP et skill officiels, webhooks (URL publique : VPS seulement) ; divergence sur le free tier Bitwarden Secrets Manager (doc : gratuit ; expérience de l'utilisateur : essai 7 jours puis payant) → contrainte actée : le catalogue ne dépend d'aucun backend payant, voie gratuite obligatoire par plateforme (trousseau Mac, Credential Manager Windows, fichier chiffré age sur VPS, Infisical cloud en SaaS) ; Vaultwarden ne supporte pas le module Secrets Manager ; EnvKey fermé.
-- Orientations déjà données par l'utilisateur en session : terme « outil » pressenti plutôt que « brique » (D1), skill AgentMail maison agent-agnostique dérivée de la skill officielle, relevé des handoffs en début de session avec information de l'utilisateur. Décisions D1-D5 formalisées dans le plan, en attente d'arbitrage.
-- Aucun fichier de méthode modifié (zone PLAN/ uniquement).
-
-### CHG-20260712-2145 — Correctifs brique Blue : mitigation `tags add` et recette custom fields (issues #2 et #3)
-
-- Issue #2 (`blue tags add` remplace les tags au lieu de les compléter, bug de la CLI Homebrew hors de notre contrôle) : mitigation dans `templates/skills/blue-app/scripts/blue-cli.sh` — interception de `tags add`, lecture des tags existants du record via GraphQL (`record(id:){ tags { id } }`), fusion dédupliquée des tag-ids avant transmission à `blue` ; en cas d'échec de lecture (record introuvable, réseau), l'appel est annulé avec un message explicite plutôt que de laisser écraser les tags. Testé en réel sur le workspace Projet Beta par sous-agent : fusion OK, idempotence OK (pas de doublon), garde-fou OK (exit 1 sans appel réel), passthrough des autres commandes intact, record de test supprimé.
-- Issue #3 (`todoCustomFields` retourne `null` en GraphQL) : investigation en réel par sous-agent — le résolveur `todoCustomFields` est cassé côté serveur Blue (null en liste `records(filter:)` ET en unitaire `record(id:)`, quels que soient les arguments ; aucun flag de filtre ne le réactive). La bonne sélection est `customFields { id name value }` sur `Record` (`value` = scalaire JSON portant la valeur réelle), qui est celle qu'utilise la CLI officielle elle-même (confirmé par `strings` sur le binaire). Recette bulk figée dans `templates/skills/blue-app/SKILL.md` (« Queries de base » + piège transverse) ; au passage, la query racine unitaire s'appelle `record(id:)`, pas `todo(id:)`.
-- `templates/configuration/GOUVERNANCE_BLUE.md` : piège `tags add` ajouté à la liste pré-remplie, avec la mention de la mitigation wrapper (≥ 1.2.0) et le contournement manuel pour les appels CLI directs.
-- Skill `blue-app` : `1.1.0` → `1.2.0`. Propagation : instances Projet Beta (`98_configuration/skills/`, `.claude/skills/`, `.codex/skills/` — qui récupèrent au passage les pièges « création asynchrone » et « invitation utilisateur » du canon, non propagés en v0.11.0), `~/.claude/skills/blue-app-myagent/` (script + pièges reportés dans son `SKILL.md` adapté) ; copie VPS Hermès : entrée de handoff 2026-07-12-2145 dans Projet Beta. Gouvernance Projet Beta : piège `tags add` reformulé (mitigé) + entrée de journal.
-- Issues GitHub #2 et #3 clôturées ; #1 (canonisation `98_configuration/`) clôturée séparément, déjà couverte par v0.8.0-v0.11.0.
-
-### CHG-20260712-2000 — Brique Blue Phase 5 (suite) : propagation externe, gouvernances instanciées, migration D4
-
-- Propagation `--update-method` (0.10.0 → 0.11.0) vers les trois projets structurés : `Projet Alpha`, `Projet Delta`, `Projet Epsilon`. `check-project.sh` inchangé après migration sur les trois (Projet Alpha 0/3, Projet Delta 0/5, Projet Epsilon 10 bloquants préexistants/2 — rien cassé), entrée `CHG-20260712-2000` consignée dans le `CHANGELOG.md` de chacun.
-- `GOUVERNANCE_BLUE.md` instanciées mises à jour sans écraser leur vécu : `Projet Beta` était déjà à jour (tableau d'équipement posé en Phase 2-3) ; `Projet Alpha` gagne le piège CLI `tags create --color` (hex obligatoire) et une entrée de journal signalant que la brique Blue complète existe désormais, sans migration forcée (ce projet continue d'utiliser sa skill dédiée `blue-cli-Projet Alpha`, décision laissée à l'utilisateur).
-- Migration D4 : instance personnelle `~/.claude/skills/blue-app-myagent/` créée (scripts copiés depuis `templates/skills/blue-app/scripts/`, `SKILL.md` adapté avec `BLUE_ORG=myagent`, table de routage et détails de workspace repris de l'ancienne skill `blue-cli`), vérifiée en réel (`blue-gql.sh --check` OK, `workspaces list` : 7/7 workspaces retrouvés à l'identique). `~/.claude/skills/blue-cli/` conservée intacte à titre de filet (décision utilisateur en session), non appelée par la nouvelle instance. Simplification actée : le mécanisme `BLUE_ORG` de `blue-app` (config.env régénéré par appel) rend obsolète la « règle d'or » de l'ancienne skill sur le défaut durable `COMPANY_ID`.
-- Ce qui reste, hors décision explicite de l'utilisateur : bascule effective (suppression de `blue-cli/`), publication (tag/release/push) de v0.11.0.
-
-### CHG-20260712-1900 — Brique Blue Phase 5 (partiel) : câblage méthode interne au dépôt, v0.11.0
-
-- Phase 5 d'un plan interne (T-PLAN-4) : application du § 8 (table d'impacts) limitée au câblage interne du dépôt méthode, formalisation des décisions D1-D5 dans `DEC-0029`.
-- `skills/my-project-os/SKILL.md` : Mode 5 étape 8 et Mode 6 étape 6 proposent désormais, une fois `GOUVERNANCE_BLUE.md` posée, la pose de `98_configuration/skills/blue-app/`, le choix du backend de secrets et l'inscription au tableau d'équipement. Garde-fous : ligne obsolète « Codex : pas de skills » corrigée (support natif depuis déc. 2025), chemins Hermès mis à jour.
-- `docs/NAMING-CONVENTIONS.md` : noms d'agents canoniques `CLAUDECODE`/`HERMES`/`CODEX` pour le gabarit de handoff (les fichiers existants ne sont pas renommés d'office).
-- `agents/hermes.md` : chemins skills Hermès à jour (`~/.hermes/skills/` global, `skills.external_dirs`), `blue-app` cité comme premier cas concret de skill partagée entre les trois agents.
-- `structures/core-tree.md` : `98_configuration/skills/` documenté comme sous-dossier optionnel.
-- `templates/configuration/HANDOFF_INTERAGENT.md` : renvoi d'en-tête vers le tableau d'équipement de la gouvernance, modèle d'entrée pré-rédigé « Équiper un agent ».
-- Non fait dans cette entrée (actions sur systèmes externes, reportées à une session dédiée) : propagation `--update-method` aux projets structurés (Projet Alpha, Projet Delta, Projet Epsilon), mise à jour des `GOUVERNANCE_BLUE.md` déjà instanciées (Projet Alpha, Projet Beta), migration D4 de `~/.claude/skills/blue-cli` vers une instance `blue-app`.
-- `VERSION` : `0.10.0` → `0.11.0`.
-
-### CHG-20260712-1720 — Brique Blue Phase 4 : workspace modèle, template d'organisation, workflow commentaires validé en réel
-
-- Phase 4 d'un plan interne (T-PLAN-4, reprend T-PLAN-3) : workspace modèle `_Modele_MyProjectOS` créé dans l'organisation `myagent` (4 lists, tag `Urgent`, custom field `ID`), converti en template Blue (`convertWorkspaceToTemplate`, accord explicite donné en session — action au niveau de l'organisation) et vérifié via un workspace fils jetable créé depuis le template : structure copiée à l'identique avec de nouveaux IDs, workspace de test supprimé après vérification (accord donné). Points 5.1-5.3 de T-PLAN-3 vérifiés.
-- Incident constaté et résolu : un workspace créé par API n'est pas automatiquement visible dans l'UI de l'utilisateur humain, même admin d'organisation — il faut l'inviter explicitement dessus (`blue users invite --workspace <id>`). Étape ajoutée à la recette « Créer le workspace d'un nouveau projet » du `SKILL.md`.
-- Nouveaux pièges CLI confirmés et consignés (`GOUVERNANCE_BLUE.md`, `SKILL.md`) : `tags create --color` exige un hex (pas un nom de couleur, malgré l'exemple d'aide de la CLI) ; `tags add` exige aussi `-w/--workspace` comme `records update` ; `workspaces create --template <id>` renvoie une fiche vide (copie asynchrone), retrouver le workspace fils par `workspaceList`.
-- Workflow commentaires (§ 6 du plan) testé en conditions réelles sur une carte Projet Beta (T1.1) : un commentaire supprimé par l'auteur avant lecture revient vide côté API (`text`/`html` nettoyés, `deletedAt` posé — comportement Blue normal, pas un bug), documenté comme point de vigilance ; un commentaire non supprimé se relit intégralement. Mécanisme lecture → traitement (`TASKS.md`, resynchro carte, tag) → confirmation validé de bout en bout. Reste à observer en conditions réelles : le relevé autonome des commentaires non traités au tout début d'une nouvelle session (non exercé cette fois, la détection ayant été signalée en direct).
-- Pas de bump de `VERSION` : le wiring méthode (gate DEC/CHG, propagation) reste porté par la Phase 5.
-
-### CHG-20260712-1658 — Brique Blue Phase 3 : recettes GraphQL par domaine validées en réel, script `blue-files.sh`
-
-- Phase 3 d'un plan interne (T-PLAN-4, reprend T-PLAN-2 Phases 2-3) déroulée sur le banc d'essai Projet Beta (workspace `cmrgnpzkp56s4lq016h29rucg`) : chaque recette exécutée avec succès en conditions réelles avant d'être figée, création/relecture/mise à jour/suppression comprises, objets de test `TEST-P3` tous supprimés (workspace revenu à l'état initial, aucun objet préexistant touché).
-- Domaines validés : documents/wiki (`createDocument` avec `wiki: true`, une seule mutation pour les deux), formulaires (`createForm`, `upsertFormField`, `updateForm`, `submitForm` — le `formToken` est le `uid` du formulaire, et une soumission devient un **record** du workspace, pas d'objet « submission »), discussions (message = `createComment` avec `category: DISCUSSION`), chat (`createChat`, `createChatMessage`, relecture par champ imbriqué `messages`), status updates (immuabilité confirmée par introspection : create + delete seulement), fichiers et dossiers.
-- **Upload validé de bout en bout** : les mutations GraphQL `uploadFile`/`uploadFiles` exigent un multipart inutilisable via `blue-gql.sh` ; la voie fiable est REST `GET /uploads` → PUT presigné → mutation `createFile` (sans elle, le binaire reste invisible). Nouveau script `templates/skills/blue-app/scripts/blue-files.sh` (upload/download encapsulés, POSIX, secrets via `blue-secrets.sh`, jamais échoés), testé en réel : upload → listing → download → diff identique → suppression.
-- Pièges consignés dans le `SKILL.md` : trois enveloppes de pagination, trois types de retour de suppression, `String!` vs `ID!`, `companyId` des mutations = ID d'organisation (slug refusé) alors que les filtres l'acceptent, timeout > 30 s de `deleteStatusUpdate` alors que la suppression aboutit (toujours relister avant de réessayer).
-- `templates/skills/blue-app/SKILL.md` : recettes par domaine + pièges transverses + table de routage complète (dont Portable Documents non validé et subscriptions hors périmètre), version de skill `1.1.0` ; `INSTALL.md` : prérequis. Propagation aux 4 instances (canonique Projet Beta, `.claude`, `.codex`, VPS Hermès `[chemin serveur]`).
-- Critères d'acceptation T-PLAN-2 § 4 : tous satisfaits (« fichier visible dans l'UI » vérifié par l'API `files` ; contrôle visuel possible par l'utilisateur). Pas de bump de `VERSION` : le wiring méthode reste porté par la Phase 5. Restent Phase 4 (workspace modèle + workflow commentaires) et Phase 5.
-
-### CHG-20260712-1345 — Brique Blue Phase 2 : skill `blue-app` validée sur les trois agents (banc d'essai Projet Beta)
-
-- Phase 2 d'un plan interne (T-PLAN-4) déroulée en réel sur Projet Beta : copie canonique posée dans `98_configuration/skills/blue-app/` (synchronisée Syncthing vers le VPS), installations vérifiées par exécution pour Claude Code (`.claude/skills/`, backend `keychain`), Codex 0.144.1 (`.codex/skills/`, découverte confirmée par `codex exec`) et Hermès (copie globale `[chemin serveur]`, listée « local, enabled » par `hermes skills list`). Même skill, zéro modification entre plateformes.
-- Secrets VPS posés en SSH direct sans écho (`[chemin serveur]`, 600) ; `--check` et `records list` OK depuis le VPS avec le backend `file`. Constat : la couche Bitwarden d'Hermès applique déjà `BLUE_TOKEN_ID`/`BLUE_TOKEN_SECRET` en session → la voie env (priorité 1) couvre Hermès sans configuration, le fichier 600 devient un repli.
-- D3 figé : les deux niveaux de skills Hermès existent (global et par profil), la copie globale est confirmée ; `templates/skills/blue-app/INSTALL.md` mis à jour (chemin vérifié, note couche Bitwarden, vérification de découverte) et propagé aux 4 instances (empreintes identiques).
-- Côté Projet Beta : tableau d'équipement dans `GOUVERNANCE_BLUE.md`, entrée de handoff « Équiper un agent » vers Hermès (vérification en session attendue), CHG-20260712-1340 dans son CHANGELOG.
-- Pas de bump de version : le wiring méthode (gabarits gouvernance/handoff, skill assistant, NAMING-CONVENTIONS, v0.11.0) reste porté par la Phase 5 du plan.
-
-### CHG-20260712-1250 — Plan « brique Blue complète » consigné (skill agnostique, secrets, handoff, commentaires)
-
-- Un nouveau plan interne (proposition, non appliquée) qui englobe et amende T-PLAN-2 et T-PLAN-3. Apports : skill technique portable `templates/skills/blue-app/` (standard agentskills.io, supporté par Claude Code, Codex depuis déc. 2025 et Hermès — sources dans le plan), couche secrets multi-backend (trousseau macOS, Bitwarden `bws`, fichier 600 pour VPS headless, variables d'env en repli universel, jamais de secret dans le dossier synchronisé), copie canonique par projet dans `98_configuration/skills/`, registre d'équipement des agents dans `GOUVERNANCE_BLUE.md`, entrée de handoff pré-rédigée « Équiper un agent » (généralisation du précédent Projet Beta), noms d'agents canoniques (divergence `HANDOFF_CLAUDE_HERMES`/`HANDOFF_CLAUDECODE_HERMES` constatée), et workflow commentaires : une demande écrite par l'humain en commentaire d'une carte Blue est relevée, exécutée (via `TASKS.md` d'abord) et confirmée par un commentaire de feedback.
-- Constats vérifiés en live le 2026-07-12 : query GraphQL `templates` et mutation `convertWorkspaceToTemplate` existent (la doc Blue dit `convertProjectToTemplate` : le schéma fait foi), ce qui referme le point 5.4 de T-PLAN-3 ; ligne « Codex : pas de skills » de la skill assistant identifiée comme obsolète.
-- Plan référencé dans l'index des plans internes. `TASKS.md` : nouvelle tâche `T-PLAN-4` (valider T-PLAN-4 vaut arbitrage de T-PLAN-2/3/4).
-
-### CHG-20260712-1223 — Plan d'extension GraphQL de la skill globale `blue-cli` consigné
-
-- Un nouveau plan interne (proposition, non appliquée). Constat vérifié par tests réels : le token du trousseau macOS fonctionne tel quel sur l'API GraphQL de Blue (`api.blue.app/graphql`, 128 queries / 304 mutations), qui couvre ce que la CLI v0.6.6 n'expose pas (wiki/documents, formulaires, discussions, chat, upload de fichiers, status updates). Plan en 4 phases : wrapper `blue-gql.sh` sans secret sur disque, recettes validées par domaine, routage CLI d'abord / GraphQL pour le reste, validation de bout en bout.
-- Plan référencé dans l'index des plans internes.
-- `TASKS.md` : nouvelle tâche `T-PLAN-2` (validation humaine puis implémentation ; enrichissement différé de `GOUVERNANCE_BLUE.md`).
-
-### CHG-20260712-1145 — Blue proposé activement par la skill assistant
-
-- `skills/my-project-os/SKILL.md` — Mode 5 (Cadrage), nouvelle étape 8 : proposer un outil de suivi visuel, présenter Blue en une phrase, question fermée, activation immédiate de `98_configuration/GOUVERNANCE_BLUE.md` si oui.
-- `skills/my-project-os/SKILL.md` — Mode 6 (Adoption), nouvelle étape 6 (avant le rapport) : même proposition une fois `TASKS.md` peuplé.
-- `VERSION` : `0.10.0`. Voir DEC-0028.
-
-### CHG-20260712-1130 — Blue en brique optionnelle : gabarit pré-rempli `GOUVERNANCE_BLUE.md`
-
-- `templates/configuration/GOUVERNANCE_BLUE.md` : nouveau gabarit, variante pré-remplie de `GOUVERNANCE_INTEGRATION.md` scopée au mode « miroir `TASKS.md` ↔ Blue ». Contient la structure de référence (lists/tags/custom field), les règles de nommage et de checklist, le workflow de synchronisation pas à pas, et une section « Pièges CLI connus » confirmée sur deux projets/comptes Blue distincts. Posé à la demande, non wiré à `init-project.sh`.
-- `docs/NAMING-CONVENTIONS.md` et `skills/my-project-os/SKILL.md` : mention qu'une variante pré-remplie par outil (ex. `GOUVERNANCE_BLUE.md`) prime sur le gabarit générique vide quand elle existe.
-- `VERSION` : `0.9.0`. Voir DEC-0027.
-
-### CHG-20260712-1110 — Canonisation de `98_configuration/` : gouvernance et handoff inter-agents (T-S.1 à T-S.5)
-
-- `structures/core-tree.md` : `98_configuration/` ajouté au schéma et au tableau des rôles, optionnel, tous types.
-- `docs/NAMING-CONVENTIONS.md` : `98_configuration/` documenté (portée, ce qui n'y va pas) ; consigne « vérifier qu'aucune variante proche n'existe avant de créer un dossier racine » ajoutée (clôt T-R.4).
-- `templates/configuration/HANDOFF_INTERAGENT.md` et `templates/configuration/GOUVERNANCE_INTEGRATION.md` : gabarits génériques extraits de la solution locale Projet Alpha (`HANDOFF_CLAUDE_HERMES.md`, `GOUVERNANCE_BLUE.md`), posés à la demande (non wirés à `init-project.sh`, comme tous les dossiers numérotés au-delà de `00_inbox/`).
-- `scripts/hooks/_lib.sh` : nouvelle fonction `root_prefix()`. `hook-pre-write.sh` : refuse désormais aussi la création d'un dossier racine dont le préfixe `NN_` entre en collision avec un dossier existant, même si les noms ne se ressemblent pas (ex. `98_config` à côté de `98_configuration`). `check-project.sh` inchangé : sa section « Dossiers racine » (9b) détectait déjà génériquement ce cas en audit.
-- `skills/my-project-os/SKILL.md` : mention de `98_configuration/` dans la description des extensions ; consigne active en mode Orientation avant toute création de dossier racine.
-- `VERSION` : `0.8.0`. Voir DEC-0026 et le RETEX correspondant.
-
-### CHG-20260709-2355 — Garde-fous dossiers racine : quasi-doublons détectés et bloqués (T-R.1, T-R.2)
-
-- `check-project.sh` : nouvelle section « Dossiers racine » (avertissements, jamais bloquant) — quasi-doublons de premier niveau (noms identiques après normalisation : translittération des accents via iconv si présent, minuscules, tirets vers underscores, `s` final retiré) et collisions de préfixe numérique `NN_` entre dossiers distincts. Pas de liste blanche : les extensions du canon restent légitimes.
-- `hook-pre-write.sh` : refuse en temps réel l'écriture d'un fichier dont le premier segment de chemin créerait un dossier racine quasi-doublon d'un dossier existant (dossiers cachés hors périmètre). C'est la barrière qui aurait arrêté la dérive Projet Alpha le 2026-07-07.
-- Normalisation : `normalize_root_name` dans `scripts/hooks/_lib.sh` ; logique dupliquée en `norm_dirname` dans `check-project.sh`, qui est copié seul dans les projets (duplication assumée et documentée en commentaire des deux côtés).
-- Vérifié : projet-éprouvette (doublon `99_archive`/`99_archives` et collision `07_` détectés, cas propre silencieux ; hook testé sur 5 chemins dont variante de casse `06_Preuve` et dossier caché), `shellcheck -S warning` propre, dépôt méthode et Projet Alpha à 0 avertissement nouveau. Corrigé au passage : comparaison awk numérique piégeuse sur les préfixes (`00` == variable non initialisée), forcée en chaîne.
-- `VERSION` inchangée : ces artefacts sont propagés aux projets via le manifest, une release mineure (`--update-method`) reste à décider pour en faire bénéficier Projet Alpha et les autres projets.
-- Clôt T-R.1 et T-R.2 (Phase R) ; T-R.3 (installeur) et T-R.4 (consigne active) restent ouvertes. Voir le RETEX correspondant et CHG-20260709-2350.
-
-### CHG-20260709-2350 — RETEX Projet Alpha : doublon de dossier racine non détecté (`99_archives`/`99_archive`)
-
-- Dérive constatée dans Projet Alpha : dossier `99_archives/` (pluriel) créé hors canon le 2026-07-07, puis dossier canonique `99_archive/` posé par la migration v0.6.0 le 2026-07-09 ; aucun des trois mécanismes d'enforcement (hook pre-write, `check-project.sh`, installeur) ne contrôle les dossiers de la racine. Correction locale faite dans le projet (fusion, cf. son CHG-20260709-2340).
-- RETEX rédigé : retour d'expérience terrain (faits, analyse par couche, évolutions génériques proposées).
-- Nouvelle Phase R dans `TASKS.md` (T-R.1 à T-R.4) : détection des quasi-doublons et collisions de préfixe dans `check-project.sh`, barrière temps réel dans `hook-pre-write.sh`, pose de dossier non aveugle dans l'installeur, consigne active dans `NAMING-CONVENTIONS.md` et la skill. En attente d'arbitrage humain avant implémentation.
-
-### CHG-20260709-0017 — Résorption du clone divergent : skills de maintenance + hook Stop sans git
-
-- Un second clone du dépôt vivait dans `Documents/MyProjects/` (créé le 2026-07-04 par une session hors de `SYNC/`, divergent depuis). Son travail utile est rapatrié ici ; le clone est supprimé.
-- Repris tel quel (cherry-pick du commit du 2026-07-07) : 3 skills Claude Code de maintenance du dépôt méthode — `.claude/skills/add-extension`, `.claude/skills/evolve-method`, `.claude/skills/validate` — puis adaptées au dépôt cible : l'isolation des hooks y est référencée DEC-0025 (le clone l'appelait « DEC-0017 », numéro déjà attribué ici), état VERSION/git et sorties attendues re-vérifiés par exécution le 2026-07-09.
-- Porté en l'adaptant : `scripts/hooks/hook-stop-progress.sh` détecte désormais le travail non consigné même sans dépôt git (un fichier du projet plus récent que `PROGRESS.md`), en conservant le contrôle exact du chemin `PROGRESS.md` racine introduit en v0.5.0. Comportement assumé : sur un projet fraîchement généré sans git, le hook rappelle de renseigner `PROGRESS.md` (les gabarits copiés après lui sont plus récents), aligné sur la « prochaine étape » affichée par `init-project.sh`.
-- Écarté car déjà en place ici : la réimplémentation de l'isolation des hooks dans `init-project.sh` (présente depuis v0.3.0), l'entrée de release « v0.3.0 » du clone et son bump `VERSION` (caducs, dépôt en 0.5.0).
-- `VERSION` inchangée : le hook Stop étant un artefact copié dans les projets (manifest), une release mineure reste à décider pour le propager via `--update-method`.
-- Voir DEC-0025.
-
-### CHG-20260707-1100 — v0.5.0 : mise à jour de la méthode, cadrage, cycle itératif, qualité production
-
-- Application d'un plan interne d'amélioration production-ready (phases D/E/F/G), conception pour dépôt public actée (DEC-0021).
-- **Mise à jour de la méthode** (DEC-0022) : manifest `.myprojectos/manifest` posé dans chaque projet (frontière artefacts méthode / contenu) ; `scripts/check-update.sh` copié dans les projets (détection distante, apports par version, code de sortie 10) ; `init-project.sh --update-method` (sauvegarde dans `99_archive/methode-avant-vX.Y.Z/`, remplacement des seuls artefacts du manifest, empreinte et manifest réécrits) ; runbooks de migration dans `docs/versioning.md` ; releases GitHub v0.1.0 à v0.4.0 créées, tag v0.3.0 poussé.
-- **Accompagnement** (DEC-0023) : `docs/cycle-de-travail.md` (une tâche par itération, clôture, `/clear`, reprise à froid) ; règles de découpage dans `templates/core/TASKS.md` ; sections cycle de travail et skills par agent dans `templates/core/AGENTS.md` ; skill assistant portée à 7 modes (cadrage guidé type interview, adoption, mise à jour) et purgée de ses références au repo méthode ; `docs/INSTALL-AGENT.md` (méthode 1 création / méthode 2 adoption avec validation humaine).
-- **RETEX Projet Delta intégré** (DEC-0024) : template `SUJETS.md` à la racine (routeur métier, posé par `--knowledge`), source fraîche prioritaire dans `kb_governance.md`, règle « SUJETS.md avant INDEX.md » dans skill/AGENTS/governance, contrôle dans `check-project.sh`.
-- **Navigation Knowledge outillée** : frontmatter standard et budgets de taille documentés dans `kb_governance.md`, convention de nommage niveaux 2↔3 (`docs/NAMING-CONVENTIONS.md`), détection d'orphelins, de liens cassés et de dépassements de budget dans `check-project.sh`.
-- **Qualité production** : CI GitHub Actions (`shellcheck -S warning` + tests de fumée création/greffe/mise à jour/dogfooding) ; exemples complets `examples/life-copropriete/` et `examples/code-site-vitrine/` ; `AGENTS.md` posé sur le repo méthode lui-même ; mode repo méthode dans `check-project.sh` (exclusion de `templates/`, `examples/`, `PLAN/`, `NAMING-CONVENTIONS.md`) : dogfooding à 0 avertissement.
-- **Corrections** : comptage `WARNS` (sous-shell), faux négatif du hook Stop (`templates/core/PROGRESS.md` satisfaisait le contrôle), ordre des options grep pour BSD, limite de couverture du hook pre-write documentée, idiome `CDPATH=''`.
-
-### CHG-20260704-1200 — Check AGENTS.md universel + garde-fou taille Hermès
-
-- `scripts/check-project.sh` : le contrôle de présence d'`AGENTS.md`/`CLAUDE.md` sort de la liste spécifique à l'extension Code et devient une section universelle (« Socle agent »), avertissement non bloquant, tous types de projet.
-- Nouvelle section « Taille des fichiers de contexte agent » : mesure `AGENTS.md`, `CLAUDE.md`, `.hermes.md`, `SOUL.md`, `.cursorrules` (s'ils existent) et avertit au-delà de 20 000 caractères, seuil de troncature par défaut d'Hermès Agent (`context_file_max_chars`).
-- `agents/hermes.md` : nouvelle section documentant les fichiers de contexte chargés par Hermès et cette limite de troncature.
-- Version portée à `0.4.0` (nouvelle capacité de contrôle = évolution mineure). Voir DEC-0020.
-
-### CHG-20260702-1851 — Phase A de l'industrialisation : installation réelle par un agent
-
-- Audit complet du repository (2026-07-02) : plan interne en 3 phases, transposé en `T-A.x`/`T-B.x`/`T-C.x` dans `TASKS.md`.
-- T-A.1 : `install.sh` (clone jetable, projet final autonome), `init-project.sh --into-existing`/`--sync`, `README.md` committés. `anatomy.md` gitignoré (généré par le hook Stop) ; workdoc Hermès du 2026-06-03 déplacé de `docs/` vers `PLAN/`.
-- T-A.3 : `LICENSE` MIT ajoutée. Voir DEC-0018.
-- T-A.4 : `init-project.sh` installe la skill assistant dans `.claude/skills/my-project-os/` à la création du projet.
-- T-A.5 : `AGENTS.md`/`CLAUDE.md` posés pour tous les types (Core/Life/Code/Hybrid) ; l'extension Code fusionne une section dans le même fichier au lieu de le remplacer. Voir DEC-0019.
-- T-A.6 : `scripts/check-project.sh` + une empreinte `VERSION` figée sont copiés dans le projet cible, qui reste auto-vérifiable sans dépendre du repo méthode.
-- T-A.7 : mise en conformité du repo méthode avec sa propre gouvernance — `PROJECT.md` racine créé, `PROGRESS.md` dégraissé (historique renvoyé vers ce fichier et `DECISIONS.md`), `docs/enforcement.md` et `docs/lifecycle.md` réalignés sur le comportement réel des scripts (hooks copiés localement, fusion JSON, sections du check).
-- Voir aussi DEC-0017 (le dépôt GitHub reste privé pour l'instant, publication reportée).
-
-### CHG-20260614-2100 — Contrôle du format de date dans le check
-
-- `scripts/check-project.sh` gagne une section « Format de date » : avertit (sans bloquer) sur les dates `JJ/MM/AAAA`, les mois en toutes lettres en français, et les champs `cree_le`/`derniere_maj` qui ne sont pas en `YYYY-MM-DD`.
-- Motivation : l'empreinte `version_methode` est déclarative ; la conformité de contenu, elle, se détecte. Le check repère maintenant concrètement un projet resté sur l'ancienne notation de date.
-- Version de la méthode portée à `0.2.0` (évolution mineure). Voir DEC-0016.
-
-### CHG-20260614-0312 — Versionnement de la méthode
-
-- Introduction d'une notion de version de la méthode : fichier `VERSION` à la racine (source de vérité unique, `0.1.0`) et politique `MAJEUR.MINEUR.CORRECTIF` documentée dans `docs/versioning.md` (avec définition d'une release).
-- Empreinte dans chaque projet : champ `version_methode` ajouté au frontmatter de `templates/core/PROJECT.md` (remplace `methode: my-project-os v1`), estampillé à la création par `scripts/init-project.sh` depuis `VERSION`.
-- Check d'alignement : `scripts/check-project.sh` compare l'empreinte du projet à la version courante et signale « à jour / en retard / sans empreinte ». Comparateur de versions portable ajouté.
-- Voir DEC-0015.
-
-### CHG-20260614-0240 — Index global multi-projets `build-index.sh`
-
-- Ajout de `scripts/build-index.sh` : régénère un `INDEX.md` à la racine du dossier de projets à partir du frontmatter des `PROGRESS.md` (vue d'ensemble : type, statut, dernière maj, prochaine action, échéance), trié par date.
-- Documenté dans `docs/governance.md` (section « Index global multi-projets »). Réalise une proposition du plan d'amélioration interne.
-
-### CHG-20260614-0233 — Script de validation `check-project.sh`
-
-- Ajout de `scripts/check-project.sh` : contrôle à la demande d'un projet (fichiers sacrés selon le type, fraîcheur de PROGRESS, placeholders résiduels, références `DEC-`/`CHG-` cassées). Informe sans bloquer, code de sortie 1 si bloquant.
-- Documenté dans `docs/enforcement.md` (section « Vérification à la demande »). Réalise une proposition du plan d'amélioration interne.
-
-### CHG-20260613-2253 — Mise en conformité dogfooding : CHANGELOG et DECISIONS à la racine
-
-- Création des deux fichiers sacrés manquants à la racine du repo : `CHANGELOG.md` et `DECISIONS.md`, conformément à la gouvernance de la méthode.
-- Migration des 13 décisions de la section « Décisions actées » de `PROGRESS.md` vers `DECISIONS.md` (DEC-0002 à DEC-0014, format complet). `PROGRESS.md` ne garde que l'état courant et renvoie vers `DECISIONS.md` et `CHANGELOG.md`.
-- Voir DEC-0005 (frontière entre les fichiers sacrés).
-
-### CHG-20260613-2226 — Alignement des traces sur `templates/extensions/`
-
-- Mise à jour des chemins dans les fichiers de suivi et de plan interne qui pointaient encore vers les anciens emplacements, ainsi que dans `docs/plan-integration-extension-knowledge.md`.
-- Un document de passation interne est volontairement laissé intact : il cite les anciens chemins pour expliquer la migration.
-- Voir DEC-0001.
-
-### CHG-20260613-2055 — Regroupement des extensions sous `templates/extensions/`
-
-- Déplacement des trois dossiers d'extension de `templates/{life,code,knowledge}/` vers `templates/extensions/{life,code,knowledge}/` (`git mv`, historique préservé). `templates/core/` reste le socle.
-- `scripts/init-project.sh` : trois chemins mis à jour, validé `sh -n` + test de bout en bout (`--code --knowledge`).
-- Docs de référence vivantes alignées : `README.md`, `CLAUDE.md`, `docs/governance.md`, `docs/clarify.md`, `docs/harness.md`.
-- Voir DEC-0001.
+### CHG-20260821-2157 — Archivage CHANGELOG/PROGRESS, étape 1 (DEC-0041)
+
+- Les 34 entrées `CHG-` antérieures au 2026-08-01 (juin-juillet) sont déplacées vers `99_archive/CHANGELOG-2026.md` (zone froide, DEC-0041) ; `CHANGELOG.md` passe de 112 Ko à ~60 Ko.
+- `PROGRESS.md` est purgé (55 Ko → 7 Ko, frontmatter 10 049 → ~400 caractères) ; l'original est conservé dans `99_archive/PROGRESS-2026-08-21-avant-purge.md`.
+- `DEC-0041` acte l'exclusion de `99_archive/` des scans croisés de `check-project.sh` ; `docs/enforcement.md` documente l'exclusion.
+- Les sections uniques de PROGRESS (Contexte utile, Besoins Code, Contraintes) et les vigilances vivantes sont conservées ; l'action « publier v0.21.0 » migre vers `TASKS.md` (T-PUB-1).
+- Vérifié : `sh scripts/check-project.sh .` à 0 bloquant ; les 34 identifiants archivés restent résolubles via les lignes-pointeurs.
+- Voir DEC-0041.
+
+### CHG-20260822-0918 — Doctrine Knowledge « carte jamais territoire » (DEC-0043)
+
+- L'extension Knowledge passe d'une description en « niveaux 1/2/3 » à une doctrine consolidée : la **carte** (`SUJETS.md` + `docs/INDEX.md`, toujours chargée après les fichiers sacrés Core, ≤ 200 lignes cumulées, pointeurs uniquement) et les niveaux **Vision** (`01_global/`), **Domaines** (`02_domains/`), **Détails** (`03_details/`) chargés à la demande, au strict nécessaire.
+- La proposition « Knowledge v2 4 niveaux » (plan interne) est arbitrée : **fusion partielle** — rejet de N1=constitution (les fichiers sacrés restent Core), rejet du nommage miroir strict obligatoire, rejet du budget N2 à 500 lignes, rejet de `docs/archive/`. Issue d'un challenge par deepseek-pro, ox-alpha et kimi-k3 (sol indisponible ce jour, quota Codex épuisé) puis d'une consolidation par deepseek-pro et ox-alpha, arbitrée par l'utilisateur.
+- La zone froide du knowledge est **`99_archive/knowledge/<domaine>/<sujet>.md`** (provenance conservée, une seule zone froide) ; retour froid→actif interdit in-place (on recrée dans le niveau actif + CHG).
+- `templates/extensions/knowledge/docs/kb_governance.md` réécrit (doctrine, règle de chargement, frontmatter avec graphe `depend_de`/`alimente`, budgets, circulation, anti-dérive, enforcement) ; `structures/knowledge-tree.md` complété ; `scripts/check-project.sh` §8 étendu en warnings (budget carte cumulé, liens cassés depuis `SUJETS.md`, `.bak` hors `99_archive/`) ; `AGENTS.md` racine documente la lecture de la carte au démarrage quand Knowledge est active.
+- Vérifié : `sh scripts/check-project.sh .` sur le repo méthode (résultat à confirmer en clôture).
+- Voir DEC-0043.
+
+### CHG-20260822-1736 — Publication v0.23.0 (doctrine Knowledge, README v2, archivage étape 1)
+
+- Bump `VERSION` 0.22.0 → 0.23.0 et `PROJECT.md` `version_methode` aligné ; ligne Releases v0.23.0 ajoutée au CHANGELOG (doctrine Knowledge DEC-0043, README réécrit, archivage DEC-0041).
+- Dette **T-PUB-1 close** : la publication de v0.21.0 (posée le 2026-08-08) est actée comme absorbée par v0.22.0 — aucun tag rétroactif, la chaîne v0.22.0 → v0.23.0 est continue.
+- Tag `v0.23.0` posé sur `f1f827f` (HEAD), release GitHub publiée ; check-project.sh à 0 bloquant avant publication.
+- Voir DEC-0043, CHG-20260822-0918.
+
+## Entrées archivées (pointeurs)
+
+> Entrées `CHG-` antérieures au 2026-08-01, archivées dans `99_archive/CHANGELOG-2026.md` (étape 1, DEC-0041).
+> Ligne-pointeur conservée pour que les références actives (DECISIONS, TASKS, RETEX, docs) restent résolubles.
+
+### CHG-20260613-2055 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260709-2340 — [référence externe] CHANGELOG du projet Projet Alpha, cité dans le RETEX correspondant ; sans entrée propre dans MyProjectOS
+### CHG-20260613-2226 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260613-2253 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260614-0233 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260614-0240 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260614-0312 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260614-2100 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260702-1851 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260704-1200 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260707-1100 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260709-0017 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260709-2350 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260709-2355 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1110 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1130 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1145 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1223 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1250 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1345 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1658 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1720 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-1900 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-2000 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260712-2145 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1120 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1140 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1302 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1330 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1520 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260713-1923 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260714-2039 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260714-2254 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260715-1954 — [archivé] voir `99_archive/CHANGELOG-2026.md`
+### CHG-20260731-2341 — [archivé] voir `99_archive/CHANGELOG-2026.md`

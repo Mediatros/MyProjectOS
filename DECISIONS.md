@@ -19,6 +19,36 @@
 
 ---
 
+### DEC-0041 — `99_archive/` est une zone froide, exclue des scans croisés de contenu (CHG-/DEC-)
+
+- **Date** : 2026-08-21
+- **Contexte** : l'étape 1 d'archivage (CHANGELOG + PROGRESS) déplace les entrées `CHG-` antérieures à 2026-08-01 vers `99_archive/CHANGELOG-2026.md` et y pose une copie intégrale de PROGRESS. La règle d'archivage existait déjà (en-tête de `CHANGELOG.md` : « archiver les entrées anciennes dans `99_archive/CHANGELOG-YYYY.md` »), mais le statut de `99_archive/` vis-à-vis des scans de `check-project.sh` n'avait jamais été tranché : `EXCLUDES` ne couvrait que `templates/`, `examples/`, `PLAN/` et `NAMING-CONVENTIONS.md`. Or le contrôle des références croisées (section 5) scanne tout l'arbre Markdown et déclare « cité mais non défini » tout `CHG-`/`DEC-` absent de son registre : déplacer 34 entrées vers l'archive aurait créé ~35 avertissements sur une base actuelle de 3, rendant l'archivage structurellement puni.
+- **Options envisagées** :
+  - A. Exclure `99_archive/` des scans croisés de contenu : zone froide, consultée sur demande.
+  - B. Garder l'archive scannée et poser une ligne-pointeur par identifiant archivé dans `CHANGELOG.md`.
+  - C. Surseoir l'archivage tant que la règle de seuils n'est pas actée.
+- **Choix** : A.
+- **Raison** : l'archive est froide par définition (consultation sur demande, jamais chargée par défaut) ; la traiter comme du contenu actif inverse l'objectif et punit l'archivage. B réduit le gain de taille (l'obésité est le problème) et crée une dette de maintenance à chaque archivage futur. C laisse l'obésité en place et dégrade la reprise à froid, raison d'être du système. A est documenté, réversible, et n'affecte que le repo méthode (un projet normal n'a pas de `99_archive/` ; l'exclusion n'est activée que sur détection du repo méthode).
+- **Conséquences** : `scripts/check-project.sh` gagne `--exclude-dir=99_archive` dans `EXCLUDES` (repo méthode) avec un commentaire explicite ; `docs/enforcement.md` documente que `99_archive/` est exclu des scans croisés de contenu ; les références `CHG-`/`DEC-` portées par l'archive ne déclenchent plus d'avertissement ; le hook `hook-pre-write.sh` (quasi-doublons de dossiers racine) reste inchangé — `99_archive/` est un dossier canonique unique.
+- **Liens** : CHG-20260821-2157, DEC-0036.
+
+---
+
+### DEC-0043 — Doctrine Knowledge « carte jamais territoire » : 3 niveaux + zone froide unique dans `99_archive/knowledge/`
+
+- **Date** : 2026-08-22
+- **Contexte** : la proposition « Extension Knowledge v2 » (un plan interne, T-PLAN-8) proposait une hiérarchie à 4 niveaux (N1 constitution toujours chargée, N2 méso, N3 micro, N4 archive) inspirée du système de documentation du VPS Hermes. Challengée par quatre modèles (deepseek-pro, ox-alpha, kimi-k3, gpt-5.6-sol — sol indisponible ce jour, quota Codex épuisé), elle a été rejetée en l'état : N1=constitution est une erreur de catégorie (les fichiers sacrés sont Core, hors extension), N4 duplique la zone froide existante, le nommage miroir strict casse des projets équipés, le budget N2 à 500 lignes n'a aucune base terrain (max réel mesuré : 216 lignes chez Projet Zeta). L'utilisateur a reformulé une doctrine en 3 niveaux : la carte (toujours chargée, informe l'agent du contenu du knowledge), les niveaux (chargés à la demande), et le strict nécessaire. Deux modèles (deepseek-pro, ox-alpha) l'ont challengée et consolidée ; l'utilisateur a tranché l'ajout N4 : l'archive knowledge vit dans `99_archive/knowledge/`, pas dans un nouveau dossier `docs/archive/`.
+- **Options envisagées** :
+  - A. Adopter la v2 telle quelle (4 niveaux, N1=constitution, N4=docs/archive/).
+  - B. Doctrine 3 niveaux avec N4 = `docs/archive/` (archive knowledge dans le knowledge).
+  - C. Doctrine 3 niveaux avec zone froide unique : N3 révolus → `99_archive/knowledge/<domaine>/<sujet>.md` (provenance conservée), pas de second dossier d'archive.
+- **Choix** : C.
+- **Raison** : la carte n'est pas un niveau — la renommer en « N1 » entrerait en collision avec `01_global/` (vision) déjà en place ; la constitution (PROJECT/PROGRESS/AGENTS/CLAUDE) reste Core, jamais un niveau Knowledge. L'objectif de l'utilisateur (creuser « comment c'était fait » sans perdre l'archive knowledge dans l'archive Core) est satisfait par le sous-dossier `99_archive/knowledge/`, qui conserve la provenance sans créer de seconde zone froide — le RETEX Projet Alpha (le RETEX correspondant) et l'état du VPS (9+ fichiers `.bak` hors archive) prouvent que toute zone froide additionnelle est une dérive en germe. Le chargement de la carte est un rituel agent (AGENTS.md/CLAUDE.md), pas une injection systémique : Hermes n'injecte nativement que les fichiers de contexte racine (AGENTS.md, CLAUDE.md, SOUL.md...), jamais le contenu de `docs/INDEX.md`.
+- **Conséquences** : `templates/extensions/knowledge/docs/kb_governance.md` réécrit sur la doctrine consolidée (carte / vision / domaines / détails / zone froide, règle de chargement, frontmatter enrichi du rôle graphe `depend_de`/`alimente`, budgets carte ≤ 200 cumulés / N1 ≤ 200 / N2 ≤ 300, circulation, anti-dérive, enforcement) ; `structures/knowledge-tree.md` gagne `99_archive/knowledge/` et les règles consolidées ; `scripts/check-project.sh` §8 étendu (budget carte cumulé, liens cassés depuis SUJETS.md, `.bak` hors `99_archive/`, warnings jamais bloquants) ; `AGENTS.md` racine documente la lecture de la carte au démarrage quand Knowledge est active. un plan interne est arbitré — fusion partielle, à marquer. DEC-0042 reste réservée par le plan archivage (multi-progress, non actée).
+- **Liens** : CHG-20260822-0918.
+
+---
+
 ### DEC-0040 — Hermès reçoit le catalogue de skills par déclaration, pas par copie ; et une mesure vaut ce que vaut son instrument
 
 - **Date** : 2026-08-08
