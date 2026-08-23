@@ -156,16 +156,39 @@ MyProjectOS/
 ├── docs/              # vision, principes, gouvernance, cycle de vie, glossaire, nommage
 ├── templates/
 │   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS (socle)
+│   ├── configuration/ # gabarits des dossiers 97_gouvernance/ et 98_configuration/
 │   └── extensions/    # modules activables selon le type de projet
 │       ├── life/      # PREUVES, ECHEANCES, CORRESPONDANCES
 │       ├── code/      # AGENTS, STACK_VALIDATION, ARCHITECTURE, etc.
 │       └── knowledge/ # docs/INDEX, kb_governance, niveaux, plans, runbooks
+├── 97_gouvernance/    # vitrine : droit local du projet (règles spécifiques utilisateur)
+├── 98_configuration/  # vitrine : intégrations d'outils tiers, handoff inter-agents
 ├── structures/        # core-tree, life-tree, code-tree, knowledge-tree
 ├── agents/            # claude-code, hermes, meta-skill
 ├── skills/            # my-project-os/SKILL.md (skill assistant installable)
 ├── examples/          # projets d'exemple Life et Code
 └── scripts/           # init-project.sh, check-project.sh, check-update.sh, hooks/
 ```
+
+## Structure d'un projet (en un coup d'œil)
+
+Un projet MyProjectOS est un dossier Markdown organisé par dossiers numérotés :
+
+```
+MonProjet/
+├── PROJECT.md / PROGRESS.md / CHANGELOG.md / TASKS.md / DECISIONS.md   # fichiers sacrés
+├── 00_inbox/          # entrées non classées
+├── 01_context/        # contexte stable
+├── 02_work/           # travail actif (ou 02_sujets/ pour les projets Life)
+├── 03_documents/      # PDF, emails, pièces jointes
+├── 04_deliverables/   # livrables finaux
+├── 97_gouvernance/    # optionnel : droit local du projet (GOUVERNANCE_LOCALE.md)
+├── 98_configuration/  # optionnel : intégrations d'outils, handoff inter-agents
+└── 99_archive/        # éléments clôturés ou obsolètes
+```
+
+- **`97_gouvernance/`** — les règles de gouvernance propres au projet et à son utilisateur, en complément des fichiers sacrés (qui décide quoi, validations supplémentaires, rituels locaux). Gabarit : `templates/configuration/GOUVERNANCE_LOCALE.md`.
+- **`98_configuration/`** — la gouvernance des intégrations d'outils tiers partagées entre agents (`GOUVERNANCE_<OUTIL>.md`), le handoff asynchrone inter-agents (`HANDOFF_<AGENT-A>_<AGENT-B>.md`) et les skills techniques portables (`skills/`). Gabarits : `templates/configuration/`.
 
 ## Documentation
 

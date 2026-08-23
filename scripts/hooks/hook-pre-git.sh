@@ -70,7 +70,7 @@ while :; do
         clean)
             REST=$(printf '%s' "$ARGS" | cut -s -d' ' -f2-)
             case "$REST" in
-                *"-fd"*|*"--force -d"*|*"-df"*|*"-x"*|*"-fx"*|*"-xf"*|*"-fdx"*|*"-xdf"*)
+                *"-xdf"*|*"-fdx"*|*"-xf"*|*"-fx"*|*"--force -d"*|*"-x"*|*"-df"*|*"-fd"*)
                     deny "MyProjectOS : 'git clean -fd/-x' est bloqué (suppression irréversible de fichiers non suivis). Alternative : 'git clean -nd' pour prévisualiser. Si la dérogation est vraiment voulue, demande la validation humaine puis relance avec MYPROJECTOS_GIT_OVERRIDE=1, après sauvegarde, et consigne une entrée CHG-." ;;
                 *) : ;;
             esac
@@ -86,7 +86,7 @@ while :; do
         rebase)
             REST=$(printf '%s' "$ARGS" | cut -s -d' ' -f2-)
             case "$ARGS" in
-                *"--onto"*|*"-i"*|"--interactive")
+                *"--onto"*|"--interactive"|*"-i"*)
                     # rebase interactif ou --onto : hors matrice (jugement).
                     : ;;
                 *)

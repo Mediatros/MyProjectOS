@@ -19,6 +19,19 @@
 
 ---
 
+### DEC-0047 — Dossier `97_gouvernance/` : droit local du projet (gouvernance spécifique utilisateur) + vitrine 97/98 dans le dépôt
+
+- **Date** : 2026-08-23 (arbitrage humain en session, l'utilisateur).
+- **Contexte** : les règles de gouvernance spécifiques à un projet et à son utilisateur (qui décide quoi, validations supplémentaires, rituels propres, règles de contenu locales) n'ont pas de case canon : `AGENTS.md` porte les rituels génériques de la méthode, `98_configuration/` (DEC-0026) porte la configuration des outils tiers et le handoff inter-agents — pas le « droit local » du projet. Par ailleurs, ce droit local était invisible à l'ouverture du dépôt méthode : `98_configuration/` n'existait que dans `structures/core-tree.md`, `templates/configuration/` et les projets appliqués (Projet Alpha…), jamais en dossier physique dans le repository.
+- **Options envisagées** :
+  - A. Canoniser `97_gouvernance/` + créer une vitrine physique `97_gouvernance/` et `98_configuration/` à la racine du dépôt (README explicatif chacun).
+  - B. Canoniser `97_gouvernance/` sans dossier physique (uniquement docs + gabarit, comme c'était le cas pour 98 avant ce jour).
+  - C. Ranger ces règles dans `AGENTS.md` ou les fusionner dans `98_configuration/` sans nouveau dossier.
+- **Choix** : A.
+- **Raison** : l'utilisateur veut qu'en ouvrant le repository sur GitHub on comprenne immédiatement la structure d'un projet MyProjectOS, avec les dossiers 97 et 98 visibles ; la vitrine sert aussi de dogfooding du canon (le dépôt montre ce qu'il prêche). La frontière 97/98 est nette : les règles de gouvernance du projet lui-même (droit local) → `97_gouvernance/` ; la configuration technique des outils tiers et le handoff inter-agents → `98_configuration/` ; les rituels et garde-fous génériques de la méthode → `AGENTS.md` (le dossier est complément, jamais doublon).
+- **Conséquences** : nouveau dossier optionnel `97_gouvernance/` (tous types), fichier principal `GOUVERNANCE_LOCALE.md` complété par `GOUVERNANCE_<DOMAINE>.md` si besoin ; gabarit `templates/configuration/GOUVERNANCE_LOCALE.md` ; vitrines `97_gouvernance/README.md` et `98_configuration/README.md` à la racine du dépôt ; mise à jour de `structures/core-tree.md`, `docs/NAMING-CONVENTIONS.md`, `README.md` du dépôt, `VERSION` v0.25.0.
+- **Liens** : CHG-20260823-1621, DEC-0026 (98_configuration), DEC-0041 (zone froide), demande l'utilisateur 2026-08-23.
+
 ### DEC-0041 — `99_archive/` est une zone froide, exclue des scans croisés de contenu (CHG-/DEC-)
 
 - **Date** : 2026-08-21

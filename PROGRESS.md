@@ -3,7 +3,7 @@ projet: MyProjectOS
 type: Core
 statut: en construction
 derniere_maj: 2026-08-23
-prochaine_action: v0.24.0 prête en LOCAL (commit e6536ce + tag v0.24.0, non poussés — aucun credential GitHub sur ce profil Hermes). Depuis une session avec auth GitHub : `git push && git push origin v0.24.0 && gh release create v0.24.0`. Puis propager --update-method aux 4 projets structurés ; arbitrages T-RETEX-4, T-PLAN-9, T-PLAN-7 (A5 groupé).
+prochaine_action: v0.25.0 (97_gouvernance + vitrine 97/98, DEC-0047) prête en LOCAL, en attente de relecture et GO l'utilisateur avant push. v0.24.0 poussée le 2026-08-23 (77bc4b9) avec fix CI hook-pre-git (f6cd29c, SC2221/2222), CI verte. Puis propager --update-method aux projets ; arbitrages T-RETEX-4, T-PLAN-9, T-PLAN-7 (A5 groupé).
 prochaine_echeance:
 ---
 
@@ -32,6 +32,8 @@ Version `0.22.0` publiée le 2026-08-08 (DEC-0040, CHG-20260808-1130) : Hermès 
 Le 2026-08-21 : archivage des entrées `CHG-` antérieures au 2026-08-01 dans `99_archive/CHANGELOG-2026.md` et purge de ce fichier (étape 1, DEC-0041, CHG-20260821-2157). Voir `99_archive/INDEX.md`.
 
 Le 2026-08-22 : **P0 close** — `--update-method` v0.23.0 appliqué aux quatre projets en retard (Projet Alpha, Projet Delta, Projet Epsilon depuis v0.11.0 ; Projet Beta depuis v0.20.0), sauvegardes dans leurs `99_archive/`, migrations consignées dans leurs CHANGELOG. Projet Epsilon reste à 10 bloquants (Hybrid sans extension Code greffée), laissé en l'état sur décision de l'utilisateur (voir CHG-20260822-2341).
+
+Le 2026-08-23 : **v0.24.0 poussée** (commit `77bc4b9`, puis rebase sur les 2 commits distants CI/RETEX) ; la CI a révélé un bug shellcheck dans le nouveau `hook-pre-git.sh` (patterns `case` redondants SC2221/2222), corrigé par `f6cd29c` (réordonnancement, logique inchangée) — CI verte. **v0.25.0 préparée en local** (DEC-0047) : dossier optionnel `97_gouvernance/` (droit local du projet) canonisé, gabarit `GOUVERNANCE_LOCALE.md`, vitrines `97_gouvernance/` et `98_configuration/` à la racine du dépôt, README « Structure d'un projet » ajouté. En attente de relecture + GO l'utilisateur avant push.
 
 ## Décisions actées
 

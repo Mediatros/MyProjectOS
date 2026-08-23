@@ -68,9 +68,11 @@ Un sous-dossier par domaine (`docs/03_details/facturation/…`) est accepté pou
 ## Dossiers numérotés
 
 Les dossiers de travail sont préfixés par un numéro à deux chiffres pour fixer l'ordre de lecture :
-`00_inbox/`, `01_context/`, `02_work/`, `03_documents/`, `04_deliverables/`, `98_configuration/` (optionnel), `99_archive/`.
+`00_inbox/`, `01_context/`, `02_work/`, `03_documents/`, `04_deliverables/`, `97_gouvernance/` (optionnel), `98_configuration/` (optionnel), `99_archive/`.
 
 Le rôle de chaque dossier est décrit dans `structures/core-tree.md` (et `life-tree.md`, `code-tree.md`).
+
+`97_gouvernance/` (optionnel, tous types) : droit local du projet — règles de gouvernance spécifiques à l'utilisateur/projet, compléments aux fichiers sacrés et à la gouvernance Core (`docs/governance.md`). Fichier principal `GOUVERNANCE_LOCALE.md` (gabarit : `templates/configuration/GOUVERNANCE_LOCALE.md`), complété par `GOUVERNANCE_<DOMAINE>.md` si le besoin se précise. N'y va pas : la configuration des outils tiers (→ `98_configuration/`), les rituels génériques de la méthode (→ `AGENTS.md`), ni le contenu métier (→ dossiers `0X_`).
 
 `98_configuration/` (optionnel, tous types) : gouvernance des intégrations d'outils tiers partagées entre plusieurs agents (`GOUVERNANCE_<OUTIL>.md`) et handoff asynchrone entre agents sans canal de communication direct (`HANDOFF_<AGENT-A>_<AGENT-B>.md`). Gabarits : `templates/configuration/`. Avant d'utiliser le gabarit générique vide `GOUVERNANCE_INTEGRATION.md`, vérifier si une variante pré-remplie existe pour l'outil concerné (ex. `GOUVERNANCE_BLUE.md` pour Blue) — elle porte déjà les règles et pièges connus, à ne pas redécouvrir à chaque projet. N'y va pas : les secrets (restent en `.env`/trousseau) ni le contenu métier du projet (reste dans les dossiers `0X_`).
 
