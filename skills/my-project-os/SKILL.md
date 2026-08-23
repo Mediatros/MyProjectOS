@@ -133,7 +133,8 @@ Prochaine action : <...>
    - `TASKS.md` : cocher les tâches faites, ajouter celles qui apparaissent.
    - Le sous-agent vérifie aussi la reprise à froid : « un agent qui ne lit que les fichiers pourrait-il reprendre ? » Si non, il complète PROGRESS avant de rendre la main.
 3. Une fois le sous-agent terminé, ajouter une courte mention de confirmation (ex. « PROGRESS.md, CHANGELOG.md à jour ») sans reprendre le contenu déjà donné dans le résumé.
-4. Suggérer de vider le contexte (`/clear`) : la prochaine itération repartira des fichiers.
+4. Pour une itération Code/Hybrid, lancer `sh scripts/check-iteration.sh` (A4) et traiter les bloquants avant de déclarer la clôture : fichiers modifiés non consignés dans PROGRESS.md, PROGRESS périmé. Si `TEST_PLAN.md` existe, exécuter les commandes de validation qu'il déclare et consigner le résultat.
+5. Suggérer de vider le contexte (`/clear`) : la prochaine itération repartira des fichiers.
 
 ## Mode 5 — Cadrage (et initialisation)
 

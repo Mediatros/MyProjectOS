@@ -11,7 +11,7 @@ MonProjet/
 ├── 00_inbox/ … 04_deliverables/   # dossiers Core
 ├── docs/
 │   ├── kb_governance.md  # règles de navigation, niveaux, dépendances transverses
-│   ├── INDEX.md          # carte d'entrée documentaire
+│   ├── INDEX.md          # index d'entrée documentaire (sommaire)
 │   ├── 01_global/        # vue d'ensemble stable du projet
 │   ├── 02_domains/       # domaines, composants, flux, responsabilités
 │   ├── 03_details/       # détails techniques uniquement quand nécessaire
@@ -55,9 +55,9 @@ Un projet peut utiliser les noms `01_macro`, `02_meso`, `03_micro` si cela corre
 
 ## Règles propres à Knowledge
 
-- **Carte d'abord** : la carte (`SUJETS.md` + `docs/INDEX.md`) est lue à chaque démarrage, après les fichiers sacrés Core ; elle ne contient que des pointeurs, jamais de substance. La vision projet reste dans `PROJECT.md` (Core) ; `01_global/` porte le comment ça tourne (évolutif).
+- **Sommaire d'abord** : le sommaire (`SUJETS.md` + `docs/INDEX.md`) est lu à chaque démarrage, après les fichiers sacrés Core ; il ne contient que des pointeurs, jamais de substance. La vision projet reste dans `PROJECT.md` (Core) ; `01_global/` porte le comment ça tourne (évolutif).
 - **Routage métier d'abord** : pour une demande formulée en vocabulaire utilisateur, lire `SUJETS.md` avant `docs/INDEX.md` ; la source fraîche prioritaire d'un sujet prime sur sa synthèse.
-- **Lecture progressive** : charger la carte, puis le niveau global, puis les domaines concernés, puis les détails seulement si l'action l'exige. Jamais un niveau entier par défaut, jamais « au cas où ».
+- **Lecture progressive** : charger le sommaire, puis le niveau global, puis les domaines concernés, puis les détails seulement si l'action l'exige. Jamais un niveau entier par défaut, jamais « au cas où ».
 - **Analyse transverse obligatoire** : avant modification documentaire ou technique, lister composants impactés, composants explicitement non impactés, dépendances bidirectionnelles (`depend_de`/`alimente`) et documents à mettre à jour.
 - **Une seule zone froide** : les N3 révolus vont dans `99_archive/knowledge/<domaine>/<sujet>.md` (provenance conservée) ; pas de `docs/archive/`. Retour froid→actif interdit in-place : on recrée dans le niveau actif + CHG.
 - **Plans hors vérité permanente** : les plans guident l'action mais ne remplacent pas les fichiers sacrés ni les docs actives.

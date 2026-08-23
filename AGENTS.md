@@ -6,7 +6,7 @@
 
 ## Rituels de session
 
-**Au démarrage**, lire dans l'ordre : `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md`. Si l'extension Knowledge est active (`docs/INDEX.md` présent), lire ensuite la carte : `SUJETS.md` puis `docs/INDEX.md`, avant de descendre dans les niveaux. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance.
+**Au démarrage**, lire dans l'ordre : `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md`. Si l'extension Knowledge est active (`docs/INDEX.md` présent), lire ensuite le sommaire : `SUJETS.md` puis `docs/INDEX.md`, avant de descendre dans les niveaux. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance.
 
 **Pendant** : mettre à jour `PROGRESS.md` après toute avancée significative, logger dans `CHANGELOG.md` (`CHG-YYYYMMDD-HHMM`), documenter les décisions structurantes dans `DECISIONS.md` (`DEC-XXXX`).
 

@@ -354,13 +354,13 @@ EOF_KBSJ
     fi
 
     # 8c. Budgets de taille par niveau.
-    # Carte : SUJETS.md + INDEX.md cumulés <= 200 lignes (coût permanent, jamais de substance).
+    # Sommaire : SUJETS.md + INDEX.md cumulés <= 200 lignes (coût permanent, jamais de substance).
     _carte_lines=0
     for _carte_f in "$TARGET/SUJETS.md" "$TARGET/docs/INDEX.md"; do
         [ -f "$_carte_f" ] && _carte_lines=$((_carte_lines + $(wc -l < "$_carte_f" | tr -d ' ')))
     done
     if [ "$_carte_lines" -gt 200 ]; then
-        warn "carte (SUJETS.md + docs/INDEX.md) : $_carte_lines lignes cumulées (> 200) : la carte doit rester une carte (pointeurs uniquement)"
+        warn "sommaire (SUJETS.md + docs/INDEX.md) : $_carte_lines lignes cumulées (> 200) : le sommaire doit rester un sommaire (pointeurs uniquement)"
         _kb_issue=1
     fi
     for _f in "$TARGET/docs/01_global"/*.md; do
@@ -384,7 +384,7 @@ EOF_KBSJ
     while IFS= read -r _bak; do
         [ -n "$_bak" ] || continue
         case "$_bak" in
-            *99_archive/*|*/99_archive/*) continue ;;
+            *99_archive/*) continue ;;
         esac
         warn "${_bak#\"$TARGET\"/} : fichier .bak hors 99_archive/ (archiver ou supprimer)"
         _kb_issue=1
@@ -509,6 +509,102 @@ if [ -d "$TARGET/RETEX" ]; then
     elif [ "$_retex_issue" -eq 0 ]; then
         ok "tous les RETEX portent un statut valide, les statuts fermés sont référencés"
     fi
+fi
+
+# --- 12. Hooks : inventaire de la surface d'enforcement installée -------------
+# A6 du plan Pro Workflow (CHG-20260822-2354) : rendre la surface d'enforcement
+# lisible et auditable. Un hook câblé dans .claude/settings.json doit exister sur
+# le disque ; un script présent dans .claude/hooks/ doit être câblé. Les écarts
+# sont des avertissements, jamais des bloquants.
+if [ -f "$TARGET/.claude/settings.json" ] || [ -d "$TARGET/.claude/hooks" ]; then
+    echo "Hooks (enforcement installé) :"
+    _hooks_issue=0
+    _settings="$TARGET/.claude/settings.json"
+    # Extraction des chemins de scripts référencés dans settings.json, sans
+    # dépendance obligatoire (python3 ou jq si présents, sinon grep).
+    _wired=""
+    if [ -f "$_settings" ]; then
+        if command -v python3 >/dev/null 2>&1; then
+            _wired=$(python3 -c '
+import json,sys,re
+try:
+    with open(sys.argv[1]) as f: s=json.load(f)
+except Exception:
+    sys.exit(0)
+for ev in s.get("hooks",{}).values():
+    for grp in ev:
+        for h in grp.get("hooks",[]):
+            c=h.get("command","")
+            m=re.search(r"([A-Za-z0-9_/.-]+\.sh)",c)
+            if m: print(m.group(1))
+' "$_settings" 2>/dev/null)
+        elif command -v jq >/dev/null 2>&1; then
+            _wired=$(jq -r '.. | .command? // empty' "$_settings" 2>/dev/null | grep -oE '[A-Za-z0-9_/.-]+\.sh')
+        else
+            _wired=$(grep -oE '[A-Za-z0-9_/.-]+\.sh' "$_settings" 2>/dev/null | sort -u)
+        fi
+    fi
+    for _h in $_wired; do
+        # Normalisation : la regex d'extraction ampute le « $ » de
+        # $CLAUDE_PROJECT_DIR ; retirer le préfixe restant s'il est présent.
+        _h=$(printf '%s' "$_h" | sed 's#^\$*CLAUDE_PROJECT_DIR/##')
+        case "$_h" in
+            /*) ;;
+            .claude/*) ;;
+            *) _h=".claude/$_h" ;;
+        esac
+        if [ -f "$TARGET/$_h" ]; then
+            ok "câblé + présent : $(basename -- "$_h")"
+        else
+            warn "câblé dans settings.json mais fichier absent : $_h"
+            _hooks_issue=1
+        fi
+    done
+    # Scripts hooks présents mais non référencés dans settings.json.
+    # _lib.sh est une bibliothèque sourcée par les autres hooks, jamais câblée
+    # directement : hors périmètre de l'inventaire.
+    if [ -d "$TARGET/.claude/hooks" ]; then
+        for _f in "$TARGET"/.claude/hooks/*.sh; do
+            [ -f "$_f" ] || continue
+            _bn=$(basename -- "$_f")
+            [ "$_bn" = "_lib.sh" ] && continue
+            printf '%s\n' $_wired | grep -qF "$_bn" || { warn "présent mais non câblé : .claude/hooks/$_bn"; _hooks_issue=1; }
+        done
+    fi
+    # Garde-fou Git destructif (A1) : contrôle portable pour les agents sans
+    # protocole PreToolUse (Hermès, Codex). On vérifie la présence du hook sur
+    # un projet Code/Hybrid (et son absence ailleurs, sans avertissement).
+    if [ -f "$TARGET/PROJECT.md" ]; then
+        _ptype=$(sed -n 's/^type:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
+        case "$_ptype" in
+            Code|Hybrid)
+                [ -f "$TARGET/.claude/hooks/hook-pre-git.sh" ] \
+                    && ok "garde-fou Git destructif installé (Code/Hybrid)" \
+                    || warn "projet $_ptype sans garde-fou Git destructif (hook-pre-git.sh) — prévu depuis la version qui l'introduit"
+                ;;
+        esac
+    fi
+    [ "$_hooks_issue" -eq 0 ] && [ -n "$_wired" ] && ok "inventaire cohérent entre settings.json et .claude/hooks/"
+fi
+
+# --- 13. Secrets : détection locale (A2, DEC-0045) ----------------------------
+# Le scanner autonome vit à côté du check (posé par init-project.sh). Si absent,
+# la section est silencieuse : le contrôle se dégrade, il ne casse rien.
+if [ -f "$TARGET/scripts/check-secrets.sh" ]; then
+    echo "Secrets (scan local) :"
+    _sec_out=$(sh "$TARGET/scripts/check-secrets.sh" "$TARGET" 2>/dev/null)
+    _sec_code=$?
+    printf '%s\n' "$_sec_out" | grep '^  \[' | sed 's/^/    /'
+    case $_sec_code in
+        1) fail "secret(s) certain(s) détecté(s) — ne pas committer" ;;
+        0)
+            if printf '%s\n' "$_sec_out" | grep -q 'à vérifier'; then
+                warn "points sensibles à vérifier (voir ci-dessus)"
+            else
+                ok "aucun secret détecté"
+            fi
+            ;;
+    esac
 fi
 
 # --- Bilan -------------------------------------------------------------------

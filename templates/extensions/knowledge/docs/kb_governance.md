@@ -1,20 +1,20 @@
 # Gouvernance Knowledge — <NomDuProjet>
 
 > Règles de navigation documentaire et d'analyse d'impact pour les projets avec extension Knowledge.
-> **Principe : l'agent charge toujours la carte, jamais le territoire. Il ne descend dans le territoire que pour répondre à la demande, et n'en ramène que le strict nécessaire.**
+> **Principe : l'agent lit le sommaire, jamais tout le livre. Il n'ouvre que le chapitre qui répond à la question, et ne lit que les pages qui servent.**
 
 ## Objectif
 
-Permettre à l'agent de **prendre conscience du contenu du knowledge** sans saturer la fenêtre de contexte avec des informations inutiles. L'agent sait ce que le knowledge contient (la carte), et ne charge que ce qui sert à répondre ou exécuter.
+Permettre à l'agent de **prendre conscience du contenu du knowledge** sans saturer la fenêtre de contexte avec des informations inutiles. L'agent sait ce que le knowledge contient (le sommaire), et ne charge que ce qui sert à répondre ou exécuter.
 
 ## Vocabulaire — ce que chaque terme veut dire
 
-*La carte n'est pas un niveau. La vision n'est pas le Core. L'archive n'est pas un niveau.*
+*Le sommaire n'est pas un niveau. La vision n'est pas le Core. L'archive n'est pas un niveau.*
 
 | Terme | Fichier | Rôle | Chargement |
 |---|---|---|---|
-| **Carte** | `SUJETS.md` (racine) + `docs/INDEX.md` | routeur métier (alias → sujet → source fraîche) + carte documentaire | **toujours**, après les fichiers sacrés Core |
-| **Niveau 1 — Vision** | `docs/01_global/` | architecture, cycle de vie, carte des domaines, règles métier durables | reprise, orientation, décision structurante |
+| **Sommaire** | `SUJETS.md` (racine) + `docs/INDEX.md` | routeur métier (alias → sujet → source fraîche) + index documentaire | **toujours**, après les fichiers sacrés Core |
+| **Niveau 1 — Vision** | `docs/01_global/` | architecture, cycle de vie, index des domaines, règles métier durables | reprise, orientation, décision structurante |
 | **Niveau 2 — Domaines** | `docs/02_domains/` | workflows, bases, intégrations, responsabilités, frontières | à la demande, domaine(s) concerné(s) |
 | **Niveau 3 — Détails** | `docs/03_details/` | contrats API, schémas, mapping, config fine, edge cases | à la demande, **strict nécessaire** |
 | **Zone froide** | `99_archive/` (dont `99_archive/knowledge/<domaine>/`) | historique, N3 révolus, sauvegardes | sur demande explicite, jamais par défaut |
@@ -29,7 +29,7 @@ Les indexes, graphes, captures, exports et outils comme Understand-Anything sont
 
 ## SUJETS.md — le routeur métier
 
-`docs/INDEX.md` décrit la carte documentaire ; il ne parle pas le vocabulaire de l'utilisateur. `SUJETS.md`, à la racine du projet, fait ce lien : alias utilisateur → sujet canonique → ordre de lecture → dépendances → preuves et décisions liées.
+`docs/INDEX.md` décrit l'index documentaire ; il ne parle pas le vocabulaire de l'utilisateur. `SUJETS.md`, à la racine du projet, fait ce lien : alias utilisateur → sujet canonique → ordre de lecture → dépendances → preuves et décisions liées.
 
 Règles :
 
@@ -39,7 +39,7 @@ Règles :
 
 ## Règle de chargement (cœur de la doctrine)
 
-1. **Au démarrage** : fichiers sacrés Core + carte (`SUJETS.md` puis `docs/INDEX.md`). Rien d'autre.
+1. **Au démarrage** : fichiers sacrés Core + sommaire (`SUJETS.md` puis `docs/INDEX.md`). Rien d'autre.
 2. **Demande métier ou ambiguë** : `SUJETS.md` avant `INDEX.md` ; la source fraîche prioritaire d'un sujet prime sur sa synthèse.
 3. **Reprise, orientation ou décision structurante** : lire le niveau Vision concerné.
 4. **Charger uniquement les N2 des domaines touchés** — plusieurs si la tâche est multi-domaines, un seul sinon. Jamais un niveau entier par défaut, jamais « au cas où ».
@@ -82,7 +82,7 @@ Avant une modification documentaire ou technique, produire :
 
 Seuils indicatifs, contrôlés en avertissement par `check-project.sh` :
 
-- **la carte (`SUJETS.md` + `INDEX.md`) ne dépasse pas 200 lignes cumulées** ; elle ne contient que des pointeurs (chemin + rôle en une phrase), jamais de substance ;
+- **le sommaire (`SUJETS.md` + `INDEX.md`) ne dépasse pas 200 lignes cumulées** ; il ne contient que des pointeurs (chemin + rôle en une phrase), jamais de substance ;
 - un document de **niveau 1** (`01_global/`) dépasse rarement **200 lignes** : au-delà, scinder vers un domaine ;
 - un document de **niveau 2** (`02_domains/`) dépasse rarement **300 lignes** : au-delà, extraire les détails vers le niveau 3 ;
 - le niveau 3 est libre ; un détail qui grossit se découpe par sujet (`<domaine>--<sujet>.md`, voir `docs/NAMING-CONVENTIONS.md`).
@@ -96,15 +96,15 @@ Seuils indicatifs, contrôlés en avertissement par `check-project.sh` :
 - **Renommage miroir** : si un N2 est renommé, ses N3 le sont dans le même CHG-.
 - **Toute sauvegarde `.bak`** va dans `99_archive/` ou est supprimée ; jamais à la racine ni dans `docs/`.
 
-## Anti-dérive de la carte
+## Anti-dérive du sommaire
 
-La carte reste une carte, pas un dump. Garde-fous :
+Le sommaire reste un sommaire, pas un dump. Garde-fous :
 
 - budget (§ Budgets de taille) et règle « pointeurs uniquement » ;
-- chaque ligne de la carte pointe vers au moins un fichier existant (zéro contenu autonome) ;
-- si un sujet grandit, il descend en N1/N2 — jamais dans la carte ;
-- pas de date de fraîcheur dans la carte (elle vit déjà dans le frontmatter `derniere_maj` des documents) ;
-- contrôles `check-project.sh` : carte trop grosse, orphelins, liens cassés (dont `SUJETS.md`), `.bak` hors archive.
+- chaque ligne du sommaire pointe vers au moins un fichier existant (zéro contenu autonome) ;
+- si un sujet grandit, il descend en N1/N2 — jamais dans le sommaire ;
+- pas de date de fraîcheur dans le sommaire (elle vit déjà dans le frontmatter `derniere_maj` des documents) ;
+- contrôles `check-project.sh` : sommaire trop gros, orphelins, liens cassés (dont `SUJETS.md`), `.bak` hors archive.
 
 ## Plans
 
@@ -134,11 +134,11 @@ Understand-Anything peut servir à :
 
 - visualiser les dépendances ;
 - repérer des documents orphelins ;
-- aider à construire la carte Niveau 1 ;
+- aider à construire l'index Niveau 1 ;
 - préparer une analyse d'impact.
 
 Limite : il ne décide pas. Il ne remplace pas `docs/INDEX.md`, `kb_governance.md`, les fichiers sacrés, ni la vérification réelle du système.
 
 ## Enforcement
 
-`check-project.sh` (§ Navigation Knowledge) vérifie en **avertissement, jamais bloquant** : présence de `INDEX.md`/`kb_governance.md`, `SUJETS.md` non resté en gabarit, orphelins (01_global, 02_domains, 03_details, runbooks), liens cassés (`INDEX.md` **et** `SUJETS.md`), budgets (carte ≤ 200 cumulés, N1 ≤ 200, N2 ≤ 300), `.bak` hors `99_archive/`.
+`check-project.sh` (§ Navigation Knowledge) vérifie en **avertissement, jamais bloquant** : présence de `INDEX.md`/`kb_governance.md`, `SUJETS.md` non resté en gabarit, orphelins (01_global, 02_domains, 03_details, runbooks), liens cassés (`INDEX.md` **et** `SUJETS.md`), budgets (sommaire ≤ 200 cumulés, N1 ≤ 200, N2 ≤ 300), `.bak` hors `99_archive/`.

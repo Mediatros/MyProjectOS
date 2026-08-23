@@ -81,6 +81,8 @@ ARTEFACTS=".claude/hooks/_lib.sh
 .claude/hooks/hook-stop-progress.sh
 .claude/skills/my-project-os/SKILL.md
 scripts/check-project.sh
+scripts/check-secrets.sh
+scripts/check-iteration.sh
 scripts/check-update.sh
 VERSION"
 
@@ -100,6 +102,8 @@ artefact_source() {
         .claude/hooks/*) printf '%s' "$REPO/scripts/hooks/${1##*/}" ;;
         .claude/skills/my-project-os/SKILL.md) printf '%s' "$REPO/skills/my-project-os/SKILL.md" ;;
         scripts/check-project.sh) printf '%s' "$REPO/scripts/check-project.sh" ;;
+        scripts/check-secrets.sh) printf '%s' "$REPO/scripts/check-secrets.sh" ;;
+        scripts/check-iteration.sh) printf '%s' "$REPO/scripts/check-iteration.sh" ;;
         scripts/check-update.sh) printf '%s' "$REPO/scripts/check-update.sh" ;;
         VERSION) printf '%s' "$REPO/VERSION" ;;
     esac
@@ -284,7 +288,7 @@ echo "  + 00_inbox/ (les autres dossiers numérotés se créent à la demande)"
 # (install.sh en mode jetable). VERSION est une empreinte figée à la création ;
 # check-update.sh compare cette empreinte à la dernière version publiée.
 mkdir -p "$TARGET/scripts"
-for _s in check-project.sh check-update.sh; do
+for _s in check-project.sh check-update.sh check-secrets.sh check-iteration.sh; do
     if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/scripts/$_s" ]; then
         echo "  = scripts/$_s (déjà présent, conservé ; --update-method pour rafraîchir)"
     else
@@ -317,6 +321,15 @@ for _h in _lib.sh hook-pre-write.sh hook-stop-progress.sh; do
 done
 echo "  + .claude/hooks/ (hooks copiés localement, autonomes)"
 
+# Garde-fou Git destructif (A1) : optionnel, projets Code/Hybrid uniquement.
+GIT_HOOK_WIRED=0
+if [ "$TYPE" = "Code" ] || [ "$TYPE" = "Hybrid" ]; then
+    cp "$REPO/scripts/hooks/hook-pre-git.sh" "$TARGET/.claude/hooks/hook-pre-git.sh"
+    chmod +x "$TARGET/.claude/hooks/hook-pre-git.sh"
+    GIT_HOOK_WIRED=1
+    echo "  + .claude/hooks/hook-pre-git.sh (garde-fou Git destructif, Code/Hybrid)"
+fi
+
 # --- Installation de la skill assistant --------------------------------------
 if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/skills/my-project-os/SKILL.md" ]; then
     echo "  = .claude/skills/my-project-os/SKILL.md (déjà présente, conservée)"
@@ -345,12 +358,14 @@ EOF
 
 PRE_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh"'
 STOP_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh"'
+GIT_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh"'
 
 if [ -e "$SETTINGS" ]; then
     if command -v python3 >/dev/null 2>&1; then
-        python3 - "$SETTINGS" "$PRE_CMD" "$STOP_CMD" <<'PY'
+        python3 - "$SETTINGS" "$PRE_CMD" "$STOP_CMD" "$([ "$GIT_HOOK_WIRED" -eq 1 ] && printf '%s' "$GIT_CMD")" <<'PY'
 import json, sys
 path, pre, stop = sys.argv[1], sys.argv[2], sys.argv[3]
+git = sys.argv[4] if len(sys.argv) > 4 else None
 try:
     with open(path) as f:
         cfg = json.load(f)
@@ -370,6 +385,8 @@ def ensure(event, matcher, cmd):
 
 ensure("PreToolUse", "Write", pre)
 ensure("Stop", "", stop)
+if git:
+    ensure("PreToolUse", "Bash", git)
 with open(path, "w") as f:
     json.dump(cfg, f, indent=2, ensure_ascii=False)
     f.write("\n")
@@ -381,8 +398,28 @@ PY
         echo "$HOOKS_BLOCK"
     fi
 else
+if [ "$GIT_HOOK_WIRED" -eq 1 ]; then
+    # Bloc frais avec le garde-fou Git câblé (PreToolUse Bash).
+    cat > "$SETTINGS" <<'EOF'
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Write",
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] },
+      { "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh\"" }] }
+    ],
+    "Stop": [
+      { "matcher": "",
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
+    ]
+  }
+}
+EOF
+else
     printf '%s\n' "$HOOKS_BLOCK" > "$SETTINGS"
-    echo "  + .claude/settings.json (hooks enforcement câblés)"
+fi
+echo "  + .claude/settings.json (hooks enforcement câblés)"
 fi
 
 if [ "$WANT_MERGE" -eq 1 ]; then

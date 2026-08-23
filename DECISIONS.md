@@ -34,17 +34,17 @@
 
 ---
 
-### DEC-0043 — Doctrine Knowledge « carte jamais territoire » : 3 niveaux + zone froide unique dans `99_archive/knowledge/`
+### DEC-0043 — Doctrine Knowledge « le sommaire, pas tout le livre » : 3 niveaux + zone froide unique dans `99_archive/knowledge/`
 
 - **Date** : 2026-08-22
-- **Contexte** : la proposition « Extension Knowledge v2 » (un plan interne, T-PLAN-8) proposait une hiérarchie à 4 niveaux (N1 constitution toujours chargée, N2 méso, N3 micro, N4 archive) inspirée du système de documentation du VPS Hermes. Challengée par quatre modèles (deepseek-pro, ox-alpha, kimi-k3, gpt-5.6-sol — sol indisponible ce jour, quota Codex épuisé), elle a été rejetée en l'état : N1=constitution est une erreur de catégorie (les fichiers sacrés sont Core, hors extension), N4 duplique la zone froide existante, le nommage miroir strict casse des projets équipés, le budget N2 à 500 lignes n'a aucune base terrain (max réel mesuré : 216 lignes chez Projet Zeta). L'utilisateur a reformulé une doctrine en 3 niveaux : la carte (toujours chargée, informe l'agent du contenu du knowledge), les niveaux (chargés à la demande), et le strict nécessaire. Deux modèles (deepseek-pro, ox-alpha) l'ont challengée et consolidée ; l'utilisateur a tranché l'ajout N4 : l'archive knowledge vit dans `99_archive/knowledge/`, pas dans un nouveau dossier `docs/archive/`.
+- **Contexte** : la proposition « Extension Knowledge v2 » (un plan interne, T-PLAN-8) proposait une hiérarchie à 4 niveaux (N1 constitution toujours chargée, N2 méso, N3 micro, N4 archive) inspirée du système de documentation du VPS Hermes. Challengée par quatre modèles (deepseek-pro, ox-alpha, kimi-k3, gpt-5.6-sol — sol indisponible ce jour, quota Codex épuisé), elle a été rejetée en l'état : N1=constitution est une erreur de catégorie (les fichiers sacrés sont Core, hors extension), N4 duplique la zone froide existante, le nommage miroir strict casse des projets équipés, le budget N2 à 500 lignes n'a aucune base terrain (max réel mesuré : 216 lignes chez Projet Zeta). L'utilisateur a reformulé une doctrine en 3 niveaux : le sommaire (toujours chargé, informe l'agent du contenu du knowledge), les niveaux (chargés à la demande), et le strict nécessaire. Deux modèles (deepseek-pro, ox-alpha) l'ont challengée et consolidée ; l'utilisateur a tranché l'ajout N4 : l'archive knowledge vit dans `99_archive/knowledge/`, pas dans un nouveau dossier `docs/archive/`.
 - **Options envisagées** :
   - A. Adopter la v2 telle quelle (4 niveaux, N1=constitution, N4=docs/archive/).
   - B. Doctrine 3 niveaux avec N4 = `docs/archive/` (archive knowledge dans le knowledge).
   - C. Doctrine 3 niveaux avec zone froide unique : N3 révolus → `99_archive/knowledge/<domaine>/<sujet>.md` (provenance conservée), pas de second dossier d'archive.
 - **Choix** : C.
-- **Raison** : la carte n'est pas un niveau — la renommer en « N1 » entrerait en collision avec `01_global/` (vision) déjà en place ; la constitution (PROJECT/PROGRESS/AGENTS/CLAUDE) reste Core, jamais un niveau Knowledge. L'objectif de l'utilisateur (creuser « comment c'était fait » sans perdre l'archive knowledge dans l'archive Core) est satisfait par le sous-dossier `99_archive/knowledge/`, qui conserve la provenance sans créer de seconde zone froide — le RETEX Projet Alpha (le RETEX correspondant) et l'état du VPS (9+ fichiers `.bak` hors archive) prouvent que toute zone froide additionnelle est une dérive en germe. Le chargement de la carte est un rituel agent (AGENTS.md/CLAUDE.md), pas une injection systémique : Hermes n'injecte nativement que les fichiers de contexte racine (AGENTS.md, CLAUDE.md, SOUL.md...), jamais le contenu de `docs/INDEX.md`.
-- **Conséquences** : `templates/extensions/knowledge/docs/kb_governance.md` réécrit sur la doctrine consolidée (carte / vision / domaines / détails / zone froide, règle de chargement, frontmatter enrichi du rôle graphe `depend_de`/`alimente`, budgets carte ≤ 200 cumulés / N1 ≤ 200 / N2 ≤ 300, circulation, anti-dérive, enforcement) ; `structures/knowledge-tree.md` gagne `99_archive/knowledge/` et les règles consolidées ; `scripts/check-project.sh` §8 étendu (budget carte cumulé, liens cassés depuis SUJETS.md, `.bak` hors `99_archive/`, warnings jamais bloquants) ; `AGENTS.md` racine documente la lecture de la carte au démarrage quand Knowledge est active. un plan interne est arbitré — fusion partielle, à marquer. DEC-0042 reste réservée par le plan archivage (multi-progress, non actée).
+- **Raison** : le sommaire n'est pas un niveau — le renommer en « N1 » entrerait en collision avec `01_global/` (vision) déjà en place ; la constitution (PROJECT/PROGRESS/AGENTS/CLAUDE) reste Core, jamais un niveau Knowledge. L'objectif de l'utilisateur (creuser « comment c'était fait » sans perdre l'archive knowledge dans l'archive Core) est satisfait par le sous-dossier `99_archive/knowledge/`, qui conserve la provenance sans créer de seconde zone froide — le RETEX Projet Alpha (le RETEX correspondant) et l'état du VPS (9+ fichiers `.bak` hors archive) prouvent que toute zone froide additionnelle est une dérive en germe. Le chargement du sommaire est un rituel agent (AGENTS.md/CLAUDE.md), pas une injection systémique : Hermes n'injecte nativement que les fichiers de contexte racine (AGENTS.md, CLAUDE.md, SOUL.md...), jamais le contenu de `docs/INDEX.md`.
+- **Conséquences** : `templates/extensions/knowledge/docs/kb_governance.md` réécrit sur la doctrine consolidée (sommaire / vision / domaines / détails / zone froide, règle de chargement, frontmatter enrichi du rôle graphe `depend_de`/`alimente`, budgets sommaire ≤ 200 cumulés / N1 ≤ 200 / N2 ≤ 300, circulation, anti-dérive, enforcement) ; `structures/knowledge-tree.md` gagne `99_archive/knowledge/` et les règles consolidées ; `scripts/check-project.sh` §8 étendu (budget sommaire cumulé, liens cassés depuis SUJETS.md, `.bak` hors `99_archive/`, warnings jamais bloquants) ; `AGENTS.md` racine documente la lecture du sommaire au démarrage quand Knowledge est active. un plan interne est arbitré — fusion partielle, à marquer. DEC-0042 reste réservée par le plan archivage (multi-progress, non actée). Vocabulaire « carte / territoire » renommé en « sommaire / livre » le même jour à la demande de l'utilisateur (CHG-20260822-1745).
 - **Liens** : CHG-20260822-0918.
 
 ---
@@ -502,6 +502,41 @@
 - **Raison** : un versionnement sans détection concrète est creux. L'empreinte dit « sur quelle version je suis né » ; la conformité de contenu dit « est-ce que je respecte vraiment les conventions courantes ». Les deux se complètent.
 - **Conséquences** : `check-project.sh` gagne une section « Format de date » ; version portée à `0.2.0` (nouvelle capacité = évolution mineure). D'autres contrôles de conformité pourront s'ajouter sur le même principe.
 - **Liens** : CHG-20260614-2100.
+
+### DEC-0046 — Clôture déterministe des itérations Code (A4 du plan Pro Workflow)
+
+- **Date** : 2026-08-23 (arbitrage humain en session, l'utilisateur).
+- **Contexte** : le hook Stop vérifie la fraîcheur de PROGRESS.md, mais rien ne prouve qu'une itération Code se termine avec les validations attendues — des sessions se fermaient avec du code modifié et un état documentaire obsolète.
+- **Décisions tranchées** :
+  1. **Déclaration des commandes de validation** : dans `TEST_PLAN.md` quand il existe ; sinon A4 ne vérifie que l'état documentaire, sans exigence artificielle pour les projets documentaires (critère explicite du plan).
+  2. **Fermeté** : tout informatif sauf deux bloquants — fichiers modifiés non consignés dans PROGRESS.md, PROGRESS périmé. Un check de clôture ne bloque pas sur des tests qu'il ne peut pas juger.
+  3. **Déclenchement** : commande explicite `sh scripts/check-iteration.sh` lancée par l'agent en clôture (étape ajoutée au mode 4 de la skill). Pas de hook automatique sans RETEX démontrant que ce n'est pas trop bruyant.
+- **Conséquences** : nouveau `scripts/check-iteration.sh`, posé par `init-project.sh` (manifest), câblé au mode Clôture de la skill, documenté dans `docs/enforcement.md`. Matrice testée en réel : 4 scénarios (itération propre exit 0, fichier non consigné exit 1, PROGRESS périmé exit 1, projet documentaire sans git/TEST_PLAN exit 0 sans exigence technique).
+- **Liens** : CHG-20260823-0845, plan Pro Workflow A4.
+
+### DEC-0045 — Détection locale de secrets (A2 du plan Pro Workflow)
+
+- **Date** : 2026-08-23 (arbitrage humain en session, l'utilisateur).
+- **Contexte** : la gouvernance des secrets était documentée (BWS/SOPS, `secrets.sh`) mais aucun contrôle générique n'empêchait la persistance accidentelle d'un secret dans les fichiers suivis par git d'un projet.
+- **Décisions tranchées** (trois questions ouvertes du plan) :
+  1. **Périmètre** : option transverse, tous types de projets — un `.env` fuit aussi dangereusement en Life qu'en Code.
+  2. **Fermeté** : deux niveaux. Bloquer les formes certaines (PEM, préfixes de tokens connus) ; avertir sur les affectations suspectes et fichiers à risque. Justification de l'asymétrie : un faux blocage coûte dix secondes de dérogation, un avertissement manqué coûte une clé compromise irrévocablement poussée. Cohérent avec la fermeté hybride existante.
+  3. **Faux positifs** : fichier d'exclusion explicite `.myprojectos/secrets-allow`, un chemin par ligne — porte étroite et auditable, pas de commentaire inline dispersé dans les fichiers.
+- **Choix d'implémentation** : contrôle à la demande (`check-secrets.sh` appelé par `check-project.sh` section 13), pas de hook temps réel (analyse de contenu avant chaque Write trop coûteuse et bruyante). Valeur jamais affichée dans la sortie.
+- **Conséquences** : nouveau `scripts/check-secrets.sh`, posé par `init-project.sh` (manifest `--update-method`), documenté dans `docs/enforcement.md`. Matrice testée 11/11 en réel (détection PEM/ghp_/AKIA/sk-, aucune valeur exposée, exclusions fonctionnelles). Limites assumées : signatures lexicales, couverture des fichiers suivis git seulement.
+- **Liens** : CHG-20260823-0041, plan Pro Workflow A2.
+
+### DEC-0044 — Garde-fou Git destructif (A1 du plan Pro Workflow)
+
+- **Date** : 2026-08-22 (arbitrage humain en session, l'utilisateur).
+- **Contexte** : les règles documentaires seules n'interceptent pas une commande Git destructrice générée par l'agent (`push --force`, `reset --hard`, `clean -fd`, `branch -D`, rebase de branche partagée). Risque principal pour un utilisateur non-développeur.
+- **Décisions tranchées** (trois questions ouvertes du plan) :
+  1. **Matrice** : les 5 irréversibles ci-dessus sont bloquées ; `checkout -- .`, `stash drop/clear` restent hors matrice (avertissement documentaire suffisant, faux positifs trop fréquents).
+  2. **Dérogation** : ponctuelle et traçable — validation humaine en session, réexécution avec `MYPROJECTOS_GIT_OVERRIDE=1`, consignation exigée dans le CHANGELOG du projet. Pas de fichier de dérogation persistant (porte ouverte à la dérive).
+  3. **Périmètre** : hook temps réel Claude Code (PreToolUse Bash), activation optionnelle Code/Hybrid uniquement ; contrôle portable à la demande via `check-project.sh` pour Hermès/Codex (le hook ne prétend pas couvrir leurs runtimes).
+- **Raison** : bloquer ce qui est clair et irréversible, avertir sans piéger sur ce qui relève du jugement — cohérent avec la fermeté hybride de `docs/enforcement.md`. La dérogation par variable d'environnement ne peut pas être posée en dur silencieusement : elle exige une action explicite de l'agent dans la session, donc une trace.
+- **Conséquences** : nouveau `scripts/hooks/hook-pre-git.sh`, câblage optionnel dans `init-project.sh` (Code/Hybrid), sous-section « Hooks » de `check-project.sh` étendue, `docs/enforcement.md` complété. Matrice testée 14/14 en réel (7 commandes sûres passent, 6 destructrices bloquées, dérogation fonctionnelle). Limite assumée : garde-fou lexical, pas parser shell complet.
+- **Liens** : CHG-20260823-0007, plan Pro Workflow A1.
 
 ### DEC-0015 — Versionnement de la méthode en SemVer simplifié, démarrage à 0.1.0
 

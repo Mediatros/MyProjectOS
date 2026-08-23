@@ -96,6 +96,48 @@ Il signale, sans rien modifier :
 
 Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de sortie 1 s'il existe au moins un bloquant, 0 sinon. Comme les hooks, le script reste informatif et ne bloque jamais un flux de travail.
 
+## Garde-fou Git destructif — `hook-pre-git.sh` (PreToolUse `Bash`, optionnel Code/Hybrid)
+
+Origine : A1 du plan Pro Workflow (CHG-20260822-XXXX). Les règles documentaires seules n'interceptent pas une commande Git destructrice générée par l'agent — risque principal pour un utilisateur non-développeur.
+
+- **Quand** : avant toute commande Bash contenant un `git` (chaque segment d'une commande composée est évalué séparément).
+- **Bloque** (matrice des 5 irréversibles, DEC-0044) :
+  - `git push --force` / `-f` (alternative proposée : `--force-with-lease`) ;
+  - `git reset --hard` (alternatives : `git stash`, commit avant reset) ;
+  - `git clean -fd` / `-x` et variantes (alternative : `git clean -nd` pour prévisualiser) ;
+  - `git branch -D` (alternative : `git branch -d`, qui refuse si non fusionnée) ;
+  - `git rebase` d'une branche présente sur `origin/` (alternative : `git merge`). Le rebase interactif ou `--onto` reste hors matrice (jugement).
+- **Dérogation** : ponctuelle et traçable. L'humain valide en session, puis l'agent relance avec `MYPROJECTOS_GIT_OVERRIDE=1` ; le hook affiche un rappel de consigner l'opération dans `CHANGELOG.md` (entrée `CHG-`). Aucune variable d'environnement posée en dur ne neutralise le contrôle silencieusement.
+- **Fermeté** : bloquant sur la matrice, jamais sur le reste. Commandes sûres (`status`, `diff`, `add`, `commit`, `push` simple, `branch -d`, `reset` doux) non affectées.
+- **Activation** : optionnelle, projets Code/Hybrid uniquement (`init-project.sh` copie et câble le hook ; Core et Life n'y ont pas droit).
+- **Couverture multi-agents** : le hook temps réel ne couvre que Claude Code (protocole PreToolUse). Pour Hermès et Codex, `check-project.sh` (section 12) signale un projet Code/Hybrid sans `hook-pre-git.sh` — le contrôle y reste documentaire, à la demande.
+- **Limite assumée** : le hook est un garde-fou lexical, pas un parser shell complet (guillemets complexes, alias git, sous-shells imbriqués peuvent l'échapper). Il ne remplace pas la prudence, il intercepte les cas évidents.
+- **Rollback** : retirer `.claude/hooks/hook-pre-git.sh` et son entrée du `.claude/settings.json` du projet.
+
+## Clôture déterministe d'itération — `check-iteration.sh` (A4, DEC-0046)
+
+Commande **explicite** (`sh scripts/check-iteration.sh`), lancée par l'agent en clôture d'une itération Code/Hybrid (étape 4 du mode 4 de la skill). Jamais branchée au hook Stop : un contrôle automatique à chaque fin de réponse serait trop bruyant ; il faudra un RETEX démontrant le contraire.
+
+- **Vérifie** : dépôt git propre ; fichiers modifiés consignés dans `PROGRESS.md` ; fraîcheur de `PROGRESS.md` ; prochaine action déclarée ; si `TEST_PLAN.md` existe, rappel des commandes de validation à exécuter.
+- **Bloque** seulement deux cas (arbitrage l'utilisateur) : fichiers modifiés absents de `PROGRESS.md`, et `PROGRESS.md` périmé (> 14 jours). Tout le reste est informatif — un check de clôture ne juge pas des tests qu'il ne peut pas évaluer.
+- **Aucune exigence artificielle** pour les projets documentaires : sans git ni TEST_PLAN, la section correspondante est silencieuse.
+- **Rollback** : retirer `scripts/check-iteration.sh` du projet et son entrée du manifest.
+
+## Détection locale de secrets — `check-secrets.sh` (A2, DEC-0045)
+
+Posé par `init-project.sh` à côté de `check-project.sh`, appelé par sa section 13. Contrôle **à la demande** (pas de hook temps réel : l'analyse de contenu avant chaque Write serait trop coûteuse et trop bruyante).
+
+- **Bloque** (formes certaines) : clés privées PEM, tokens à préfixe connu (`ghp_`/`gho_`/`ghs_` GitHub, `sk-[proj-]…` OpenAI, `AKIA…` AWS, `xox…` Slack, `AIza…` Google, `sk_live_`/`rk_live_` Stripe). Un secret certain = code de sortie 1 + bloquant dans le bilan du check.
+- **Avertit** (suspect mais incertain) : affectations `password=`/`api_key=`/etc. avec valeur plausible ; fichiers `.env*`, `*.env`, `*.pem`, `*.key` suivis par git.
+- **Jamais la valeur affichée** : type de secret, fichier, ligne. La sortie ne fuit pas ce qu'elle détecte.
+- **Exclusions** : `.myprojectos/secrets-allow` (un chemin relatif par ligne), pour fixtures factices et exemples documentés — porte étroite, explicite, auditable.
+- **Limites assumées** : signatures lexicales (un token sans préfixe standard passe) ; scan des fichiers suivis/candidats git seulement ; ne remplace ni BWS/SOPS (stockage) ni une revue de staging.
+- **Rollback** : retirer `scripts/check-secrets.sh` du projet et son entrée du manifest.
+
+## Inventaire de l'enforcement — section « Hooks » de `check-project.sh`
+
+Depuis le plan Pro Workflow (A6, CHG-20260822-2354), `check-project.sh` expose la surface d'enforcement réellement installée dans un projet (section 12) : chaque hook câblé dans `.claude/settings.json` doit exister dans `.claude/hooks/`, et réciproquement tout script de hooks non câblé est signalé (`_lib.sh`, bibliothèque sourcée, est hors périmètre). Les écarts sont des avertissements, jamais des bloquants — un hook absent dégrade en contrôle documentaire, il ne doit pas empêcher de travailler. Extraction des commandes sans dépendance obligatoire : `python3` ou `jq` si présents, sinon `grep`. Limite assumée : l'inventaire décrit le câblage Claude Code ; il ne prouve pas qu'un agent tiers (Hermès, Codex) exécute ces contrôles.
+
 ## Protocole des hooks (référence)
 
 - **Bloquer** (PreToolUse) : émettre sur stdout
