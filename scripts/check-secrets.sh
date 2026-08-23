@@ -24,7 +24,8 @@ is_allowed() {
 }
 
 # Fichiers à examiner : tout sauf zones d'exclusion standard.
-FILES=$(git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f -not -path './.git/*' -not -path './99_archive/*' -not -path './node_modules/*' | sed 's|^\./||')
+# .venv est du code tiers (jamais des secrets du projet), exclu comme node_modules.
+FILES=$(git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f -not -path './.git/*' -not -path './99_archive/*' -not -path './node_modules/*' -not -path './.venv/*' -not -path '*/.venv/*' | sed 's|^\./||')
 
 for f in $FILES; do
     # Binaires ignorés.
