@@ -17,6 +17,19 @@ is_project_os "$PROJECT_DIR" || exit 0
 CMD=$(json_field "tool_input.command")
 [ -n "$CMD" ] || exit 0
 
+# Règle immuable (DEC-0049), sans dérogation : l'identité de contribution est
+# celle du titulaire du dépôt. Un message de commit qui porte un trailer ou une
+# mention d'agent est refusé. Limite connue : un message passé par -F <fichier>
+# n'est pas inspecté.
+case "$CMD" in
+    *git*commit*)
+        case "$CMD" in
+            *[Cc]o-[Aa]uthored-[Bb]y*|*Claude-Session*|*noreply@anthropic.com*|*claude.ai/code/session*)
+                deny "MyProjectOS : commit refusé, le message porte un trailer ou une mention d'agent (Co-Authored-By, Claude-Session). Règle immuable DEC-0049 : tout commit porte l'identité du titulaire du dépôt. Retire le trailer et relance ; aucune dérogation." ;;
+        esac
+        ;;
+esac
+
 # Dérogation explicite : l'humain a validé dans la session.
 case "$MYPROJECTOS_GIT_OVERRIDE" in
     1)

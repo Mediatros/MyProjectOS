@@ -6,7 +6,7 @@ Ce document rassemble ce qui était jusqu'ici éparpillé entre le squelette, le
 
 ## Le problème
 
-Une skill écrite sur un Mac finit sur toutes les machines du projet dès que le dossier est synchronisé. Elle y est proposée à l'agent, puis elle échoue, parce qu'elle appelle un binaire absent ou lit un trousseau qui n'existe pas. Cas réel : huit skills d'un projet passé de `LOCAL/` à `SYNC/` sont devenues muettes d'un coup côté VPS (voir le RETEX correspondant).
+Une skill écrite sur un Mac finit sur toutes les machines du projet dès que le dossier est synchronisé. Elle y est proposée à l'agent, puis elle échoue, parce qu'elle appelle un binaire absent ou lit un trousseau qui n'existe pas. Cas réel : huit skills d'un projet passé de `LOCAL/` à `SYNC/` sont devenues muettes d'un coup côté VPS (un RETEX de l'atelier).
 
 Trois questions en découlent, et ce document répond aux trois.
 

@@ -39,7 +39,7 @@
 - `plan/active/` — plans validés ou en cours.
 - `plan/ideas/` — plans candidats.
 - `plan/archived/` — plans terminés, abandonnés ou remplacés.
-- un plan interne — modèle de plan Knowledge.
+- `plan/templates/plan_template.md` — modèle de plan Knowledge.
 
 ## Règle rapide
 

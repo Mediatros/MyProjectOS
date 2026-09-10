@@ -9,7 +9,7 @@
 - **Phase 3 — Skill assistant.** Le cœur : modes reprise / orientation / explication / clôture, initialisation de projet, fichiers `agents/`.
 - **Phase 4 — Enforcement (hooks) + script d'init.** Rendre les règles non négociables automatiques. `scripts/init-project.sh`.
 - **Phase 5 — Intégration Harness + emprunts Spec Kit.** Colonne vertébrale Code, constitution et réflexe clarify en Markdown.
-- **Phase 6 — Banc d'essai Projet Zeta.** Valider la méthode sur un vrai projet, ajuster.
+- **Phase 6 — Banc d'essai sur un projet Code réel.** Valider la méthode sur un vrai projet, ajuster.
 
 ## Reporté
 

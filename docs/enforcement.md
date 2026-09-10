@@ -44,11 +44,11 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 
 ### 4. Dossiers racine — `hook-pre-write.sh` (même hook)
 - **Bloque** l'écriture d'un fichier dont le premier segment de chemin créerait un dossier racine **quasi-doublon** d'un dossier existant : noms équivalents après normalisation (accents translittérés, minuscules, tirets ramenés aux underscores, `s` final retiré), par exemple `99_archives/` à côté de `99_archive/`. Dossiers cachés hors périmètre.
-- Origine : un RETEX terrain où un tel doublon a vécu deux jours sans détection. Le contrôle à la demande équivalent (quasi-doublons + collisions de préfixe `NN_`) vit dans `check-project.sh`, section « Dossiers racine ».
+- Origine : RETEX d'un projet Life (un RETEX de l'atelier), où un tel doublon a vécu deux jours sans détection. Le contrôle à la demande équivalent (quasi-doublons + collisions de préfixe `NN_`) vit dans `check-project.sh`, section « Dossiers racine ».
 
 ### 5. Organisation thématique (Life/Hybrid) — `hook-pre-write.sh` (même hook)
 - **Avertit** (`systemMessage`, ne bloque pas) : écrire un nouveau fichier `.md` à la racine d'un projet Life ou Hybrid (`type:` du frontmatter `PROJECT.md`), alors que `02_sujets/` n'existe pas encore et que le compte de fichiers `.md` thématiques à la racine (hors fichiers sacrés et extensions connues) atteint ou dépasse 5 avec ce fichier.
-- Origine : un RETEX terrain — l'accumulation n'avait été repérée que visuellement par l'utilisateur, sans aucun garde-fou en temps réel (DEC-0032). Le contrôle à la demande équivalent vit dans `check-project.sh`, section « 2ter ».
+- Origine : un RETEX de l'atelier — l'accumulation n'avait été repérée que visuellement par l'utilisateur, sans aucun garde-fou en temps réel (DEC-0032). Le contrôle à la demande équivalent vit dans `check-project.sh`, section « 2ter ».
 - **Fermeté** : avertissement, pas blocage — ranger par sujet reste un jugement humain, comme pour la fraîcheur de `PROGRESS.md`.
 
 ## Câblage
@@ -119,7 +119,7 @@ Origine : A1 du plan Pro Workflow (CHG-20260822-XXXX). Les règles documentaires
 Commande **explicite** (`sh scripts/check-iteration.sh`), lancée par l'agent en clôture d'une itération Code/Hybrid (étape 4 du mode 4 de la skill). Jamais branchée au hook Stop : un contrôle automatique à chaque fin de réponse serait trop bruyant ; il faudra un RETEX démontrant le contraire.
 
 - **Vérifie** : dépôt git propre ; fichiers modifiés consignés dans `PROGRESS.md` ; fraîcheur de `PROGRESS.md` ; prochaine action déclarée ; si `TEST_PLAN.md` existe, rappel des commandes de validation à exécuter.
-- **Bloque** seulement deux cas (arbitrage l'utilisateur) : fichiers modifiés absents de `PROGRESS.md`, et `PROGRESS.md` périmé (> 14 jours). Tout le reste est informatif — un check de clôture ne juge pas des tests qu'il ne peut pas évaluer.
+- **Bloque** seulement deux cas (arbitrage humain) : fichiers modifiés absents de `PROGRESS.md`, et `PROGRESS.md` périmé (> 14 jours). Tout le reste est informatif — un check de clôture ne juge pas des tests qu'il ne peut pas évaluer.
 - **Aucune exigence artificielle** pour les projets documentaires : sans git ni TEST_PLAN, la section correspondante est silencieuse.
 - **Rollback** : retirer `scripts/check-iteration.sh` du projet et son entrée du manifest.
 

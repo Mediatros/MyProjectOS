@@ -126,9 +126,17 @@ Pour un projet sans empreinte `version_methode` (signalé par les deux checks) :
 
 ## Procédure pour publier une nouvelle version
 
+La méthode est développée dans un atelier privé et publiée sur une vitrine publique générée (DEC-0048) : les étapes 1 à 6 se font dans l'atelier, les étapes 7 et 8 produisent et publient la vitrine.
+
 1. Décider la partie à incrémenter (MAJEUR / MINEUR / CORRECTIF) selon la règle ci-dessus.
-2. Écrire le nouveau numéro dans `VERSION`.
-3. Ajouter une entrée datée dans `CHANGELOG.md` (`CHG-`) et une ligne dans la section « Releases » (c'est elle que `check-update.sh` montre aux projets).
+2. Écrire le nouveau numéro dans `VERSION` et dans `version_methode` de `PROJECT.md` (le dépôt méthode n'est pas un projet installé : `--update-method` ne s'applique pas à lui-même).
+3. Ajouter une entrée datée dans `CHANGELOG.md` (`CHG-`) : c'est le registre privé, avec la preuve terrain (projet concerné, mesures, RETEX). Puis une ligne dans la section « Releases », **rédigée pour la vitrine** : c'est le texte que `check-update.sh` montre aux projets et le corps du commit public.
+   - Destinataire : quelqu'un qui découvre ou utilise la méthode (client, recruteur, adoptant), pas nous.
+   - Contenu : le mécanisme concerné et ce que ça change pour lui ; renvoi `DEC-` si structurant. Style libre, une ligne, phrases courtes.
+   - Interdits : nom de projet, de personne ou de RETEX, chemin de machine, mesure terrain (tout cela vit dans le `CHG-`). `publish-mirror.sh` refuse la publication s'il en trouve.
+   - Format conservé : `- **vX.Y.Z** — YYYY-MM-DD — texte` (c'est ce que `check-update.sh` lit).
 4. Si le choix est structurant, le consigner dans `DECISIONS.md` (`DEC-`).
-5. Commiter, poser le tag `git tag vX.Y.Z`, pousser (`git push && git push origin vX.Y.Z`).
-6. Créer la release GitHub associée : `gh release create vX.Y.Z --title "..." --notes "..."` (mêmes apports que la ligne Releases).
+5. **Revue de la présentation publique** : relire `README.md` et les docs touchées par la version avec une seule question, « est-ce lisible et présentable tel quel par un tiers ? ». Mettre à jour ce qui ne l'est plus (fonctionnalité nouvelle absente du README, doc qui décrit un ancien comportement). Cette étape fait partie de la release, elle n'est pas optionnelle.
+6. Commiter, poser le tag `git tag vX.Y.Z`, pousser sur l'atelier (`git push && git push origin vX.Y.Z`). Identité de contribution : celle du titulaire du dépôt, sans trailer (DEC-0049).
+7. `sh scripts/publish-mirror.sh` : export de l'allowlist, substitutions, contrôles bloquants (termes interdits, secrets, exemples, ligne Releases présente), commit (sujet `vX.Y.Z`, corps = ligne Releases) et tag sous l'identité de `.myprojectos/publish/author.txt`, dans un clone temporaire de la vitrine. Le script s'arrête avant le push et affiche les commandes.
+8. Relire le diff, pousser la vitrine, créer la release GitHub avec le fichier de notes produit par le script (`gh release create vX.Y.Z --repo Mediatros/MyProjectOS --title "vX.Y.Z" --notes-file …`). Le README de la vitrine reçoit son numéro de version à l'export : ne pas l'éditer à la main.

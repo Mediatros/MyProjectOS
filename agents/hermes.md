@@ -41,7 +41,7 @@ platforms: [macos, linux]
 
 Valeurs reconnues : `macos`, `linux`, `windows`. Champ absent ou vide égale compatible partout, donc rétrocompatible. Le filtre agit au moment de l'offre : un chargement explicite le contourne. Vérifié par exécution le 2026-08-07 (6 cas sur 6, DEC-0037).
 
-C'est le filet contre le scénario du RETEX Projet Gamma : une skill écrite pour macOS qui arrive sur un VPS Linux par synchronisation, est proposée, puis échoue. Avec `platforms: [macos]`, elle n'est jamais proposée. Claude Code et Codex ne lisent pas ce champ.
+C'est le filet contre le scénario du RETEX d'un projet Code+Knowledge : une skill écrite pour macOS qui arrive sur un VPS Linux par synchronisation, est proposée, puis échoue. Avec `platforms: [macos]`, elle n'est jamais proposée. Claude Code et Codex ne lisent pas ce champ.
 
 Un second champ existe, `environments:` (`kanban`, `docker`, `s6`), **écarté du canon MyProjectOS** : ses valeurs sont internes à l'infrastructure Hermès, et sa détection s'est révélée en faux positif au test (un hôte où Docker est simplement installé est vu comme un conteneur). Un tag non reconnu n'y écarte jamais la skill, donc une faute de frappe n'y filtre rien en silence.
 

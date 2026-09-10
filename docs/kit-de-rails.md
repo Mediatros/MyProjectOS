@@ -56,4 +56,4 @@ L'IA ne « devine » plus l'architecture : elle suit un rail explicite. Le porte
 
 ## Portée
 
-Chaque kit est propre à un type de stack. Le repo méthode fournit le format ; les kits concrets se construisent au fil des projets réels (premier banc d'essai : Projet Zeta, phase 6).
+Chaque kit est propre à un type de stack. Le repo méthode fournit le format ; les kits concrets se construisent au fil des projets réels (premier banc d'essai : un projet Code, phase 6).

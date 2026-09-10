@@ -396,7 +396,7 @@ EOF_KBBK
 fi
 
 # --- 9. Dossiers racine : quasi-doublons et collisions de préfixe -------------
-# RETEX Projet Alpha (2026-07-09) : 99_archives/ a vécu deux jours à côté de
+# RETEX d'un projet Life (2026-07-09) : 99_archives/ a vécu deux jours à côté de
 # 99_archive/ sans qu'aucun contrôle ne s'en aperçoive. On compare les dossiers
 # de premier niveau après normalisation (norm_dirname). Pas de liste blanche :
 # les projets étendent légitimement le canon. Avertissement, jamais bloquant.

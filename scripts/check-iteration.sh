@@ -3,7 +3,7 @@
 # Usage : sh scripts/check-iteration.sh [chemin-projet]   (défaut : dossier courant)
 # Lancé explicitement par l'agent en fin d'itération Code/Hybrid. Jamais branché
 # au hook Stop sans RETEX démontrant que ce n'est pas trop bruyant.
-# Tout est informatif sauf deux cas bloquants (arbitrage l'utilisateur, DEC-0046) :
+# Tout est informatif sauf deux cas bloquants (arbitrage humain, DEC-0046) :
 #   - fichiers modifiés non consignés dans PROGRESS.md ;
 #   - PROGRESS.md périmé (> 14 jours).
 # Sortie lisible par un non-développeur. Code 1 seulement si bloquant.

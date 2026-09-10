@@ -42,7 +42,7 @@ case "$REL" in
 esac
 
 # Dossiers racine : écrire dans un dossier de premier niveau qui n'existe pas
-# encore et dont le nom est un quasi-doublon (RETEX Projet Alpha : 99_archives/
+# encore et dont le nom est un quasi-doublon (RETEX d'un projet Life : 99_archives/
 # créé à côté de 99_archive/, deux jours de dérive) ou une collision de
 # préfixe numérique NN_ (ex. 98_config à côté de 98_configuration, RETEX
 # 98_configuration) avec un dossier existant est refusé.
