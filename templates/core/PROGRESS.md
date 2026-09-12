@@ -1,6 +1,6 @@
 ---
 projet: <NomDuProjet>
-type: Life | Code | Hybrid
+type: Core | Life | Code | Hybrid
 statut: actif | en pause | clôturé
 derniere_maj: YYYY-MM-DD
 prochaine_action: <la prochaine action concrète, en une ligne>

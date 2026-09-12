@@ -32,13 +32,27 @@ if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/n
     fi
 
     # --- 2. Fichiers modifiés consignés dans PROGRESS.md (bloquant) ------------
-    _modified=$(git status --porcelain 2>/dev/null | awk '{print $NF}' | grep -v '^\.claude' || true)
+    # Le chemin commence à la 4e colonne du format porcelain (2 caractères d'état
+    # + une espace) : le découper ainsi plutôt que par le dernier champ, sinon un
+    # chemin contenant une espace est tronqué à son dernier mot.
+    _modified=$(git status --porcelain 2>/dev/null | cut -c4- | grep -v '^\.claude' || true)
     if [ -n "$_modified" ] && [ -f PROGRESS.md ]; then
         _unconsigned=0
-        for f in $_modified; do
+        # Lecture ligne par ligne (et non mot par mot) pour la même raison.
+        # Here-document et non pipe : le compteur doit vivre dans le shell courant.
+        while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            # Un renommage s'écrit « ancien -> nouveau » : c'est le nouveau qui compte.
+            case "$f" in *" -> "*) f=${f##* -> } ;; esac
+            # git entoure de guillemets un chemin contenant une espace ou un
+            # caractère non ASCII : les retirer, sinon le nom cherché dans
+            # PROGRESS.md porte un guillemet et ne correspond jamais.
+            case "$f" in \"*\") f=${f#\"}; f=${f%\"} ;; esac
             grep -qF "$(basename -- "$f")" PROGRESS.md || { fail "$(basename -- "$f") modifié mais absent de PROGRESS.md — mets l'état à jour"; _unconsigned=1; }
-        done
-        [ "$_unconsigned" -eq 0 ] && [ -n "$_modified" ] && ok "changements reflétés dans PROGRESS.md"
+        done <<EOF_MOD
+$_modified
+EOF_MOD
+        [ "$_unconsigned" -eq 0 ] && ok "changements reflétés dans PROGRESS.md"
     fi
 else
     echo "  [i]    hors dépôt git : contrôle d'état git ignoré"

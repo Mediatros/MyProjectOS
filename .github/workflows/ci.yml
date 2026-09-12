@@ -17,7 +17,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq shellcheck
-          shellcheck -s sh -S warning install.sh scripts/*.sh scripts/hooks/*.sh
+          shellcheck -s sh -S warning install.sh scripts/*.sh scripts/hooks/*.sh scripts/tests/*.sh
 
   smoke:
     name: Tests de fumée
@@ -63,3 +63,6 @@ jobs:
 
       - name: Le repo méthode respecte sa propre gouvernance (dogfooding)
         run: sh scripts/check-project.sh .
+
+      - name: Garde-fou Git (matrice)
+        run: sh scripts/tests/test-hook-pre-git.sh

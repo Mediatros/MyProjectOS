@@ -41,6 +41,9 @@ cell() {
 
 # Collecte les lignes dans un fichier temporaire pour pouvoir trier.
 TMP=$(mktemp 2>/dev/null || printf '%s' "${TMPDIR:-/tmp}/posai-index.$$")
+# Nettoyage même si le script est interrompu : sans ce trap, un Ctrl-C laisse le
+# fichier temporaire derrière lui (le rm final, lui, ne s'exécute jamais).
+trap 'rm -f "$TMP"' EXIT HUP INT TERM
 : > "$TMP"
 COUNT=0
 

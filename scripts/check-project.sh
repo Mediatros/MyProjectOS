@@ -66,9 +66,14 @@ echo "Projet : $(basename -- "$(cd "$TARGET" && pwd)")  —  type déclaré : $T
 # ces dossiers, l'exclusion ne s'applique donc qu'au repo méthode.
 # 99_archive/ est exclu depuis DEC-0041 : zone froide, consultée sur demande,
 # dont les identifiants CHG-/DEC- ne doivent pas déclencher « cité non défini ».
-EXCLUDES=""
+# Exclusions valables pour TOUT projet : code tiers (un projet Code scannerait
+# sinon ses dépendances : lenteur et faux positifs) et dossiers de skills, qui
+# sont des instructions d'agent distribuées par le dépôt méthode, pas des
+# documents du projet — leurs placeholders et leurs identifiants DEC-/CHG-
+# appartiennent au registre du dépôt méthode, pas à celui du projet cible.
+EXCLUDES="--exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=vendor --exclude-dir=skills"
 if [ -d "$TARGET/templates/core" ] && [ -f "$TARGET/structures/core-tree.md" ]; then
-    EXCLUDES="--exclude-dir=templates --exclude-dir=examples --exclude-dir=PLAN --exclude-dir=99_archive --exclude=NAMING-CONVENTIONS.md"
+    EXCLUDES="$EXCLUDES --exclude-dir=templates --exclude-dir=examples --exclude-dir=PLAN --exclude-dir=99_archive --exclude=NAMING-CONVENTIONS.md"
     echo "  (repo méthode détecté : gabarits, exemples, PLAN/ et 99_archive/ exclus des scans de contenu)"
 fi
 
@@ -230,8 +235,12 @@ check_refs() {
     _re=$1; _reg=$2; _defprefix=$3
     [ -f "$TARGET/$_reg" ] || { warn "$_reg absent : références non vérifiables"; return; }
     _defined=$(grep -hoE "$_re" "$TARGET/$_reg" 2>/dev/null | sort -u)
+    # RETEX/ est exclu des citations : un retour d'expérience relate ce qui s'est
+    # passé ailleurs et cite légitimement des identifiants d'autres projets (ex.
+    # CHG-20260714-1945, entrée du CHANGELOG de un projet Life). Son propre suivi de
+    # clôture est contrôlé par la section 11, pas ici.
     # shellcheck disable=SC2086
-    _cited=$(grep -rhoE "$_re" "$TARGET" --include="*.md" $EXCLUDES 2>/dev/null | sort -u)
+    _cited=$(grep -rhoE "$_re" "$TARGET" --include="*.md" --exclude-dir=RETEX $EXCLUDES 2>/dev/null | sort -u)
     _missing=0
     for id in $_cited; do
         if ! printf '%s\n' "$_defined" | grep -qx "$id"; then

@@ -100,18 +100,21 @@ Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de s
 
 Origine : A1 du plan Pro Workflow (CHG-20260822-XXXX). Les règles documentaires seules n'interceptent pas une commande Git destructrice générée par l'agent — risque principal pour un utilisateur non-développeur.
 
-- **Quand** : avant toute commande Bash contenant un `git` (chaque segment d'une commande composée est évalué séparément).
+- **Quand** : avant toute commande Bash contenant un `git` (chaque segment d'une commande composée, délimité par `&&`, `||`, `;` ou `|`, est évalué séparément). Les préfixes d'environnement (`FOO=bar git…`) et les enveloppes (`env`, `command`, `exec`, `nohup`, `time`, `sudo`) sont retirés avant l'analyse. Les commandes enveloppées dans `sh -c "…"` (ou `bash -c`, `zsh`, `dash`) sont dépliées et réanalysées, jusqu'à trois niveaux de profondeur.
 - **Bloque** (matrice des 5 irréversibles, DEC-0044) :
   - `git push --force` / `-f` (alternative proposée : `--force-with-lease`) ;
   - `git reset --hard` (alternatives : `git stash`, commit avant reset) ;
   - `git clean -fd` / `-x` et variantes (alternative : `git clean -nd` pour prévisualiser) ;
   - `git branch -D` (alternative : `git branch -d`, qui refuse si non fusionnée) ;
   - `git rebase` d'une branche présente sur `origin/` (alternative : `git merge`). Le rebase interactif ou `--onto` reste hors matrice (jugement).
+
+  La détection se fait par token exact et non par sous-chaîne : un nom de branche contenant `-f` (`release-final`) n'est pas bloqué, pas plus que `--force-with-lease` ou `--force-if-includes`, et une prévisualisation `git clean -n…` n'est jamais bloquée.
 - **Dérogation** : ponctuelle et traçable. L'humain valide en session, puis l'agent relance avec `MYPROJECTOS_GIT_OVERRIDE=1` ; le hook affiche un rappel de consigner l'opération dans `CHANGELOG.md` (entrée `CHG-`). Aucune variable d'environnement posée en dur ne neutralise le contrôle silencieusement.
 - **Fermeté** : bloquant sur la matrice, jamais sur le reste. Commandes sûres (`status`, `diff`, `add`, `commit`, `push` simple, `branch -d`, `reset` doux) non affectées.
 - **Activation** : optionnelle, projets Code/Hybrid uniquement (`init-project.sh` copie et câble le hook ; Core et Life n'y ont pas droit).
 - **Couverture multi-agents** : le hook temps réel ne couvre que Claude Code (protocole PreToolUse). Pour Hermès et Codex, `check-project.sh` (section 12) signale un projet Code/Hybrid sans `hook-pre-git.sh` — le contrôle y reste documentaire, à la demande.
-- **Limite assumée** : le hook est un garde-fou lexical, pas un parser shell complet (guillemets complexes, alias git, sous-shells imbriqués peuvent l'échapper). Il ne remplace pas la prudence, il intercepte les cas évidents.
+- **Limite assumée** : garde-fou lexical et non parser shell complet ; ce qui reste hors couverture est un enchaînement d'enveloppes au-delà de trois niveaux, les options globales git exotiques placées avant la sous-commande, et un message de commit passé par `-F <fichier>` (DEC-0049) ; sans `python3` ni `jq`, le hook ne bloque rien.
+- **Test** : `sh scripts/tests/test-hook-pre-git.sh` rejoue la matrice (30 cas : commandes sûres, commandes bloquées, contournements par enveloppe et par préfixe d'environnement, dérogation, trailer d'agent) et tourne en CI à chaque push.
 - **Rollback** : retirer `.claude/hooks/hook-pre-git.sh` et son entrée du `.claude/settings.json` du projet.
 
 ## Clôture déterministe d'itération — `check-iteration.sh` (A4, DEC-0046)

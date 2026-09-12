@@ -2,7 +2,7 @@
 projet: life-copropriete
 type: Life
 methode: my-project-os
-version_methode: 0.5.0
+version_methode: 0.27.1
 statut: actif
 cree_le: 2026-03-02
 ---

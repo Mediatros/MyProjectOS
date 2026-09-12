@@ -43,7 +43,7 @@ reprendre → exécuter UNE tâche → clôturer → vider le contexte → recom
 
 ## Détecter le contexte
 
-1. Si le dossier courant contient `PROJECT.md` + `PROGRESS.md` → c'est un projet MyProjectOS. Lire le `type` dans l'en-tête de `PROGRESS.md` (Life / Code / Hybrid) pour savoir quelles extensions sont actives.
+1. Si le dossier courant contient `PROJECT.md` + `PROGRESS.md` → c'est un projet MyProjectOS. Lire le `type` dans l'en-tête de `PROGRESS.md` (Core / Life / Code / Hybrid) pour savoir quelles extensions sont actives.
 2. Si `docs/INDEX.md` + `docs/kb_governance.md` existent → l'extension Knowledge est active : appliquer la navigation progressive et l'analyse transverse. Si `SUJETS.md` existe à la racine, le lire **avant** `docs/INDEX.md` pour toute demande métier.
 3. S'il n'y a aucun fichier sacré mais des sous-dossiers de projets → lister les projets et demander lequel reprendre.
 4. Si le dossier est vide (ou l'utilisateur veut démarrer) → mode 5, **cadrage**.
@@ -84,9 +84,9 @@ Déclencheurs : « Où je range ça ? », un document arrive, une info doit êtr
 - **Une demande métier** (« les dépenses maison », « le dossier Untel ») → si `SUJETS.md` existe, y trouver le sujet canonique, l'ordre de lecture et la **source fraîche prioritaire** avant toute réponse. Ne jamais répondre depuis une synthèse sans avoir vérifié la source fraîche déclarée.
 - **Une information** → l'aiguiller selon la frontière des fichiers sacrés (tableau ci-dessus).
 - **Un document entrant** (PDF, email, pièce) → `00_inbox/` d'abord, puis classer dans le bon dossier numéroté. Renommer selon les conventions : minuscules, tirets, sans accents, daté `YYYY-MM-DD-...` si c'est un document daté.
-- **Un dossier racine à créer** (numéroté ou non) → vérifier d'abord dans `structures/*-tree.md` et sur le disque qu'aucun dossier canonique ou variante proche (singulier/pluriel, casse, accents, abréviation) n'existe déjà. Ne jamais inventer un nom au fil de l'eau ; les hooks refusent les quasi-doublons et les collisions de préfixe `NN_`, mais mieux vaut consulter le canon avant d'écrire.
+- **Un dossier racine à créer** (numéroté ou non) → vérifier d'abord dans `structures/*-tree.md` **du dépôt méthode** (ces fichiers ne sont pas copiés dans les projets) et sur le disque qu'aucun dossier canonique ou variante proche (singulier/pluriel, casse, accents, abréviation) n'existe déjà. Ne jamais inventer un nom au fil de l'eau ; les hooks refusent les quasi-doublons et les collisions de préfixe `NN_`, mais mieux vaut consulter le canon avant d'écrire.
 - **Un projet Life ou Hybrid dont la racine accumule des fichiers thématiques** (avertissement `hook-pre-write.sh`/`check-project.sh` à 5 fichiers `.md` ou plus sans dossier `02_*`, ou constat direct de plusieurs sujets de fond suivis en parallèle) → d'abord vérifier si un dossier `02_<autre-nom>` existe déjà (le projet est peut-être déjà organisé, juste sous un nom différent de la suggestion `02_sujets/`) et si le `DECISIONS.md` du projet documente déjà un choix de nom : si oui, ne rien reproposer, utiliser ce dossier tel quel. Sinon, dérouler la proposition :
-  1. Expliquer en une phrase le pourquoi : ranger par sujet (`02_sujets/` suggéré par la méthode, sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`, voir `structures/life-tree.md`) met de l'ordre dans un projet qui suit plusieurs sujets de fond, et permet ensuite de demander l'état d'un sujet précis d'un coup.
+  1. Expliquer en une phrase le pourquoi : ranger par sujet (`02_sujets/` suggéré par la méthode, sous-dossiers `Sxx_NomDuSujet/`, index `02_sujets/INDEX.md`, voir `structures/life-tree.md` du dépôt méthode) met de l'ordre dans un projet qui suit plusieurs sujets de fond, et permet ensuite de demander l'état d'un sujet précis d'un coup.
   2. Proposer un nom de sujet canonique déduit du contexte (nom du fichier concerné, sujet de la conversation en cours), par exemple « je range ça dans un sujet "Succession" (`02_sujets/S03_Succession/`) ? ». Si un dossier `02_<autre-nom>` existe déjà, proposer une seule fois d'aligner sur `02_sujets/`, sans insister.
   3. Sur accord explicite : créer `02_sujets/` (ou utiliser le dossier `02_*` existant) si absent, déplacer le(s) fichier(s) concerné(s), mettre à jour l'index. Jamais sans confirmation, même après un avertissement du hook.
   4. **Si l'utilisateur refuse le nom suggéré** (garde un autre nom que `02_sujets/`, ou refuse l'organisation par sujets elle-même) → consigner ce choix dans une entrée `DEC-XXXX` du `DECISIONS.md` **du projet** (pas du dépôt méthode) : contexte, choix (nom retenu ou refus), raison si donnée. Ne plus jamais reproposer ensuite : MyProjectOS suggère une méthode par défaut, il n'y a pas de méthode unique — un projet peut s'en inspirer sans la suivre à la lettre, du moment que l'écart est explicite et tracé plutôt que subi silencieusement.
@@ -102,7 +102,7 @@ Déclencheurs : « Où je range ça ? », un document arrive, une info doit êtr
 
 En cas de doute sur l'ampleur : choisir le complet.
 
-- **Un projet qui change d'environnement d'exécution** (passage de `LOCAL/` à `SYNC/`, arrivée d'un second agent, nouvelle machine) **et qui possède des skills** dans `98_configuration/skills/` → proposer un **rattrapage du parc**. Un parc écrit pour une seule machine devient muet sans prévenir : les skills continuent d'être proposées, puis échouent. Dérouler skill par skill : ce qu'elle fait, la dépendance qui la cloue à une machine (chemins, trousseau, binaire absent), le secret concerné, le verdict `portable:` (`oui` / `partiel` / `conditionnel` / `non`), le blocage résiduel. Consigner le résultat dans le tableau de bord `98_configuration/skills/README.md` (gabarit `templates/configuration/README_SKILLS.md`), le détail par opération dans l'`INSTALL.md` de chaque skill. Pour toute incompatibilité **technique**, poser un `platforms:` au frontmatter : Hermès l'exploite nativement et n'offre plus la skill sur la mauvaise plateforme (DEC-0037). Pour une restriction **par décision**, ne pas mettre de `platforms:` : ne pas installer la skill chez l'agent concerné, et l'écrire comme une décision dans son `INSTALL.md`.
+- **Un projet qui change d'environnement d'exécution** (passage de `LOCAL/` à `SYNC/`, arrivée d'un second agent, nouvelle machine) **et qui possède des skills** dans `98_configuration/skills/` → proposer un **rattrapage du parc**. Un parc écrit pour une seule machine devient muet sans prévenir : les skills continuent d'être proposées, puis échouent. Dérouler skill par skill : ce qu'elle fait, la dépendance qui la cloue à une machine (chemins, trousseau, binaire absent), le secret concerné, le verdict `portable:` (`oui` / `partiel` / `conditionnel` / `non`), le blocage résiduel. Consigner le résultat dans le tableau de bord `98_configuration/skills/README.md` (gabarit `templates/configuration/README_SKILLS.md`), le détail par opération dans l'`INSTALL.md` de chaque skill. Pour toute incompatibilité **technique**, poser un `platforms:` au frontmatter : Hermès l'exploite nativement et n'offre plus la skill sur la mauvaise plateforme (DEC-0037 du dépôt méthode). Pour une restriction **par décision**, ne pas mettre de `platforms:` : ne pas installer la skill chez l'agent concerné, et l'écrire comme une décision dans son `INSTALL.md`.
 - **Un projet avec documentation dense** → proposer l'extension Knowledge si les docs deviennent difficiles à reprendre à froid.
 - **Une modification dans un projet Knowledge** → avant d'agir, produire l'analyse transverse : composants impactés, composants explicitement non impactés, dépendances amont/aval, fichiers à lire, fichiers à modifier, validations, rollback.
 
@@ -134,7 +134,8 @@ Prochaine action : <...>
    - Le sous-agent vérifie aussi la reprise à froid : « un agent qui ne lit que les fichiers pourrait-il reprendre ? » Si non, il complète PROGRESS avant de rendre la main.
 3. Une fois le sous-agent terminé, ajouter une courte mention de confirmation (ex. « PROGRESS.md, CHANGELOG.md à jour ») sans reprendre le contenu déjà donné dans le résumé.
 4. Pour une itération Code/Hybrid, lancer `sh scripts/check-iteration.sh` (A4) et traiter les bloquants avant de déclarer la clôture : fichiers modifiés non consignés dans PROGRESS.md, PROGRESS périmé. Si `TEST_PLAN.md` existe, exécuter les commandes de validation qu'il déclare et consigner le résultat.
-5. Suggérer de vider le contexte (`/clear`) : la prochaine itération repartira des fichiers.
+5. **Si un push a eu lieu pendant la session et que le projet a une intégration continue** : attendre le verdict du run (`gh run watch --exit-status`) avant de déclarer la clôture. « Le commit est arrivé sur le dépôt » ne prouve pas qu'il passe les contrôles, et un commit étiqueté `docs:` peut casser un job de lint. Un run rouge se remonte immédiatement à l'humain, avec la cause et le lien, et se traite avant le push suivant.
+6. Suggérer de vider le contexte (`/clear`) : la prochaine itération repartira des fichiers.
 
 ## Mode 5 — Cadrage (et initialisation)
 
@@ -146,7 +147,7 @@ Le but : que l'utilisateur ne se perde ni dans la définition du besoin, ni dans
 2. **Le périmètre.** Ce qui est inclus, et surtout ce qui est **exclu**. Chasser le flou : si une réponse est vague, poser la question de relance plutôt que de supposer.
 3. **Les critères de réussite.** À quoi verra-t-on que c'est réussi ? Mesurable ou observable.
 4. **Les risques et contraintes.** Délais, budget, dépendances, points sensibles.
-5. **Le type et les extensions.** Life / Code / Hybrid, + Knowledge si la documentation sera dense. Expliquer le choix en une phrase.
+5. **Le type et les extensions.** Core seul, Life, Code ou Hybrid, + Knowledge si la documentation sera dense. Expliquer le choix en une phrase.
 6. **Poser la structure** (si pas déjà fait) :
 
    ```sh
@@ -181,7 +182,7 @@ Suivre le protocole `docs/INSTALL-AGENT.md` du dépôt méthode, section « Mét
 
 ## Mode 7 — Mise à jour de la méthode
 
-Déclencheurs : « y a-t-il une mise à jour de la méthode ? », « le projet est-il à jour ? », et surtout **le constat de retard remonté par l'étape 3 du Mode 1**. Ne pas attendre un avertissement de `check-project.sh` : son contrôle de version est local et ne peut pas signaler qu'une version plus récente existe (DEC-0039).
+Déclencheurs : « y a-t-il une mise à jour de la méthode ? », « le projet est-il à jour ? », et surtout **le constat de retard remonté par l'étape 3 du Mode 1**. Ne pas attendre un avertissement de `check-project.sh` : son contrôle de version est local et ne peut pas signaler qu'une version plus récente existe (DEC-0039 du dépôt méthode).
 
 Workflow imposé, jamais raccourci :
 

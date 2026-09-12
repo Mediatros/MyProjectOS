@@ -51,6 +51,7 @@ L'agent propose et explique ; l'humain tranche.
 - Ne jamais committer sans demande explicite.
 - Messages courts, format `type: description` (feat, fix, refactor, chore, docs).
 - Ne pas stager `.env` ni fichiers de secrets.
+- **Règle immuable, identité de contribution** : tout commit, tag, release ou commentaire porte l'identité du titulaire du dépôt, jamais celle d'un agent. Aucun trailer `Co-Authored-By`, aucune mention d'agent ou de session dans un message. Un agent qui ne peut pas commiter sous cette identité ne commite pas : il dépose, l'humain commite. Le hook `hook-pre-git.sh` bloque les messages qui l'enfreignent.
 
 ## Nommage
 

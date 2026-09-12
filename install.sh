@@ -45,12 +45,17 @@ INIT="$TMP/MyProjectOS/scripts/init-project.sh"
 [ -f "$INIT" ] || { echo "Dépôt cloné mais scripts/init-project.sh introuvable." >&2; exit 1; }
 
 # --sync est inutile ici (le clone est déjà frais) : on le retire s'il est passé.
-ARGS=""
-for a in "$@"; do
-    [ "$a" = "--sync" ] && continue
-    ARGS="$ARGS \"$a\""
+# Filtrage par rotation des paramètres positionnels, sans eval : un nom de projet
+# contenant une espace, un guillemet ou un `$` arrive intact à init-project.sh.
+_argc=$#
+_i=0
+while [ "$_i" -lt "$_argc" ]; do
+    _arg=$1
+    shift
+    _i=$((_i + 1))
+    [ "$_arg" = "--sync" ] || set -- "$@" "$_arg"
 done
 
-eval "sh \"\$INIT\" $ARGS"
+sh "$INIT" "$@"
 
 echo "MyProjectOS installé. Le projet est autonome (hooks dans .claude/hooks/)."
