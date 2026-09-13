@@ -31,6 +31,32 @@ norm_dirname() {
     printf '%s' "$_n" | LC_ALL=C tr '[:upper:]' '[:lower:]' | tr '-' '_' | sed 's/s$//'
 }
 
+# fm_val <fichier> <clé> : valeur d'un champ du frontmatter (bloc --- initial),
+# vide si absent ; un placeholder de gabarit (<...>) vaut vide. Même logique que
+# scripts/sync-progress.sh (dupliquée : script autonome).
+fm_val() {
+    awk -v k="$2" '
+        NR == 1 { if ($0 != "---") exit; next }
+        $0 == "---" { exit }
+        index($0, k ":") == 1 {
+            v = substr($0, length(k) + 2)
+            sub(/^[[:space:]]+/, "", v); sub(/[[:space:]]+$/, "", v)
+            if (v ~ /^<.*>$/) v = ""
+            print v; exit
+        }' "$1"
+}
+
+# days_since <YYYY-MM-DD> : âge en jours (vide si la date est illisible).
+days_since() {
+    _ts=""
+    if date -j -f "%Y-%m-%d" "$1" +%s >/dev/null 2>&1; then
+        _ts=$(date -j -f "%Y-%m-%d" "$1" +%s)        # BSD / macOS
+    elif date -d "$1" +%s >/dev/null 2>&1; then
+        _ts=$(date -d "$1" +%s)                       # GNU / Linux
+    fi
+    [ -n "$_ts" ] && echo $(( ( $(date +%s) - _ts ) / 86400 ))
+}
+
 # Comparaison de versions X.Y.Z, portable. Échos : lt | eq | gt (pour $1 vs $2).
 ver_cmp() {
     _i=1
@@ -167,6 +193,118 @@ case "$TYPE" in
         fi
         ;;
 esac
+
+# --- 2quater. Progrès par sujet (02_*/Sxx_*/PROGRESS.md, DEC-0053) -----------
+# Actif dès qu'un dossier de sujet existe, quel que soit le type déclaré. Le
+# parent ne porte qu'une projection déterministe de l'en-tête de chaque progrès
+# local (scripts/sync-progress.sh) : on vérifie ici les en-têtes, la fraîcheur
+# des seuls sujets actifs (un sujet en pause peut légitimement dormir), l'âge
+# des sujets clos (à archiver), la carte 02_sujets/INDEX.md et la
+# synchronisation du parent. Avertissements uniquement : tenir un sujet reste
+# un jugement, et un parent en retard se répare d'une commande.
+_subj_seen=0
+_subj_issue=0
+_subj_dir=""
+_subj_ids=""
+CLOS_ARCHIVE_DAYS=30
+for _sd in "$TARGET"/02_*/S[0-9][0-9]_*/; do
+    [ -d "$_sd" ] || continue
+    [ "$_subj_seen" -eq 0 ] && echo "Progrès par sujet :"
+    _subj_seen=1
+    _subj_dir=$(dirname -- "${_sd%/}")
+    _srel=${_sd#"$TARGET"/}; _srel=${_srel%/}
+    _sname=${_srel##*/}; _sid=${_sname%%_*}
+    case " $_subj_ids " in
+        *" $_sid "*) warn "$_srel/ : identifiant $_sid déjà porté par un autre dossier"; _subj_issue=1 ;;
+    esac
+    _subj_ids="$_subj_ids $_sid"
+    _sp="${_sd}PROGRESS.md"
+    if [ ! -f "$_sp" ]; then
+        warn "$_srel/ sans PROGRESS.md : poser le gabarit (sh scripts/sujet.sh new, ou templates/extensions/life/02_sujets/)"
+        _subj_issue=1
+        continue
+    fi
+    _v=$(fm_val "$_sp" sujet)
+    [ "$_v" = "$_sid" ] || { warn "$_srel/PROGRESS.md : champ sujet « $_v » différent du dossier ($_sid)"; _subj_issue=1; }
+    _st=$(fm_val "$_sp" statut)
+    case "$_st" in
+        actif|"en pause"|clos) ;;
+        *) warn "$_srel/PROGRESS.md : statut « $_st » hors actif / en pause / clos"; _subj_issue=1 ;;
+    esac
+    _maj=$(fm_val "$_sp" derniere_maj)
+    _age=""
+    case "$_maj" in
+        [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) _age=$(days_since "$_maj") ;;
+        *) warn "$_srel/PROGRESS.md : derniere_maj absente ou hors YYYY-MM-DD"; _subj_issue=1 ;;
+    esac
+    if [ -n "$_age" ]; then
+        if [ "$_st" = "actif" ] && [ "$_age" -gt "$STALE_DAYS" ]; then
+            warn "$_srel/PROGRESS.md : sujet actif non mis à jour depuis $_age jours (seuil $STALE_DAYS) : le mettre à jour ou le passer en pause"
+            _subj_issue=1
+        elif [ "$_st" = "clos" ] && [ "$_age" -gt "$CLOS_ARCHIVE_DAYS" ]; then
+            warn "$_srel/ : clos depuis $_age jours : à archiver (sh scripts/sujet.sh archive $_sid), décision humaine"
+            _subj_issue=1
+        fi
+    fi
+    for _pair in "etat:état" "prochaine_action:prochaine action"; do
+        _key=${_pair%%:*}; _lbl=${_pair#*:}
+        _val=$(fm_val "$_sp" "$_key")
+        if [ -z "$_val" ]; then
+            [ "$_st" = "clos" ] && [ "$_key" = "prochaine_action" ] && continue
+            warn "$_srel/PROGRESS.md : $_lbl non renseigné(e) (champ $_key, c'est ce qui remonte dans le parent)"
+            _subj_issue=1
+        else
+            _len=$(printf '%s' "$_val" | wc -m | tr -d ' ')
+            if [ "${_len:-0}" -gt 200 ]; then
+                warn "$_srel/PROGRESS.md : $_lbl de $_len caractères (> 200) : une phrase, le détail va dans le corps du fichier"
+                _subj_issue=1
+            fi
+        fi
+    done
+    _idx="$_subj_dir/INDEX.md"
+    if [ -f "$_idx" ]; then
+        if ! grep -q "^| \`${_sid}_" "$_idx" 2>/dev/null; then
+            warn "${_idx#"$TARGET"/} : aucune ligne pour $_sid (objet du sujet manquant dans la carte)"
+            _subj_issue=1
+        elif grep "^| \`${_sid}_" "$_idx" | grep -q '<à compléter'; then
+            warn "${_idx#"$TARGET"/} : objet de $_sid resté « à compléter »"
+            _subj_issue=1
+        fi
+    fi
+done
+if [ "$_subj_seen" -eq 1 ]; then
+    _idx="$_subj_dir/INDEX.md"
+    if [ ! -f "$_idx" ]; then
+        warn "${_subj_dir#"$TARGET"/}/INDEX.md absent : la carte des sujets (objet de chacun) manque (gabarit templates/extensions/life/02_sujets/INDEX.md)"
+        _subj_issue=1
+    else
+        # Lignes de la carte vers un dossier disparu (archivé sans retirer la ligne).
+        for _cited in $(grep -oE '^\| `S[0-9][0-9]_[^`]*`' "$_idx" 2>/dev/null | tr -d '|` '); do
+            [ -d "$_subj_dir/$_cited" ] || { warn "${_idx#"$TARGET"/} cite $_cited/ qui n'existe plus (lien cassé)"; _subj_issue=1; }
+        done
+    fi
+    if [ -f "$REPO/scripts/sync-progress.sh" ]; then
+        _sync_out=$(sh "$REPO/scripts/sync-progress.sh" --check "$TARGET" 2>/dev/null)
+        case $? in
+            0) ;;
+            1) warn "PROGRESS.md en retard sur les sujets : lancer sh scripts/sync-progress.sh (le hook et le rituel de clôture le font normalement seuls)"; _subj_issue=1 ;;
+            2) warn "PROGRESS.md sans zone « sujets » : poser les marqueurs <!-- sujets:debut --> / <!-- sujets:fin --> dans « État actuel » (gabarit templates/core/PROGRESS.md), puis sh scripts/sync-progress.sh"; _subj_issue=1 ;;
+        esac
+    else
+        warn "scripts/sync-progress.sh absent : projection du parent non vérifiable (relancer init-project.sh --update-method)"
+        _subj_issue=1
+    fi
+    # Le parent hors bloc projeté reste court : le détail vit dans les sujets.
+    if [ -f "$TARGET/PROGRESS.md" ]; then
+        _outside=$(awk 'index($0, "<!-- sujets:debut") == 1 { inb = 1; next } index($0, "<!-- sujets:fin") == 1 { inb = 0; next } !inb { n++ } END { print n + 0 }' "$TARGET/PROGRESS.md")
+        if [ "${_outside:-0}" -gt 120 ]; then
+            warn "PROGRESS.md : $_outside lignes hors bloc projeté (> 120) : le détail d'une activité va dans le progrès de son sujet, ou dans un nouveau sujet"
+            _subj_issue=1
+        fi
+    fi
+    [ "$_subj_issue" -eq 0 ] && ok "progrès par sujet complets, carte alignée, parent synchronisé"
+fi
+
 if [ -f "$TARGET/docs/INDEX.md" ]; then
     echo "Extension Knowledge :"
     for f in docs/INDEX.md docs/kb_governance.md; do
@@ -635,6 +773,22 @@ if [ -f "$TARGET/scripts/check-secrets.sh" ]; then
             fi
             ;;
     esac
+fi
+
+# --- 14. Conflits de synchronisation (Syncthing) ------------------------------
+# Deux machines qui modifient le même fichier au même moment produisent une
+# copie « sync-conflict » à côté de l'original ; oubliée, elle traîne des
+# semaines (un projet Life en comptait 5, DEC-0053). Silencieux s'il n'y en a
+# pas ; avertissement sinon : comparer, fusionner, supprimer la copie.
+_conf=$(find "$TARGET" -name '*sync-conflict*' -not -path '*/.git/*' -not -path '*/99_archive/*' 2>/dev/null | head -n 20)
+if [ -n "$_conf" ]; then
+    echo "Synchronisation :"
+    while IFS= read -r _c; do
+        [ -n "$_c" ] || continue
+        warn "copie de conflit à traiter : ${_c#"$TARGET"/} (comparer avec l'original, fusionner, supprimer)"
+    done <<EOF_CONF
+$_conf
+EOF_CONF
 fi
 
 # --- Bilan -------------------------------------------------------------------

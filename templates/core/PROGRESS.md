@@ -26,6 +26,9 @@ prochaine_echeance: <YYYY-MM-DD ou vide>
 
 <Où en est le projet aujourd'hui, en quelques phrases. Pas d'historique.>
 
+<!-- sujets:debut — zone générée par scripts/sync-progress.sh depuis les PROGRESS.md de 02_sujets/Sxx_*/ ; vide tant que le projet n'a pas de sujets ; ne pas éditer à la main -->
+<!-- sujets:fin -->
+
 ## Décisions actées
 
 - <décisions structurantes en cours d'application ; le détail et le pourquoi vivent dans `DECISIONS.md` (DEC-XXXX)>

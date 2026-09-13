@@ -34,6 +34,8 @@ Quand un choix structurant se présente, l'agent éclaire (options, avantages, i
 
 Quand un projet est clôturé, son statut passe à `clôturé` dans l'en-tête de `PROGRESS.md` et `PROJECT.md`. Les éléments obsolètes vont dans `99_archive/`. Le projet reste lisible et repris à froid si besoin.
 
+Même cycle pour un **sujet** d'un projet organisé par sujets (DEC-0053) : réglé, il passe en `clos` dans l'en-tête de son `PROGRESS.md` et reste visible sur la ligne « Sujets clos » du parent ; après 30 jours, le contrôle propose l'archivage, et sur accord humain `sh scripts/sujet.sh archive Sxx` déplace le dossier vers `99_archive/02_sujets/`. Un sujet clos n'a pas vocation à rester dans `02_sujets/`.
+
 ## Le cas Hybrid
 
 Un projet **Hybrid** active simultanément les extensions Life et Code. Cas typique : un sujet à la fois réel et logiciel, par exemple un litige qui débouche sur un outil, ou une activité administrative pilotée par un logiciel. Les fichiers des deux extensions cohabitent à la racine ; aucun ne se substitue à un fichier sacré Core.

@@ -16,13 +16,15 @@
 
 Une information ne vit qu'à un seul endroit : état présent → `PROGRESS.md` ; changement daté → `CHANGELOG.md` ; tâche → `TASKS.md` ; choix structurant → `DECISIONS.md`.
 
+**Projet organisé par sujets** (`02_sujets/Sxx_NomDuSujet/`) : chaque sujet porte son propre `PROGRESS.md` (même contrat, périmètre du sujet, statuts `actif` / `en pause` / `clos`), et `02_sujets/INDEX.md` dit de quoi traite chaque sujet. Le `PROGRESS.md` racine n'en porte qu'une projection générée (bloc entre `<!-- sujets:debut -->` et `<!-- sujets:fin -->`, une ligne par sujet, écrite par `scripts/sync-progress.sh`) : ce bloc ne s'édite jamais à la main, on corrige l'en-tête du sujet. Créer un sujet : `sh scripts/sujet.sh new "Titre"` ; archiver un sujet clos : `sh scripts/sujet.sh archive Sxx`.
+
 ## Rituels de session
 
-**Au démarrage** (lecture allégée) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de lecture intégrale de ces trois derniers fichiers dans ce rituel ; le détail se lit normalement en dehors. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet).
+**Au démarrage** (lecture allégée) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de lecture intégrale de ces trois derniers fichiers dans ce rituel ; le détail se lit normalement en dehors. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet). Si des sujets existent (`02_sujets/Sxx_*/`), lancer `sh scripts/sync-progress.sh --check` avant de lire le `PROGRESS.md` racine et le synchroniser s'il est en retard ; ne pas lire les progrès locaux à cette étape. Pour travailler sur un sujet : sa ligne dans `02_sujets/INDEX.md` (de quoi il traite), puis son `PROGRESS.md` (où il en est), le reste du sujet seulement si nécessaire.
 
-**Pendant** : répondre d'abord à la demande de l'utilisateur ; la mise à jour de `PROGRESS.md` (après toute avancée significative), `CHANGELOG.md` et `DECISIONS.md` (décisions structurantes) suit, jamais avant la réponse.
+**Pendant** : répondre d'abord à la demande de l'utilisateur ; la mise à jour de `PROGRESS.md` (après toute avancée significative), `CHANGELOG.md` et `DECISIONS.md` (décisions structurantes) suit, jamais avant la réponse. Sur un sujet : son `PROGRESS.md`, en-tête compris (`etat`, `prochaine_action`, `statut`, `derniere_maj`) ; le parent se projette seul.
 
-**En fin de session** : produire d'abord un résumé (fait / reste / décisions / risques / prochaine action), puis mettre à jour les fichiers Core concernés — jamais l'inverse.
+**En fin de session** : produire d'abord un résumé (fait / reste / décisions / risques / prochaine action), puis mettre à jour les fichiers Core concernés — jamais l'inverse. Si des sujets existent : `sh scripts/sync-progress.sh` après le progrès du sujet.
 
 ## Cycle de travail
 

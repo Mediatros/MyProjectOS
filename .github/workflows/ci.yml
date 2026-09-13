@@ -123,3 +123,6 @@ jobs:
 
       - name: Garde-fou Git (matrice)
         run: sh scripts/tests/test-hook-pre-git.sh
+
+      - name: Progrès par sujet (projection, sujet.sh, hook, contrôles)
+        run: sh scripts/tests/test-progres-par-sujet.sh

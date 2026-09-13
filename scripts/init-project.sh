@@ -79,11 +79,14 @@ MANIFEST_REL=".myprojectos/manifest"
 ARTEFACTS=".claude/hooks/_lib.sh
 .claude/hooks/hook-pre-write.sh
 .claude/hooks/hook-stop-progress.sh
+.claude/hooks/hook-post-progress.sh
 98_configuration/skills/my-project-os/SKILL.md
 scripts/check-project.sh
 scripts/check-secrets.sh
 scripts/check-iteration.sh
 scripts/check-update.sh
+scripts/sync-progress.sh
+scripts/sujet.sh
 VERSION"
 
 write_manifest() {
@@ -105,8 +108,95 @@ artefact_source() {
         scripts/check-secrets.sh) printf '%s' "$REPO/scripts/check-secrets.sh" ;;
         scripts/check-iteration.sh) printf '%s' "$REPO/scripts/check-iteration.sh" ;;
         scripts/check-update.sh) printf '%s' "$REPO/scripts/check-update.sh" ;;
+        scripts/sync-progress.sh) printf '%s' "$REPO/scripts/sync-progress.sh" ;;
+        scripts/sujet.sh) printf '%s' "$REPO/scripts/sujet.sh" ;;
         VERSION) printf '%s' "$REPO/VERSION" ;;
     esac
+}
+
+# --- Câblage de .claude/settings.json ------------------------------------------
+# Les hooks sont copiés dans le projet (.claude/hooks/) puis référencés via
+# $CLAUDE_PROJECT_DIR : le projet reste autonome, insensible à un déplacement
+# du dépôt MyProjectOS. Appelé à la création et par --update-method (un hook
+# ajouté par une version doit aussi être câblé sur un projet existant, DEC-0053).
+HOOKS_MERGE_PENDING=0
+PRE_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh"'
+STOP_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh"'
+POST_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-post-progress.sh"'
+GIT_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh"'
+
+wire_settings() {
+    # wire_settings <git:0|1> : écrit un settings.json frais, ou fusionne les hooks
+    # manquants dans celui qui existe (python3), sans jamais écraser le reste.
+    _git=$1
+    _settings="$TARGET/.claude/settings.json"
+    _git_line=""
+    [ "$_git" -eq 1 ] && _git_line='      { "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh\"" }] },
+'
+    _block=$(cat <<EOF
+{
+  "hooks": {
+    "PreToolUse": [
+${_git_line}      { "matcher": "Write",
+        "hooks": [{ "type": "command", "command": "sh \"\$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Write|Edit",
+        "hooks": [{ "type": "command", "command": "sh \"\$CLAUDE_PROJECT_DIR/.claude/hooks/hook-post-progress.sh\"" }] }
+    ],
+    "Stop": [
+      { "matcher": "",
+        "hooks": [{ "type": "command", "command": "sh \"\$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
+    ]
+  }
+}
+EOF
+)
+    if [ ! -e "$_settings" ]; then
+        mkdir -p "$TARGET/.claude"
+        printf '%s\n' "$_block" > "$_settings"
+        echo "  + .claude/settings.json (hooks enforcement câblés)"
+        return
+    fi
+    if command -v python3 >/dev/null 2>&1; then
+        python3 - "$_settings" "$PRE_CMD" "$STOP_CMD" "$POST_CMD" "$([ "$_git" -eq 1 ] && printf '%s' "$GIT_CMD")" <<'PY'
+import json, sys
+path, pre, stop, post = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+git = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] else None
+try:
+    with open(path) as f:
+        cfg = json.load(f)
+except Exception:
+    cfg = {}
+if not isinstance(cfg, dict):
+    cfg = {}
+hooks = cfg.setdefault("hooks", {})
+
+def ensure(event, matcher, cmd):
+    arr = hooks.setdefault(event, [])
+    for grp in arr:
+        for h in grp.get("hooks", []):
+            if h.get("command") == cmd:
+                return
+    arr.append({"matcher": matcher, "hooks": [{"type": "command", "command": cmd}]})
+
+ensure("PreToolUse", "Write", pre)
+ensure("PostToolUse", "Write|Edit", post)
+ensure("Stop", "", stop)
+if git:
+    ensure("PreToolUse", "Bash", git)
+with open(path, "w") as f:
+    json.dump(cfg, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+PY
+        echo "  ~ .claude/settings.json (hooks fusionnés sans écraser l'existant)"
+    else
+        HOOKS_MERGE_PENDING=1
+        echo "" >&2
+        echo "python3 absent : fusion automatique impossible. Colle ce bloc hooks à la main dans $_settings :" >&2
+        echo "$_block" >&2
+    fi
 }
 
 ver_lt() {
@@ -262,6 +352,12 @@ EOF_REFRESH
     if ver_lt "$OLD" "0.29.0"; then
         create_gouvernance_readme
     fi
+    # Un hook arrivé avec une version doit être câblé sur le projet existant, pas
+    # seulement copié (sinon check-project le signale « présent mais non câblé »).
+    echo "Câblage des hooks :"
+    _git_present=0
+    [ -f "$TARGET/.claude/hooks/hook-pre-git.sh" ] && _git_present=1
+    wire_settings "$_git_present"
     sed "s#^version_methode:.*#version_methode: $OS_VERSION#" "$TARGET/PROJECT.md" > "$TARGET/PROJECT.md.tmp" \
         && mv "$TARGET/PROJECT.md.tmp" "$TARGET/PROJECT.md"
     write_manifest
@@ -270,6 +366,7 @@ EOF_REFRESH
     echo "Fait. Aucun fichier de contenu touché. À faire ensuite :"
     echo "  1. consigner la migration dans le CHANGELOG.md du projet (entrée CHG-) ;"
     echo "  2. lancer sh scripts/check-project.sh pour vérifier la cohérence."
+    [ "$HOOKS_MERGE_PENDING" -eq 0 ] || exit 1
     exit 0
 fi
 
@@ -408,7 +505,7 @@ echo "  + 00_inbox/ (les autres dossiers numérotés se créent à la demande)"
 # (install.sh en mode jetable). VERSION est une empreinte figée à la création ;
 # check-update.sh compare cette empreinte à la dernière version publiée.
 mkdir -p "$TARGET/scripts"
-for _s in check-project.sh check-update.sh check-secrets.sh check-iteration.sh; do
+for _s in check-project.sh check-update.sh check-secrets.sh check-iteration.sh sync-progress.sh sujet.sh; do
     if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/scripts/$_s" ]; then
         echo "  = scripts/$_s (déjà présent, conservé ; --update-method pour rafraîchir)"
     else
@@ -430,12 +527,10 @@ else
     echo "  + $MANIFEST_REL (liste des artefacts méthode, base de --update-method)"
 fi
 
-# --- Câblage des hooks -------------------------------------------------------
-# Les hooks sont copiés dans le projet (.claude/hooks/) puis référencés via
-# $CLAUDE_PROJECT_DIR : le projet reste autonome, insensible à un déplacement
-# du dépôt MyProjectOS. Pour mettre à jour les hooks, relancer l'init.
+# --- Copie des hooks (câblage : wire_settings, plus bas) ---------------------
+# Pour mettre à jour les hooks, relancer l'init avec --update-method.
 mkdir -p "$TARGET/.claude/hooks"
-for _h in _lib.sh hook-pre-write.sh hook-stop-progress.sh; do
+for _h in _lib.sh hook-pre-write.sh hook-stop-progress.sh hook-post-progress.sh; do
     if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/hooks/$_h" ]; then
         echo "  = .claude/hooks/$_h (déjà présent, conservé ; --update-method pour rafraîchir)"
         continue
@@ -469,90 +564,7 @@ link_myprojectos_skill_dirs
 # --- 97_gouvernance/ : droit local du projet, présent dès la création (Q7) ----
 create_gouvernance_readme
 
-SETTINGS="$TARGET/.claude/settings.json"
-HOOKS_MERGE_PENDING=0
-HOOKS_BLOCK=$(cat <<'EOF'
-{
-  "hooks": {
-    "PreToolUse": [
-      { "matcher": "Write",
-        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] }
-    ],
-    "Stop": [
-      { "matcher": "",
-        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
-    ]
-  }
-}
-EOF
-)
-
-PRE_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh"'
-STOP_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh"'
-GIT_CMD='sh "$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh"'
-
-if [ -e "$SETTINGS" ]; then
-    if command -v python3 >/dev/null 2>&1; then
-        python3 - "$SETTINGS" "$PRE_CMD" "$STOP_CMD" "$([ "$GIT_HOOK_WIRED" -eq 1 ] && printf '%s' "$GIT_CMD")" <<'PY'
-import json, sys
-path, pre, stop = sys.argv[1], sys.argv[2], sys.argv[3]
-git = sys.argv[4] if len(sys.argv) > 4 else None
-try:
-    with open(path) as f:
-        cfg = json.load(f)
-except Exception:
-    cfg = {}
-if not isinstance(cfg, dict):
-    cfg = {}
-hooks = cfg.setdefault("hooks", {})
-
-def ensure(event, matcher, cmd):
-    arr = hooks.setdefault(event, [])
-    for grp in arr:
-        for h in grp.get("hooks", []):
-            if h.get("command") == cmd:
-                return
-    arr.append({"matcher": matcher, "hooks": [{"type": "command", "command": cmd}]})
-
-ensure("PreToolUse", "Write", pre)
-ensure("Stop", "", stop)
-if git:
-    ensure("PreToolUse", "Bash", git)
-with open(path, "w") as f:
-    json.dump(cfg, f, indent=2, ensure_ascii=False)
-    f.write("\n")
-PY
-        echo "  ~ .claude/settings.json (hooks fusionnés sans écraser l'existant)"
-    else
-        HOOKS_MERGE_PENDING=1
-        echo "" >&2
-        echo "python3 absent : fusion automatique impossible. Colle ce bloc hooks à la main dans $SETTINGS :" >&2
-        echo "$HOOKS_BLOCK" >&2
-    fi
-else
-if [ "$GIT_HOOK_WIRED" -eq 1 ]; then
-    # Bloc frais avec le garde-fou Git câblé (PreToolUse Bash).
-    cat > "$SETTINGS" <<'EOF'
-{
-  "hooks": {
-    "PreToolUse": [
-      { "matcher": "Write",
-        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] },
-      { "matcher": "Bash",
-        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-git.sh\"" }] }
-    ],
-    "Stop": [
-      { "matcher": "",
-        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
-    ]
-  }
-}
-EOF
-else
-    printf '%s\n' "$HOOKS_BLOCK" > "$SETTINGS"
-fi
-echo "  + .claude/settings.json (hooks enforcement câblés)"
-fi
+wire_settings "$GIT_HOOK_WIRED"
 
 if [ "$WANT_MERGE" -eq 1 ]; then
     echo ""

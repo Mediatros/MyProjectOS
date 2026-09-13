@@ -35,23 +35,25 @@ Le socle Core pose aussi `AGENTS.md` et `CLAUDE.md` à la racine de chaque proje
 
 Puis produire : **État actuel / Dernière action / Prochaine action / Points de vigilance.**
 
+**Projet organisé par sujets** (`02_sujets/Sxx_*/PROGRESS.md`, DEC-0053) : lancer `sh scripts/sync-progress.sh --check` avant de lire le `PROGRESS.md` racine, et le synchroniser s'il est en retard ; son bloc « sujets » est alors la vue d'ensemble, une ligne par sujet. Les progrès locaux ne se lisent pas à cette étape. Pour travailler sur un sujet : sa ligne dans `02_sujets/INDEX.md` (de quoi il traite), puis son `PROGRESS.md` (où il en est), puis ses notes et documents seulement si nécessaire.
+
 Une fois par session, avant de proposer l'itération : vérifier la version de la méthode (`sh scripts/check-update.sh`, DEC-0039). Silence total si le réseau manque ou si le projet est à jour ; en cas de retard, l'annoncer en une phrase et proposer le Mode 7 de la skill assistant, sans jamais appliquer de mise à jour dans le rituel lui-même.
 
 ### Pendant
 
 - Répondre d'abord à la demande de l'utilisateur ; la tenue des fichiers Core suit, jamais avant la réponse (DEC-0035).
-- Mettre à jour `PROGRESS.md` après toute avancée significative.
+- Mettre à jour `PROGRESS.md` après toute avancée significative. Sur un sujet : le `PROGRESS.md` du sujet, en-tête compris (`etat`, `prochaine_action`, `statut`, `derniere_maj`) ; le parent n'en porte qu'une projection générée, jamais éditée à la main.
 - Logger les changements notables dans `CHANGELOG.md`.
 - Documenter les décisions structurantes dans `DECISIONS.md`.
 
 ### En fin de session
 
 - Produire d'abord un résumé : fait / reste / décisions / risques / prochaine action.
-- Mettre à jour ensuite tous les fichiers Core concernés — jamais l'inverse (DEC-0035).
+- Mettre à jour ensuite tous les fichiers Core concernés — jamais l'inverse (DEC-0035). Si des sujets existent : `sh scripts/sync-progress.sh` après le progrès du sujet (le hook Claude Code l'a normalement déjà fait).
 
 ## Règles immuables
 
-- `PROGRESS.md` est l'état actuel, jamais un journal. Son bloc d'en-tête est tenu à jour à chaque modification du fichier.
+- `PROGRESS.md` est l'état actuel, jamais un journal. Son bloc d'en-tête est tenu à jour à chaque modification du fichier. Un `PROGRESS.md` de sujet suit la même règle sur son périmètre ; le bloc « sujets » du parent est généré, jamais édité à la main (DEC-0053).
 - `CHANGELOG.md` est un historique utile, valable aussi pour les projets Life, pas seulement technique.
 - `DECISIONS.md` ne contient que des décisions structurantes, au format `DEC-XXXX` (contexte, options, choix, raison, conséquences).
 - `PREUVES.md` (Life) relie chaque affirmation à un document source (`P-XXXX`).

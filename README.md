@@ -2,7 +2,7 @@
 
 **Une méthode d'organisation de projets assistée par IA, pour reprendre n'importe quel projet à froid, sans aucun historique de conversation.**
 
-> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.29.0**. Installable tel quel, réutilisable en tout ou partie.
+> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.30.0**. Installable tel quel, réutilisable en tout ou partie.
 
 Ce n'est pas un logiciel. C'est un système documentaire versionné : des fichiers Markdown, des rituels de session, des garde-fous exécutés par des hooks, et une skill qui guide l'agent. Il tient dans un dossier, se lit sur GitHub sans outil, et se met à jour comme un logiciel.
 
@@ -36,7 +36,7 @@ Les projets **Life** ajoutent : *quelle est la preuve ?* (`PREUVES.md`). Les pro
 
 - **Gouverner plusieurs agents avec un seul jeu de fichiers** : Claude Code, Codex, Hermès et OpenCode lisent les mêmes rituels (`AGENTS.md`), chacun avec son mécanisme d'installation de skills.
 - **Des règles tenues par du code, pas par des consignes** : ce qui est non négociable est un hook ou un check, avec preuve d'exécution avant d'être promu (`docs/enforcement.md`).
-- **Des décisions tracées** : 52 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites, seulement supersédées (`DECISIONS.md`).
+- **Des décisions tracées** : 53 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites, seulement supersédées (`DECISIONS.md`).
 - **Une méthode versionnée et propagée** : SemVer, `check-update.sh` dans chaque projet, mise à jour qui ne touche jamais au contenu de l'utilisateur (`docs/versioning.md`).
 - **Une boucle d'amélioration gouvernée** : une leçon monte d'un cran à la fois (correction locale → RETEX → procédure → skill → hook), par décision humaine.
 - **Le contexte comme ressource rare** : « le sommaire, pas tout le livre », lecture progressive, `PROGRESS.md` optimisé pour la reprise à froid.
@@ -95,7 +95,7 @@ Le socle pose aussi `AGENTS.md` et `CLAUDE.md` (rituels de session, garde-fous) 
 
 ### Les extensions
 
-- **Life** : `PREUVES.md` (`P-XXXX`), `ECHEANCES.md`, `CORRESPONDANCES.md` (`C-XXXX`), dossiers `05_correspondances/` à `08_modeles/`, organisation par sujets `02_sujets/Sxx_NomDuSujet/`.
+- **Life** : `PREUVES.md` (`P-XXXX`), `ECHEANCES.md`, `CORRESPONDANCES.md` (`C-XXXX`), dossiers `05_correspondances/` à `08_modeles/`, organisation par sujets `02_sujets/Sxx_NomDuSujet/` où chaque sujet porte son propre `PROGRESS.md`, projeté en une ligne dans le `PROGRESS.md` racine.
 - **Code** : `CONSTITUTION.md`, `STACK_VALIDATION.md` (gate avant la première ligne de code), `ARCHITECTURE.md`, `SPECS.md`, `TEST_PLAN.md`, `IMPACT_ANALYSIS.md`, `RELEASE.md`, dossiers `05_specs/` à `src/`.
 - **Knowledge** (transverse) : `SUJETS.md` (routeur métier, lu avant l'index), `docs/INDEX.md`, `docs/kb_governance.md`, niveaux `01_global/` → `02_domains/` → `03_details/`, `runbooks/`, `plan/`.
 
@@ -197,7 +197,7 @@ MyProjectOS/
 ├── examples/          # projets fictifs complets, Life et Code
 ├── 97_gouvernance/    # vitrine du dossier « droit local du projet », supprimable
 ├── 98_configuration/  # vitrine du dossier « intégrations, handoff et skills du projet »
-└── scripts/           # init-project.sh, check-project.sh, check-update.sh, check-secrets.sh, hooks/
+└── scripts/           # init-project.sh, check-project.sh, check-update.sh, check-secrets.sh, sync-progress.sh, sujet.sh, hooks/
 ```
 
 ## Documentation

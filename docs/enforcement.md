@@ -51,6 +51,13 @@ Les règles vraiment non négociables vivent dans la couche hooks.
 - Origine : un RETEX de l'atelier — l'accumulation n'avait été repérée que visuellement par l'utilisateur, sans aucun garde-fou en temps réel (DEC-0032). Le contrôle à la demande équivalent vit dans `check-project.sh`, section « 2ter ».
 - **Fermeté** : avertissement, pas blocage — ranger par sujet reste un jugement humain, comme pour la fraîcheur de `PROGRESS.md`.
 
+### 6. Projection des progrès de sujet — `hook-post-progress.sh` (PostToolUse `Write`, `Edit`)
+- **Quand** : juste après l'écriture d'un `02_*/Sxx_*/PROGRESS.md` (progrès d'un sujet) ou du `PROGRESS.md` racine.
+- **Rôle** : lancer la copie `scripts/sync-progress.sh` du projet, qui recalcule le bloc « sujets » du parent depuis l'en-tête de chaque progrès local et ne l'écrit que s'il diffère. La vue d'ensemble est ainsi à jour quelques millisecondes après l'avancée, sur la machine qui travaille, et part dans le même lot de synchronisation que le progrès local.
+- **Fermeté** : n'émet rien, ne bloque jamais. Sans dossier de sujets, il ne fait rien.
+- Origine : RETEX d'un projet Life sur la progression hiérarchique multi-sujets (DEC-0053). Le contrôle à la demande équivalent vit dans `check-project.sh`, section « 2quater ».
+- **Limite assumée** : couvre Claude Code seulement. Pour Hermès, Codex ou une édition à la main, ce sont les rituels de reprise et de clôture (`sh scripts/sync-progress.sh`) et, au choix du projet, un cron horaire qui tiennent le parent ; `check-project.sh` signale un parent en retard.
+
 ## Câblage
 
 Le projet reste autonome, insensible à un déplacement ou à la disparition du repo méthode : `scripts/init-project.sh` copie les hooks dans `.claude/hooks/` du projet cible, puis écrit (ou fusionne) un `.claude/settings.json` qui les référence via `$CLAUDE_PROJECT_DIR` :
@@ -62,6 +69,10 @@ Le projet reste autonome, insensible à un déplacement ou à la disparition du 
       { "matcher": "Write",
         "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-pre-write.sh\"" }] }
     ],
+    "PostToolUse": [
+      { "matcher": "Write|Edit",
+        "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-post-progress.sh\"" }] }
+    ],
     "Stop": [
       { "matcher": "",
         "hooks": [{ "type": "command", "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/hook-stop-progress.sh\"" }] }
@@ -70,7 +81,7 @@ Le projet reste autonome, insensible à un déplacement ou à la disparition du 
 }
 ```
 
-Si le projet a déjà un `.claude/settings.json`, le script fusionne ce bloc dedans (via `python3`, sans écraser la config existante) au lieu de l'écraser. Sans `python3`, il affiche le bloc à fusionner à la main.
+Si le projet a déjà un `.claude/settings.json`, le script fusionne ce bloc dedans (via `python3`, sans écraser la config existante) au lieu de l'écraser. Sans `python3`, il affiche le bloc à fusionner à la main. `--update-method` refait cette fusion : un hook ajouté par une version est câblé sur le projet existant, pas seulement copié.
 
 Pour mettre à jour les hooks (et tous les autres artefacts méthode : skill, `check-project.sh`, `check-update.sh`, `VERSION`) d'un projet après une évolution de la méthode, utiliser `init-project.sh --update-method` : les artefacts sont sauvegardés dans `99_archive/methode-avant-vX.Y.Z/` puis remplacés, le contenu du projet n'est jamais touché. `--into-existing` reste le mode « greffe » : il ne pose que les fichiers manquants et n'écrase rien.
 
@@ -92,7 +103,9 @@ Il signale, sans rien modifier :
 - **références cassées** : un `DEC-XXXX` ou `CHG-YYYYMMDD-HHMM` cité quelque part mais absent du registre correspondant ;
   - `99_archive/` est exclu des scans croisés de contenu depuis DEC-0041 : zone froide consultée sur demande, ses identifiants ne déclenchent pas d'avertissement (repo méthode uniquement) ;
 - **format de date** : dates `JJ/MM/AAAA`, mois en toutes lettres, champs datés hors `YYYY-MM-DD` ;
-- **RETEX** (si un dossier `RETEX/` existe) : statut absent ou hors des cinq valeurs fermées, et RETEX déclaré fermé sans référence `DEC-XXXX`/`CHG-` justifiant la clôture.
+- **RETEX** (si un dossier `RETEX/` existe) : statut absent ou hors des cinq valeurs fermées, et RETEX déclaré fermé sans référence `DEC-XXXX`/`CHG-` justifiant la clôture ;
+- **progrès par sujet** (section 2quater, dès qu'un dossier `02_*/Sxx_*/` existe) : sujet sans `PROGRESS.md`, en-tête incomplet ou statut hors `actif` / `en pause` / `clos`, sujet `actif` périmé (14 jours ; un sujet `en pause` peut dormir), sujet `clos` depuis plus de 30 jours (à archiver), `etat` ou `prochaine_action` vide ou de plus de 200 caractères, carte `INDEX.md` absente, ligne manquante, objet resté « à compléter » ou ligne vers un dossier disparu, parent en retard sur les sujets ou sans zone « sujets », parent de plus de 120 lignes hors bloc projeté ;
+- **conflits de synchronisation** (section 14) : toute copie `*sync-conflict*` hors `99_archive/`, à comparer, fusionner et supprimer.
 
 Sortie : `[ok]` / `[!]` avertissement / `[X]` bloquant, puis un bilan. Code de sortie 1 s'il existe au moins un bloquant, 0 sinon. Comme les hooks, le script reste informatif et ne bloque jamais un flux de travail.
 
@@ -117,11 +130,24 @@ Origine : A1 du plan Pro Workflow (CHG-20260822-XXXX). Les règles documentaires
 - **Test** : `sh scripts/tests/test-hook-pre-git.sh` rejoue la matrice (30 cas : commandes sûres, commandes bloquées, contournements par enveloppe et par préfixe d'environnement, dérogation, trailer d'agent) et tourne en CI à chaque push.
 - **Rollback** : retirer `.claude/hooks/hook-pre-git.sh` et son entrée du `.claude/settings.json` du projet.
 
+## Projection des progrès de sujet — `sync-progress.sh` et `sujet.sh` (DEC-0053)
+
+Un projet qui suit plusieurs sujets de fond (`02_sujets/Sxx_*/`, `structures/life-tree.md`) donne à chaque sujet son propre `PROGRESS.md`. Le `PROGRESS.md` racine reste la vue d'ensemble, mais il ne recopie rien : son bloc « sujets » est **une projection déterministe** de l'en-tête de chaque progrès local, écrite entre deux marqueurs HTML par `scripts/sync-progress.sh` (posé dans `scripts/` de chaque projet, comme `check-project.sh`).
+
+- **Déterminisme** : la ligne d'un sujet ne dépend que de son frontmatter (`sujet`, `titre`, `statut`, `derniere_maj`, `etat`, `prochaine_action`, `prochaine_echeance`), jamais de sa prose. Même entrée, même sortie à l'octet près : le hook sur le Mac, le rituel d'Hermès sur le VPS et un cron produisent le même contenu, donc aucune écriture différente à faire converger par la synchronisation de fichiers. Le script est idempotent (deux passages, zéro écriture), sans état, à écriture atomique.
+- **Ce qu'il touche** : la zone entre `<!-- sujets:debut -->` et `<!-- sujets:fin -->` de la section « État actuel », `derniere_maj` (date du jour si le bloc a changé) et `prochaine_echeance` (la plus proche des échéances des sujets non clos). Rien d'autre. Marqueurs absents : il s'arrête (code 2) et n'insère jamais à un endroit deviné.
+- **Ce qu'il rend** : une ligne par sujet non clos (identifiant, titre, statut, date, échéance, état, prochaine action, chemin du progrès local) ; les sujets clos regroupés sur une ligne finale ; un sujet sans progrès ou à en-tête invalide rendu comme tel, visible et signalé, jamais inventé.
+- **Quatre portes d'entrée, un seul script** : le hook `hook-post-progress.sh` (Claude Code, immédiat) ; le rituel de reprise (`sh scripts/sync-progress.sh --check`, puis synchronisation si en retard, avant de lire le parent) ; le rituel de clôture (`sh scripts/sync-progress.sh`) ; un cron horaire facultatif, script seul, silencieux, au choix du projet.
+- **`scripts/sujet.sh`** : `new [Sxx] "Titre"` crée le dossier, pose le progrès de sujet depuis le gabarit (en-tête renseigné, gabarit embarqué identique à `templates/extensions/life/02_sujets/`, contrôlé en CI), ajoute la ligne à la carte `INDEX.md` et projette le parent ; `archive Sxx` déplace un sujet `clos` vers `99_archive/02_sujets/`, retire sa ligne et resynchronise. Il refuse un identifiant déjà pris et un sujet non clos.
+- **Limite assumée** : si deux machines modifient deux sujets différents au même instant, chacune calcule un parent qui ne porte que son propre changement et la synchronisation de fichiers produit une copie de conflit, comme pour tout fichier partagé. Le bloc se répare seul au passage suivant (les progrès locaux, un fichier par sujet, ne sont jamais en conflit) ; seule la partie manuscrite du parent peut réellement diverger. `check-project.sh` (section 14) signale les copies de conflit.
+- **Test** : `sh scripts/tests/test-progres-par-sujet.sh` (création, projection, idempotence, échéance dérivée, sujet clos, archivage, hook, cas dégradés, `check-iteration`, `--update-method`), rejoué en CI.
+- **Rollback** : retirer `scripts/sync-progress.sh`, `scripts/sujet.sh`, `.claude/hooks/hook-post-progress.sh` et son entrée de `.claude/settings.json` ; les progrès locaux restent lisibles tels quels.
+
 ## Clôture déterministe d'itération — `check-iteration.sh` (A4, DEC-0046)
 
 Commande **explicite** (`sh scripts/check-iteration.sh`), lancée par l'agent en clôture d'une itération Code/Hybrid (étape 4 du mode 4 de la skill). Jamais branchée au hook Stop : un contrôle automatique à chaque fin de réponse serait trop bruyant ; il faudra un RETEX démontrant le contraire.
 
-- **Vérifie** : dépôt git propre ; fichiers modifiés consignés dans `PROGRESS.md` ; fraîcheur de `PROGRESS.md` ; prochaine action déclarée ; si `TEST_PLAN.md` existe, rappel des commandes de validation à exécuter.
+- **Vérifie** : dépôt git propre ; fichiers modifiés consignés dans `PROGRESS.md` (un fichier sous `02_*/Sxx_*/` est accepté s'il est cité dans le `PROGRESS.md` de ce sujet, DEC-0053) ; fraîcheur de `PROGRESS.md` ; prochaine action déclarée ; si `TEST_PLAN.md` existe, rappel des commandes de validation à exécuter.
 - **Bloque** seulement deux cas (arbitrage humain) : fichiers modifiés absents de `PROGRESS.md`, et `PROGRESS.md` périmé (> 14 jours). Tout le reste est informatif — un check de clôture ne juge pas des tests qu'il ne peut pas évaluer.
 - **Aucune exigence artificielle** pour les projets documentaires : sans git ni TEST_PLAN, la section correspondante est silencieuse.
 - **Rollback** : retirer `scripts/check-iteration.sh` du projet et son entrée du manifest.

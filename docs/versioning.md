@@ -97,7 +97,7 @@ Historique : jusqu'à la v0.20.0, aucun de ces deux mécanismes n'était branch�
 
 ## Le manifest des artefacts méthode
 
-`init-project.sh` pose `.myprojectos/manifest` dans chaque projet : la liste des fichiers qui appartiennent à la **méthode** (hooks, skill, `check-project.sh`, `check-update.sh`, `VERSION`) avec la version d'origine. Cette frontière est déterministe : une mise à jour ne remplace que les fichiers du manifest, jamais le contenu du projet (fichiers sacrés, documents, code).
+`init-project.sh` pose `.myprojectos/manifest` dans chaque projet : la liste des fichiers qui appartiennent à la **méthode** (hooks, skill, `check-project.sh`, `check-update.sh`, `check-secrets.sh`, `check-iteration.sh`, `sync-progress.sh`, `sujet.sh`, `VERSION`) avec la version d'origine. Le câblage des hooks dans `.claude/settings.json` est hors manifest mais refait par `--update-method` (fusion sans écrasement) : un hook ajouté par une version est câblé sur le projet existant. Cette frontière est déterministe : une mise à jour ne remplace que les fichiers du manifest, jamais le contenu du projet (fichiers sacrés, documents, code).
 
 La skill assistant est un artefact du manifest sous la forme `98_configuration/skills/my-project-os/SKILL.md` : `--update-method` la remplace comme n'importe quel autre fichier de la liste. En revanche, les deux liens symboliques qui l'offrent à Claude Code (`.claude/skills/my-project-os`) et à Codex (`.agents/skills/my-project-os`) sont **hors manifest** : ils sont recréés de façon idempotente par une étape dédiée du script, au même titre que les hooks. `97_gouvernance/README.md` est lui aussi hors manifest : posé une seule fois par `--update-method`, au franchissement du seuil de version `0.29.0`, jamais recréé ensuite.
 

@@ -48,7 +48,17 @@ if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/n
             # caractère non ASCII : les retirer, sinon le nom cherché dans
             # PROGRESS.md porte un guillemet et ne correspond jamais.
             case "$f" in \"*\") f=${f#\"}; f=${f%\"} ;; esac
-            grep -qF "$(basename -- "$f")" PROGRESS.md || { fail "$(basename -- "$f") modifié mais absent de PROGRESS.md — mets l'état à jour"; _unconsigned=1; }
+            _cited=0
+            grep -qF "$(basename -- "$f")" PROGRESS.md && _cited=1
+            # Fichier d'un sujet (02_*/Sxx_*/...) : consigné dans le PROGRESS.md de
+            # ce sujet suffit, le parent n'en porte qu'une projection (DEC-0053).
+            if [ "$_cited" -eq 0 ]; then
+                _sdir=$(printf '%s' "$f" | sed -n 's#^\(02_[^/]*/S[0-9][0-9]_[^/]*\)/.*#\1#p')
+                if [ -n "$_sdir" ] && [ -f "$_sdir/PROGRESS.md" ] && grep -qF "$(basename -- "$f")" "$_sdir/PROGRESS.md"; then
+                    _cited=1
+                fi
+            fi
+            [ "$_cited" -eq 1 ] || { fail "$(basename -- "$f") modifié mais absent de PROGRESS.md (racine ou du sujet) — mets l'état à jour"; _unconsigned=1; }
         done <<EOF_MOD
 $_modified
 EOF_MOD
