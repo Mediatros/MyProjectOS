@@ -39,14 +39,15 @@ Une fois par session, avant de proposer l'itération : vérifier la version de l
 
 ### Pendant
 
+- Répondre d'abord à la demande de l'utilisateur ; la tenue des fichiers Core suit, jamais avant la réponse (DEC-0035).
 - Mettre à jour `PROGRESS.md` après toute avancée significative.
 - Logger les changements notables dans `CHANGELOG.md`.
 - Documenter les décisions structurantes dans `DECISIONS.md`.
 
 ### En fin de session
 
-- Mettre à jour tous les fichiers Core concernés.
-- Produire un résumé : fait / reste / décisions / risques / prochaine action.
+- Produire d'abord un résumé : fait / reste / décisions / risques / prochaine action.
+- Mettre à jour ensuite tous les fichiers Core concernés — jamais l'inverse (DEC-0035).
 
 ## Règles immuables
 

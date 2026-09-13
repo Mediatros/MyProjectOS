@@ -1,12 +1,12 @@
 # 97_gouvernance/ — droit local du projet
 
-Dossier présent dès la création de tout projet MyProjectOS, ce dépôt compris (dogfooding de la méthode sur elle-même). Porte les règles de gouvernance **spécifiques au projet et à son utilisateur** : compléments aux fichiers sacrés et à la gouvernance Core de la méthode.
+Dossier présent dès la création de tout projet MyProjectOS. Porte les règles de gouvernance **spécifiques au projet et à son utilisateur** : compléments aux fichiers sacrés et à la gouvernance Core de la méthode.
 
 L'utilisateur peut le supprimer s'il n'en a pas l'usage : `--update-method` ne le recrée jamais une fois qu'il a existé (voir « Ce dossier peut être supprimé » ci-dessous).
 
 ## Quand s'en servir
 
-Dès que le projet a besoin de règles locales au-delà de ce que porte la gouvernance générique — par exemple :
+Dès que le projet a besoin de règles locales au-delà de ce que porte la gouvernance générique, par exemple :
 
 - **Validation et décisions** : qui décide quoi, quelles actions exigent une validation humaine propre à ce projet, quels seuils.
 - **Rituels locaux** : relectures, ordre de traitement, canaux propres au projet.

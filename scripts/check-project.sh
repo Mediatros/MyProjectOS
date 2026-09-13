@@ -458,20 +458,41 @@ fi
 # Avertissement, jamais bloquant : recréer un lien cassé reste un geste humain.
 # On scanne les dossiers d'installation eux-mêmes (pas la source), sinon un
 # lien cassé par un renommage/déplacement de la source ne serait plus détecté.
-if [ -d "$TARGET/.claude/skills" ] || [ -d "$TARGET/.agents/skills" ]; then
+if [ -d "$TARGET/.claude/skills" ] || [ -d "$TARGET/.agents/skills" ] || [ -d "$TARGET/98_configuration/skills" ]; then
     echo "Skills portables :"
     _skill_issue=0
     for _agentdir in .claude/skills .agents/skills; do
         [ -d "$TARGET/$_agentdir" ] || continue
         for _link in "$TARGET/$_agentdir"/*; do
             [ -e "$_link" ] || [ -L "$_link" ] || continue
+            _sname=$(basename -- "$_link")
             if [ -L "$_link" ] && [ ! -e "$_link" ]; then
-                warn "$_agentdir/$(basename -- "$_link") : lien symbolique cassé (cible introuvable, vérifier après un transfert)"
+                warn "$_agentdir/$_sname : lien symbolique cassé (cible introuvable, vérifier après un transfert)"
+                _skill_issue=1
+            elif [ -L "$_link" ]; then
+                case "$(readlink "$_link")" in
+                    */98_configuration/skills/*) ;;
+                    *) warn "$_agentdir/$_sname : lien vers une source hors 98_configuration/skills/ (canon rompu, cible : $(readlink "$_link"))"
+                       _skill_issue=1 ;;
+                esac
+            elif [ -d "$_link" ] && [ -d "$TARGET/98_configuration/skills/$_sname" ]; then
+                warn "$_agentdir/$_sname : dossier réel, masque la source canonique 98_configuration/skills/$_sname (attendu : lien symbolique)"
                 _skill_issue=1
             fi
         done
     done
-    [ "$_skill_issue" -eq 0 ] && ok "aucun lien symbolique cassé sous .claude/skills ou .agents/skills"
+    if [ -d "$TARGET/98_configuration/skills" ]; then
+        for _src in "$TARGET/98_configuration/skills"/*/; do
+            [ -d "$_src" ] || continue
+            _sname=$(basename -- "$_src")
+            if [ -d "$HOME/.claude/skills/$_sname" ]; then
+                # shellcheck disable=SC2088 # "~" littéral dans le message, pas une expansion
+                warn "~/.claude/skills/$_sname : copie personnelle, masque la skill du projet pour Claude Code (priorité personnel > projet)"
+                _skill_issue=1
+            fi
+        done
+    fi
+    [ "$_skill_issue" -eq 0 ] && ok "aucun lien symbolique cassé, dossier réel masquant ou copie personnelle sous .claude/skills ou .agents/skills"
 fi
 
 # --- 11. RETEX : statut de clôture -------------------------------------------

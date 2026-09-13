@@ -79,7 +79,7 @@ MANIFEST_REL=".myprojectos/manifest"
 ARTEFACTS=".claude/hooks/_lib.sh
 .claude/hooks/hook-pre-write.sh
 .claude/hooks/hook-stop-progress.sh
-.claude/skills/my-project-os/SKILL.md
+98_configuration/skills/my-project-os/SKILL.md
 scripts/check-project.sh
 scripts/check-secrets.sh
 scripts/check-iteration.sh
@@ -100,7 +100,7 @@ artefact_source() {
     # artefact_source <chemin-relatif-projet> : chemin du fichier source dans le repo méthode.
     case "$1" in
         .claude/hooks/*) printf '%s' "$REPO/scripts/hooks/${1##*/}" ;;
-        .claude/skills/my-project-os/SKILL.md) printf '%s' "$REPO/skills/my-project-os/SKILL.md" ;;
+        98_configuration/skills/my-project-os/SKILL.md) printf '%s' "$REPO/templates/skills/my-project-os/SKILL.md" ;;
         scripts/check-project.sh) printf '%s' "$REPO/scripts/check-project.sh" ;;
         scripts/check-secrets.sh) printf '%s' "$REPO/scripts/check-secrets.sh" ;;
         scripts/check-iteration.sh) printf '%s' "$REPO/scripts/check-iteration.sh" ;;
@@ -109,14 +109,107 @@ artefact_source() {
     esac
 }
 
+ver_lt() {
+    # ver_lt <a> <b> : vrai (exit 0) si version X.Y.Z <a> < <b>, comparaison entière par composant.
+    _i=1
+    while [ "$_i" -le 3 ]; do
+        _fa=$(printf '%s' "$1" | cut -d. -f"$_i" | tr -dc '0-9'); [ -n "$_fa" ] || _fa=0
+        _fb=$(printf '%s' "$2" | cut -d. -f"$_i" | tr -dc '0-9'); [ -n "$_fb" ] || _fb=0
+        if [ "$_fa" -lt "$_fb" ]; then return 0; fi
+        if [ "$_fa" -gt "$_fb" ]; then return 1; fi
+        _i=$((_i + 1))
+    done
+    return 1
+}
+
+# --- Skills du projet : source unique 98_configuration/skills/, liens par agent -
+# Contrat d'un agent (DEC-0052, §1 du plan de consolidation) : la skill assistant
+# n'est plus une copie physique dans le dossier d'un seul agent, mais un lien
+# symbolique relatif vers la source unique du catalogue, posé pour tout agent
+# connu, présent ou non.
+link_skill_dir() {
+    # link_skill_dir <chemin-relatif-du-lien> : idempotent.
+    # Dossier réel vide (reliquat d'une ancienne copie déjà retirée) -> rmdir puis
+    # lien. Lien déjà correct -> rien. Dossier réel non vide -> signalé, non touché.
+    _rel=$1
+    _full="$TARGET/$_rel"
+    if [ -L "$_full" ]; then
+        echo "  = $_rel (déjà présent, conservé)"
+        return
+    fi
+    if [ -d "$_full" ]; then
+        if [ -z "$(ls -A "$_full" 2>/dev/null)" ]; then
+            rmdir "$_full"
+        else
+            echo "  ! $_rel : dossier réel non vide, lien non posé (migration à finir à la main)" >&2
+            return
+        fi
+    fi
+    mkdir -p "$(dirname -- "$_full")"
+    ln -s ../../98_configuration/skills/my-project-os "$_full"
+    echo "  + $_rel -> 98_configuration/skills/my-project-os"
+}
+
+link_myprojectos_skill_dirs() {
+    link_skill_dir ".claude/skills/my-project-os"
+    link_skill_dir ".agents/skills/my-project-os"
+}
+
+migrate_old_skill_copy() {
+    # --into-existing sur un projet où la skill assistant était une copie physique
+    # (avant le lot 2 de T-PLAN-14) : même migration que --update-method, en une
+    # fois, pour ne pas laisser le lien bloqué par un dossier réel non vide.
+    [ "$WANT_MERGE" -eq 1 ] || return 0
+    for _d in .claude/skills/my-project-os .agents/skills/my-project-os; do
+        _f="$TARGET/$_d/SKILL.md"
+        if [ -f "$_f" ] && [ ! -L "$TARGET/$_d" ]; then
+            mkdir -p "$TARGET/99_archive/methode-avant-migration-skills/$_d"
+            cp "$_f" "$TARGET/99_archive/methode-avant-migration-skills/$_d/SKILL.md"
+            rm -f "$_f"
+            echo "  - $_d/SKILL.md (ancienne copie, sauvegardée dans 99_archive/methode-avant-migration-skills/ puis retirée)"
+        fi
+    done
+}
+
+install_myprojectos_skill_source() {
+    _dst="$TARGET/98_configuration/skills/my-project-os/SKILL.md"
+    if [ "$WANT_MERGE" -eq 1 ] && [ -e "$_dst" ]; then
+        echo "  = 98_configuration/skills/my-project-os/SKILL.md (déjà présente, conservée)"
+    else
+        mkdir -p "$TARGET/98_configuration/skills/my-project-os"
+        cp "$REPO/templates/skills/my-project-os/SKILL.md" "$_dst"
+        echo "  + 98_configuration/skills/my-project-os/SKILL.md (skill assistant installée, source unique du catalogue)"
+    fi
+}
+
+create_gouvernance_readme() {
+    # 97_gouvernance/README.md : hors manifest, jamais recréé une fois supprimé
+    # par l'utilisateur (Q7/Q9, DEC-0052) — appelant à ne l'invoquer que si le
+    # dossier est absent.
+    _dst="$TARGET/97_gouvernance/README.md"
+    if [ -e "$_dst" ]; then
+        echo "  = 97_gouvernance/README.md (déjà présent, conservé)"
+        return
+    fi
+    mkdir -p "$TARGET/97_gouvernance"
+    cp "$REPO/templates/configuration/README_GOUVERNANCE.md" "$_dst"
+    echo "  + 97_gouvernance/README.md (droit local du projet, supprimable)"
+}
+
 # --- Mode mise à jour : rafraîchir les artefacts méthode, rien d'autre ---------
 if [ "$WANT_UPDATE" -eq 1 ]; then
     if [ ! -f "$TARGET/PROJECT.md" ]; then
         echo "Pas de PROJECT.md dans '$TARGET' : --update-method s'applique à un projet MyProjectOS existant." >&2
         exit 1
     fi
-    OLD=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
-    [ -n "$OLD" ] && [ "$OLD" != "<VERSION>" ] || OLD="inconnue"
+    OLD=""
+    if [ -f "$TARGET/$MANIFEST_REL" ]; then
+        OLD=$(sed -n 's/^version=//p' "$TARGET/$MANIFEST_REL" | head -n 1 | tr -d '[:space:]')
+    fi
+    if [ -z "$OLD" ]; then
+        OLD=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
+        [ -n "$OLD" ] && [ "$OLD" != "<VERSION>" ] || OLD="inconnue"
+    fi
     BACKUP_REL="99_archive/methode-avant-v$OLD"
     echo "Mise à jour des artefacts méthode : v$OLD -> v$OS_VERSION"
     echo "Sauvegarde des artefacts remplacés dans $BACKUP_REL/ :"
@@ -160,6 +253,14 @@ EOF_REFRESH
             rm -f "$TARGET/$_o"
             echo "  - $_o (retiré de la méthode, sauvegardé puis supprimé)"
         done
+    fi
+    echo "Skills du projet (source unique + liens par agent) :"
+    link_myprojectos_skill_dirs
+    # 97_gouvernance/ : migration unique par seuil de version (Q9, DEC-0052).
+    # Un projet déjà en 0.29.0 ou plus a connu le dossier ; son absence ensuite
+    # est un choix de l'utilisateur, jamais recréé.
+    if ver_lt "$OLD" "0.29.0"; then
+        create_gouvernance_readme
     fi
     sed "s#^version_methode:.*#version_methode: $OS_VERSION#" "$TARGET/PROJECT.md" > "$TARGET/PROJECT.md.tmp" \
         && mv "$TARGET/PROJECT.md.tmp" "$TARGET/PROJECT.md"
@@ -357,14 +458,16 @@ if [ "$TYPE" = "Code" ] || [ "$TYPE" = "Hybrid" ]; then
     fi
 fi
 
-# --- Installation de la skill assistant --------------------------------------
-if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/skills/my-project-os/SKILL.md" ]; then
-    echo "  = .claude/skills/my-project-os/SKILL.md (déjà présente, conservée)"
-else
-    mkdir -p "$TARGET/.claude/skills/my-project-os"
-    cp "$REPO/skills/my-project-os/SKILL.md" "$TARGET/.claude/skills/my-project-os/SKILL.md"
-    echo "  + .claude/skills/my-project-os/SKILL.md (skill assistant installée)"
-fi
+# --- Skills du projet : source unique 98_configuration/skills/, liens par agent
+# Contrat d'un agent (DEC-0052) : toutes les skills du projet, la skill assistant
+# comprise, vivent en 98_configuration/skills/<skill>/ ; Claude Code et Codex y
+# accèdent par lien symbolique relatif, posé pour tout agent connu.
+migrate_old_skill_copy
+install_myprojectos_skill_source
+link_myprojectos_skill_dirs
+
+# --- 97_gouvernance/ : droit local du projet, présent dès la création (Q7) ----
+create_gouvernance_readme
 
 SETTINGS="$TARGET/.claude/settings.json"
 HOOKS_MERGE_PENDING=0

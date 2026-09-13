@@ -15,6 +15,7 @@ MonProjet/
 ├── IMPACT_ANALYSIS.md  # analyse d'impact avant toute modification
 ├── RELEASE.md          # préparation et historique des livraisons
 ├── 00_inbox/ … 04_deliverables/   # dossiers Core
+├── 97_gouvernance/ 98_configuration/   # dossiers Core, présents dès la création (voir structures/core-tree.md)
 ├── 05_specs/           # specs détaillées (complément de SPECS.md)
 ├── 06_architecture/    # schémas, diagrammes, notes d'architecture
 ├── 07_tests/           # jeux de tests, fixtures, rapports

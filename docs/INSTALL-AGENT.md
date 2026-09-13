@@ -15,6 +15,22 @@ Regarde le dossier cible :
 
 Si le type de projet (Life / Code / Hybrid, avec ou sans Knowledge) n'a pas été précisé, pose la question à l'humain avant d'installer. Ne le déduis pas seul.
 
+## Ce que tu reçois
+
+Quelle que soit la méthode, `install.sh` pose la skill assistant `my-project-os` en source unique dans `98_configuration/skills/my-project-os/SKILL.md`, au même titre que toute autre skill du catalogue du projet. Il pose aussi deux liens symboliques relatifs, hors manifest, recréés idempotemment à chaque exécution :
+
+- `.claude/skills/my-project-os -> ../../98_configuration/skills/my-project-os` (Claude Code) ;
+- `.agents/skills/my-project-os -> ../../98_configuration/skills/my-project-os` (Codex).
+
+Un agent autre que Claude Code l'obtient par l'un de ces mécanismes, jamais par copie :
+
+- **Codex** : découverte native par le lien `.agents/skills/` ci-dessus.
+- **OpenCode** : découverte native, il lit les deux dossiers de liens sans rien à poser.
+- **Hermès** : déclaration de configuration `skills.external_dirs` pointant sur `<projet>/98_configuration/skills`, qui offre tout le catalogue, `my-project-os` comprise.
+- **Un agent futur, sans mécanisme connu** : repli par lecture directe de `98_configuration/skills/my-project-os/SKILL.md`, si l'`AGENTS.md` du projet le lui indique.
+
+Détail complet du dispositif : `docs/skills-portables.md`.
+
 ## Méthode 1 — Création (dossier vierge)
 
 1. Installer en une commande (le clone est temporaire, le projet final est autonome) :

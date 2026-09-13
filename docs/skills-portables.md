@@ -14,11 +14,11 @@ Trois questions en découlent, et ce document répond aux trois.
 2. Comment chaque agent l'installe chez lui ?
 3. Comment dire qu'elle ne tourne pas partout, et faire en sorte que ce soit respecté ?
 
-État au 2026-08-08 : le dispositif fonctionne sur les **quatre agents** utilisés ici, Claude Code, Codex, OpenCode et Hermès. Trois d'entre eux consomment le catalogue par un lien symbolique relatif ou par simple découverte, le quatrième par une déclaration de configuration. Aucun ne demande de copie.
+État au 2026-09-13 : le dispositif fonctionne sur les **quatre agents** utilisés ici, Claude Code, Codex, OpenCode et Hermès, pour toutes les skills du projet sans exception, la skill assistant `my-project-os` comprise. Trois d'entre eux consomment le catalogue par un lien symbolique relatif ou par simple découverte, le quatrième par une déclaration de configuration. Aucun ne demande de copie.
 
 ## 1. Une source canonique par projet
 
-La source de vérité d'une skill de projet est `98_configuration/skills/<outil>/`. C'est le seul endroit qu'on édite.
+La source de vérité d'une skill de projet est `98_configuration/skills/<outil>/`. C'est le seul endroit qu'on édite. Cette règle vaut pour toute skill du projet sans distinction : la skill assistant `my-project-os` n'est pas une exception, elle suit exactement le même canon qu'une skill technique comme `blue-app`, source unique comprise.
 
 ```
 98_configuration/skills/
@@ -35,14 +35,15 @@ Aucun secret ne vit jamais dans `98_configuration/` : seulement des **noms** de 
 
 ## 2. Installation par agent
 
-Chaque agent installe sa propre copie depuis la source canonique. Les chemins et les modes diffèrent, et c'est délibéré.
+Chaque agent installe sa propre copie depuis la source canonique. Les chemins et les modes diffèrent, et c'est délibéré. Ce tableau est le registre unique par agent : toute skill du projet, `my-project-os` comprise, s'y range sans ligne à part.
 
-| Agent | Emplacement | Mode | Pourquoi |
-|---|---|---|---|
-| Claude Code | `.claude/skills/<outil>` | lien symbolique **relatif** | interne au projet, donc il voyage avec lui (renommage, déplacement, archive) |
-| Codex | `.agents/skills/<outil>` | lien symbolique **relatif** | idem ; chemin vérifié par exécution, pas `.codex/skills/` |
-| OpenCode | rien à faire | **découverte** | il lit `.claude/skills/` et `.agents/skills/`, donc les liens déjà posés ; son emplacement propre est `.opencode/skill/` |
-| Hermès | déclaration `skills.external_dirs` | **ni copie ni lien** | le catalogue du projet est déclaré en une ligne de configuration du profil, et scanné comme le dossier local |
+| Agent | Emplacement | Mode | Pourquoi | Preuve |
+|---|---|---|---|---|
+| Claude Code | `.claude/skills/<outil>` | lien symbolique **relatif** | interne au projet, donc il voyage avec lui (renommage, déplacement, archive) | vérifié par exécution (§ « Ce qui est vérifié ») |
+| Codex | `.agents/skills/<outil>` | lien symbolique **relatif** | idem ; chemin vérifié par exécution, pas `.codex/skills/` | vérifié par exécution (§ « Ce qui est vérifié ») |
+| OpenCode | rien à faire | **découverte** | il lit `.claude/skills/` et `.agents/skills/`, donc les liens déjà posés ; son emplacement propre est `.opencode/skill/` | vérifié par lecture du binaire, non exercé en session (§ « Ce qui est vérifié ») |
+| Hermès | déclaration `skills.external_dirs` | **ni copie ni lien** | le catalogue du projet est déclaré en une ligne de configuration du profil, et scanné comme le dossier local | mécanisme général vérifié par exécution (§ « Ce qui est vérifié ») ; à vérifier par exécution pour `my-project-os` spécifiquement (lot 4) |
+| Agent sans mécanisme | lecture directe de `98_configuration/skills/<outil>/SKILL.md` | **lecture directe** | repli agnostique : ni découverte native ni déclaration de configuration disponibles, `AGENTS.md` l'indique à l'agent | convention documentaire, non mécanisée |
 
 Le lien symbolique supprime la dérive entre la source et la copie : il n'y a qu'un fichier. La contrepartie est qu'un outil d'archive qui ne préserve pas les liens casse l'installation en silence, ce que `check-project.sh` détecte (section « Skills portables »).
 
@@ -77,6 +78,16 @@ cmds = scan_skill_commands()
 print(len(cmds), cmds.get('/<skill>', {}).get('skill_dir'))
 "
 ```
+
+## Ajouter un agent à la méthode
+
+Ajouter un agent au dispositif se limite à trois gestes, rien de plus :
+
+1. une ligne dans le tableau « Installation par agent » ci-dessus, avec son mécanisme (découverte native, déclaration, ou repli par lecture directe) et sa preuve ;
+2. une ligne dans le gabarit `templates/core/AGENTS.md`, section « Skills du projet » (le contrat, §1) ;
+3. une ligne de lien dans `scripts/init-project.sh` si l'agent découvre par dossier (lien symbolique relatif vers la source).
+
+Rien d'autre : ni nouveau registre, ni nouveau champ de frontmatter, ni script dédié. Un agent qui n'a ni découverte native ni mécanisme de déclaration reçoit le repli par lecture directe, sans geste supplémentaire dans le script.
 
 ## 3. Dire qu'une skill ne tourne pas partout
 
@@ -129,7 +140,7 @@ C'est la distinction qui décide de tout le reste.
 
 Pourquoi une restriction par décision ne se traduit pas en `platforms:` : ce champ dit « ne peut pas tourner ici », pas « ne doit pas être offerte ici ». Le jour où un Hermès tourne sur macOS, `platforms: [macos]` lui offrirait la skill précisément dans le cas qu'on voulait interdire, puisque la frontière visait l'agent et non le système d'exploitation.
 
-Le mécanisme correct est de ne pas installer la skill pour cet agent. Chez Hermès, dont l'installation est une copie physique, **c'est un mécanisme dur et non une consigne** : ce qui n'a pas été copié n'existe pas pour lui. L'`INSTALL.md` porte alors une section « ne pas installer » à la place de la commande d'installation, avec la commande de retrait si la skill s'y trouve déjà.
+Le mécanisme correct est de ne pas installer la skill pour cet agent. Chez Hermès, dont l'installation passe par la déclaration `skills.external_dirs`, **c'est encore un mécanisme dur et non une consigne** : une skill hors du dossier déclaré, ou retirée du catalogue, n'existe pas pour lui, exactement comme un fichier non copié. L'`INSTALL.md` porte alors une section « ne pas installer » à la place de la commande d'installation, avec la commande de retrait si la skill s'y trouve déjà.
 
 Et une conduite à tenir, sans laquelle la frontière finit contournée par bonne volonté : l'agent qui rencontre ce besoin depuis la mauvaise machine **prépare** l'intervention (commandes exactes, contexte, points à vérifier), la **remet** à l'humain ou à l'agent habilité, et **ne contourne pas**. Sans marque explicite, « non portable » se lit comme une tâche en attente, et un agent diligent finit par « réparer » ce qui était une frontière de sécurité volontaire.
 
@@ -167,6 +178,14 @@ Le motif se reconnaît vite : un projet porte la même skill deux fois, une par 
 Cas réel mesuré : `radar-projets` existait en version Claude Code et en adaptation Hermès dans le même projet, avec un sous-agent présent d'un côté et absent de l'autre, une description de déclenchement enrichie d'un côté seulement, et une numérotation des usages inversée. Aucune des deux n'était fausse, elles avaient simplement divergé chacune de son côté.
 
 Le motif « une skill par agent » ne se justifie que pour une variante **spécifique** à un agent. Dès qu'un projet en découvre deux qui font la même chose, c'est le signal de fusionner : une skill générique unique dans le catalogue, les agents la découvrant par leur mécanisme respectif, l'ancienne version archivée. Ne pas attendre : ce qui a divergé une fois diverge encore.
+
+### Copie personnelle masquante : un cas silencieux
+
+Une skill de projet dupliquée dans le dossier personnel d'un agent (`~/.claude/skills/<même nom>`) est prioritaire côté Claude Code, entreprise > personnel > projet, et masque silencieusement la version du projet, qui continue d'exister sans jamais être exécutée.
+
+Cas réel mesuré et corrigé (P0 du plan T-PLAN-14) : une copie globale `~/.claude/skills/my-project-os/` datée du 3 août répondait à la place de toute copie projet plus récente, sur tous les projets du parc, sans qu'aucun message ne le signale. `scripts/check-project.sh` §10 détecte maintenant ce cas (avertissement A11).
+
+Règle : une skill de projet n'est jamais doublée dans un dossier personnel d'agent.
 
 ## Ce qui est vérifié, et ce qui ne l'est pas
 

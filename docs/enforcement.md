@@ -9,7 +9,7 @@ Rappel du principe 9 (`docs/principles.md`) : une règle qui dépend de la bonne
 | Couche | Mécanisme | Force | Exemple |
 |---|---|---|---|
 | Documentation | `docs/`, templates, conventions | Informe | « PROGRESS n'est pas un journal » |
-| Skill assistant | `skills/my-project-os/SKILL.md` | Accompagne | Range l'info au bon endroit, produit l'état |
+| Skill assistant | `templates/skills/my-project-os/SKILL.md` | Accompagne | Range l'info au bon endroit, produit l'état |
 | **Hooks** | scripts déterministes Claude Code | **Garantit** | Bloque un nom de fichier interdit |
 
 Les règles vraiment non négociables vivent dans la couche hooks.

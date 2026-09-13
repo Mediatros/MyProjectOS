@@ -1,7 +1,7 @@
 # Structure d'un projet Core
 
 Arborescence type d'un projet, commune à tous les types (Life, Code, Hybrid).
-Les dossiers sont créés à la demande, au moment où ils servent. Aucun squelette vide n'est imposé.
+Les dossiers numérotés sont créés à la demande, au moment où ils servent, à l'exception de `97_gouvernance/` et `98_configuration/`, présents dès la création du projet : aucun dossier vide n'est imposé, ces deux-là portent un contenu réel dès l'origine (README, skill assistant).
 
 ```
 MonProjet/
@@ -17,10 +17,13 @@ MonProjet/
 ├── 02_work/            # travail actif en cours
 ├── 03_documents/       # PDF, emails, pièces jointes
 ├── 04_deliverables/    # livrables finaux
-├── 97_gouvernance/     # optionnel : droit local du projet (règles spécifiques utilisateur, compléments aux fichiers sacrés)
-│   └── GOUVERNANCE_LOCALE.md  # fichier principal du droit local
-├── 98_configuration/   # optionnel : gouvernance d'intégrations tierces, handoff inter-agents
-│   └── skills/         # optionnel : copie canonique projet d'une skill technique portable (ex. blue-app)
+├── 97_gouvernance/     # présent dès la création, supprimable : droit local du projet (règles spécifiques utilisateur, compléments aux fichiers sacrés)
+│   ├── README.md       # vocation du dossier, posé par init-project.sh
+│   └── GOUVERNANCE_LOCALE.md  # à la demande, dès qu'une règle locale est exprimée
+├── 98_configuration/   # présent dès la création, indispensable : gouvernance d'intégrations tierces, handoff inter-agents, skills du projet
+│   └── skills/         # source canonique unique de TOUTES les skills du projet
+│       ├── README.md   # tableau de bord du parc, dès plus d'une skill
+│       └── my-project-os/SKILL.md  # skill assistant, posée par init-project.sh, rafraîchie par --update-method
 └── 99_archive/         # éléments clôturés ou obsolètes
 ```
 
@@ -45,9 +48,9 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 | `02_work/` | Notes et fichiers du travail en cours | Cœur de l'activité ; Life/Hybrid peuvent le redéfinir en `02_sujets/` (organisation par sujets), voir `structures/life-tree.md` (DEC-0032) |
 | `03_documents/` | Documents sources (PDF, emails, pièces jointes) | Préfixe date `YYYY-MM-DD` |
 | `04_deliverables/` | Livrables finaux destinés à sortir du projet | Versions abouties |
-| `97_gouvernance/` | Droit local du projet : règles de gouvernance spécifiques à l'utilisateur/projet (qui décide quoi, validations supplémentaires, rituels propres, règles de contenu), compléments aux fichiers sacrés et à la gouvernance Core | Optionnel, créé à la demande dès qu'un projet a besoin de règles locales au-delà d'`AGENTS.md` ; fichier principal `GOUVERNANCE_LOCALE.md`, gabarit `templates/configuration/GOUVERNANCE_LOCALE.md` ; jamais de configuration d'outils (→ `98_configuration/`) ni de contenu métier (→ dossiers `0X_`) |
-| `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents | Optionnel, créé à la demande dès qu'un projet est piloté par plusieurs agents/outils partagés ; jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
-| `98_configuration/skills/` | Copie canonique projet d'une skill technique portable (agnostique agent, ex. `blue-app`, `courrier-manuscrit`, ou une skill bespoke du projet) ; chaque agent l'installe ensuite chez lui, par lien symbolique relatif pour Claude Code/Codex (Hermès en copie physique globale), selon l'`INSTALL.md` de la skill. Catalogue des outils proposés nativement : `docs/OUTILS.md` du dépôt méthode ; squelette pour en créer : `templates/skills/_squelette/`. Dès qu'il y a plus d'une skill, `98_configuration/skills/README.md` tient le tableau de bord du parc (skill, `portable:`, `platforms:`, secret, agents équipés, blocage résiduel ; gabarit `templates/configuration/README_SKILLS.md`) | Optionnel, proposé systématiquement à la création de toute nouvelle skill de projet (catalogue ou bespoke, DEC-0034) ; source unique, jamais modifiée localement par un agent sans répercuter ici. Relire le tableau de bord en entier quand le projet change d'environnement d'exécution (DEC-0038) |
+| `97_gouvernance/` | Droit local du projet : règles de gouvernance spécifiques à l'utilisateur/projet (qui décide quoi, validations supplémentaires, rituels propres, règles de contenu), compléments aux fichiers sacrés et à la gouvernance Core | Présent dès la création (`README.md` posé par `init-project.sh`), seul dossier supprimable par l'utilisateur, jamais recréé par `--update-method` une fois qu'il a existé (au-delà du seuil `0.29.0`) ; fichier de règles `GOUVERNANCE_LOCALE.md` à la demande dès qu'une règle locale est exprimée, gabarit `templates/configuration/GOUVERNANCE_LOCALE.md` ; jamais de configuration d'outils (→ `98_configuration/`) ni de contenu métier (→ dossiers `0X_`) |
+| `98_configuration/` | Gouvernance d'intégrations tierces partagées entre agents, handoff asynchrone inter-agents, source canonique de toutes les skills du projet | Présent dès la création de tout projet, indispensable (contrairement à `97_gouvernance/`) : il porte `98_configuration/skills/`, jamais vide. Jamais de secrets ni de contenu métier. Voir `docs/NAMING-CONVENTIONS.md` |
+| `98_configuration/skills/` | Source canonique unique de TOUTES les skills du projet, la skill assistant `my-project-os` comprise (agnostique agent, ex. aussi `blue-app`, `courrier-manuscrit`, ou une skill bespoke du projet) ; chaque agent l'installe ensuite chez lui, par lien symbolique relatif pour Claude Code/Codex, par déclaration `skills.external_dirs` pour Hermès, selon l'`INSTALL.md` de la skill (voir le contrat d'un agent, `docs/skills-portables.md`). Catalogue des outils proposés nativement : `docs/OUTILS.md` du dépôt méthode ; squelette pour en créer : `templates/skills/_squelette/`. Dès qu'il y a plus d'une skill, `98_configuration/skills/README.md` tient le tableau de bord du parc (skill, `portable:`, `platforms:`, secret, agents équipés, blocage résiduel ; gabarit `templates/configuration/README_SKILLS.md`) | Présent dès la création (`my-project-os` y est posée par `init-project.sh`) ; source unique, jamais modifiée localement par un agent sans répercuter ici. Relire le tableau de bord en entier quand le projet change d'environnement d'exécution (DEC-0038) |
 | `99_archive/` | Éléments clôturés ou obsolètes, anciens CHANGELOG | Conserver, ne pas supprimer |
 
 ## Extensions

@@ -1,6 +1,8 @@
 # 97_gouvernance/ — droit local du projet
 
-Dossier présent dès la création de tout projet MyProjectOS, ce dépôt compris (dogfooding de la méthode sur elle-même). Porte les règles de gouvernance **spécifiques au projet et à son utilisateur** : compléments aux fichiers sacrés et à la gouvernance Core de la méthode.
+> Gabarit MyProjectOS. Destination : `97_gouvernance/README.md`, posé automatiquement par `init-project.sh` à la création du projet. Rien à remplacer : ce fichier est déjà générique, il ne prend pas de `<...>`.
+
+Dossier présent dès la création de tout projet MyProjectOS. Porte les règles de gouvernance **spécifiques au projet et à son utilisateur** : compléments aux fichiers sacrés et à la gouvernance Core de la méthode.
 
 L'utilisateur peut le supprimer s'il n'en a pas l'usage : `--update-method` ne le recrée jamais une fois qu'il a existé (voir « Ce dossier peut être supprimé » ci-dessous).
 

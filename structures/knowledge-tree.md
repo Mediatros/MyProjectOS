@@ -9,6 +9,7 @@ MonProjet/
 ├── PROJECT.md / PROGRESS.md / CHANGELOG.md / TASKS.md / DECISIONS.md   # Core
 ├── SUJETS.md             # routeur métier : alias -> sujet -> source fraîche prioritaire
 ├── 00_inbox/ … 04_deliverables/   # dossiers Core
+├── 97_gouvernance/ 98_configuration/   # dossiers Core, présents dès la création (voir structures/core-tree.md)
 ├── docs/
 │   ├── kb_governance.md  # règles de navigation, niveaux, dépendances transverses
 │   ├── INDEX.md          # index d'entrée documentaire (sommaire)

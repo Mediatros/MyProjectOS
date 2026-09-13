@@ -58,4 +58,4 @@ Enchaîner une deuxième tâche dans la même fenêtre est l'exception (deux tâ
 
 - `docs/governance.md` — rituels de session et frontière des fichiers sacrés.
 - `docs/lifecycle.md` — cycle de vie complet d'un projet.
-- `skills/my-project-os/SKILL.md` — la skill qui applique ce rythme (modes reprise et clôture).
+- `templates/skills/my-project-os/SKILL.md` — la skill qui applique ce rythme (modes reprise et clôture).

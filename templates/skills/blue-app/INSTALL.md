@@ -18,7 +18,7 @@ mkdir -p <projet>/.claude/skills
 cd <projet>/.claude/skills && ln -s ../../98_configuration/skills/blue-app blue-app
 ```
 
-Installation globale possible (`~/.claude/skills/blue-app/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet.
+Installation globale possible (`~/.claude/skills/blue-app/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet. **Attention** : en cas de nom identique, Claude Code donne priorité à une skill personnelle sur celle du projet — une copie globale masquerait alors silencieusement le lien déjà posé vers la source du projet.
 
 ### Codex
 
@@ -31,15 +31,17 @@ cd <projet>/.agents/skills && ln -s ../../98_configuration/skills/blue-app blue-
 
 ### Hermès
 
-Copie unique globale (pas d'installation par projet, décision D3 du plan d'origine) vers le dossier skills d'Hermès :
+Depuis DEC-0040, Hermès reçoit `blue-app` par déclaration de profil, pas par copie : la clé `skills.external_dirs` désigne le catalogue entier du projet, `blue-app` compris.
 
 ```sh
-cp -r <projet>/98_configuration/skills/blue-app ~/.hermes/skills/blue-app
+hermes config set skills.external_dirs '<projet>/98_configuration/skills'
 ```
 
-Vérifié en réel le 2026-07-12 : un dossier plat `blue-app/` (avec `SKILL.md` à la racine) déposé dans `~/.hermes/skills/` est découvert comme skill « local » et activé (`hermes skills list`). Un déploiement Hermès peut aussi exposer des skills par profil (`~/.hermes/profiles/<profil>/skills/`) : la copie globale reste le choix canonique, elle sert tous les profils. Si Hermès tourne en root, `~` est `/root`.
+Vérifier avec `scan_skill_commands()` (voir `agents/hermes.md`, ne pas se fier à `hermes skills list`) que `/blue-app` est bien offerte, source `98_configuration/skills/blue-app`.
 
-Mise à jour ultérieure : via une entrée de handoff « Équiper un agent » (voir `templates/configuration/HANDOFF_INTERAGENT.md`), en recopiant depuis la source projet.
+**La copie physique globale (`cp -r ... ~/.hermes/skills/blue-app`) est abandonnée** : sur un déploiement profilé, le dossier scanné est celui du profil actif, pas le dossier global, donc une skill déposée là n'était pas offerte à l'agent. Observation historique du 2026-07-12, avant cette correction : un dossier plat `blue-app/` déposé dans `~/.hermes/skills/` était bien découvert comme skill « locale » par `hermes skills list` — commande qui n'observe justement pas le registre réellement offert (DEC-0040).
+
+Mise à jour ultérieure : rien à faire skill par skill, la déclaration porte sur le dossier entier.
 
 ## Configuration des secrets par environnement
 

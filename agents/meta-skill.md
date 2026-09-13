@@ -1,7 +1,7 @@
 # meta-skill.md — La skill assistant MyProjectOS
 
 > Carte d'identité de la pièce centrale du système : la skill qui pilote les projets.
-> Le « quoi » et le « pourquoi » vivent ici. Le « comment » exécutable vit dans `skills/my-project-os/SKILL.md`.
+> Le « quoi » et le « pourquoi » vivent ici. Le « comment » exécutable vit dans `templates/skills/my-project-os/SKILL.md`.
 
 ## Rôle
 
@@ -63,10 +63,10 @@ Règle de prudence : en cas de doute sur l'ampleur, choisir le parcours complet.
 
 - Elle **propose et exécute la méthode**, elle ne tranche pas les choix structurants : elle éclaire (options, avantages, inconvénients, recommandation) et laisse l'humain décider (`docs/lifecycle.md`, étape 4).
 - Elle ne remplace pas les hooks : ce qui doit être garanti à 100 % (MAJ PROGRESS en fin de session, nommage, placement) relève de la Phase 4.
-- Elle est **agent-agnostique dans son intention** mais s'exécute côté Claude Code. La portabilité vers Hermès passe par la couche gouvernance Markdown (voir `agents/hermes.md`), pas par la skill elle-même.
+- Elle est **agent-agnostique dans son intention et dans son installation** : sa source unique (`98_configuration/skills/my-project-os/`) suit le même canon que toute skill technique du projet, offerte à Claude Code et à Codex par lien symbolique, à Hermès par déclaration `skills.external_dirs` (DEC-0052). Cette offre côté Hermès est vérifiée par exécution (T-PLAN-14 lot 4, 2026-09-13) : `scan_skill_commands()` la liste avec le bon `skill_dir`, sans copie. Reste non observée, faute de credentials sur le profil de test jetable utilisé pour la mesure : une session complète menée par Hermès (voir `agents/hermes.md`).
 
 ## Voir aussi
 
-- `skills/my-project-os/SKILL.md` — implémentation exécutable.
+- `templates/skills/my-project-os/SKILL.md` — implémentation exécutable (source dans le dépôt méthode ; installée dans un projet en `98_configuration/skills/my-project-os/SKILL.md`).
 - `agents/claude-code.md`, `agents/hermes.md` — rôles et frontières des deux agents.
 - `docs/governance.md`, `docs/lifecycle.md`, `docs/principles.md` — règles que la skill applique.

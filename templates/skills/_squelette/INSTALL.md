@@ -38,7 +38,7 @@ mkdir -p <projet>/.claude/skills
 cd <projet>/.claude/skills && ln -s ../../98_configuration/skills/<outil> <outil>
 ```
 
-Installation globale possible (`~/.claude/skills/<outil>/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet.
+Installation globale possible (`~/.claude/skills/<outil>/`, alors en copie `cp -r` puisque hors du projet) si la skill doit être disponible hors du projet. **Attention** : en cas de nom identique, Claude Code donne priorité à une skill personnelle (`~/.claude/skills/<outil>/`) sur celle du projet — une copie globale masquerait alors silencieusement le lien déjà posé vers la source du projet ; à réserver aux skills réellement transverses à plusieurs projets, jamais pour contourner une source projet existante.
 
 ### Codex
 

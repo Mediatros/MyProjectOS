@@ -1,21 +1,16 @@
-# Skills du projet `<Projet>`
+# Skills du projet `code-site-vitrine`
 
-> Gabarit MyProjectOS. Destination : `98_configuration/skills/README.md`. Remplacer chaque bloc `<...>` puis supprimer cette note.
 > Ce fichier est le **tableau de bord du parc de skills** du projet : il répond à « qu'est-ce que chaque agent peut faire aujourd'hui ? » sans ouvrir une seule skill.
 > Il n'y a pas d'autre registre : le détail par opération vit dans l'`INSTALL.md` de chaque skill (tableau « limites par environnement »), le pourquoi d'une non-portabilité décidée dans le `DECISIONS.md` du projet.
 > Référence du dispositif : `docs/skills-portables.md` du dépôt méthode.
 
 ## Inventaire
 
-Dès qu'il y a plus d'une skill dans `98_configuration/skills/`, `my-project-os` (la skill assistant, posée par `init-project.sh`) figure toujours dans ce tableau, au même titre que les skills techniques et bespoke.
+Le tableau liste chaque skill disponible dans `98_configuration/skills/`, la skill assistant `my-project-os` (posée par `init-project.sh`) comprise.
 
 | Skill | `portable:` | `platforms:` | Secret | Agents équipés | Blocage résiduel |
 |---|---|---|---|---|---|
 | `my-project-os` | oui | (aucun) | — | Claude Code, Codex, Hermès | — |
-| `<outil>` | oui | (aucun) | `<PREFIXE>_<CLE>` | Claude Code, Codex, Hermès | — |
-| `<outil>` | partiel | (aucun) | `<PREFIXE>_<CLE>` | Claude Code, Codex | `<l'opération qui ne passe pas, et pourquoi>` |
-| `<outil>` | conditionnel | `[macos]` | `<à migrer>` | Claude Code | `<le prérequis à poser, et le chemin pour y arriver>` |
-| `<outil>` | non | (aucun) | `<clé privée locale>` | Claude Code uniquement, **par décision** | `<renvoi au document qui porte la décision>` |
 
 Colonne `portable:` : `oui` (défaut, champ absent), `partiel`, `conditionnel`, `non`. Définitions dans `templates/skills/_squelette/SKILL.md`.
 Colonne `platforms:` : recopier la valeur du frontmatter, ou « (aucun) » si le champ est absent, ce qui signifie compatible partout.
@@ -31,4 +26,4 @@ Règle de cohérence à vérifier en relisant ce tableau : une ligne `non` ou `p
 
 ## Historique du parc
 
-<Facultatif. Les mouvements datés (skill ajoutée, portabilité corrigée, agent équipé) vont dans le `CHANGELOG.md` du projet sous un identifiant `CHG-`. N'écrire ici que ce qui aide à comprendre l'état présent.>
+Les mouvements datés (skill ajoutée, portabilité corrigée, agent équipé) vont dans le `CHANGELOG.md` du projet sous un identifiant `CHG-`. Rien à consigner ici pour l'instant.

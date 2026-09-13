@@ -20,7 +20,7 @@ Vocabulaire commun du système. Une définition par terme.
 - **Kit de rails** : ensemble de conventions, règles agent et recettes propre à un type de stack, qui fait coder l'IA « comme un senior » (extension Code).
 - **Claude Code** : agent IA opérant les projets côté Mac.
 - **Hermès** : agent IA autonome (Nous Research) opérant les projets côté VPS.
-- **Skill assistant** : la skill centrale qui pilote les rituels (reprise, orientation, explication, clôture).
+- **Skill assistant** : la skill centrale à sept modes qui pilote les rituels (reprise, orientation, explication, clôture, cadrage, adoption, mise à jour de la méthode ; voir `agents/meta-skill.md`).
 - **Hook** : mécanisme déterministe du harness qui rend une règle non négociable automatique.
 - **Niveau 1 / Global** : documentation de vue d'ensemble, lue avant les domaines.
 - **Niveau 2 / Domaines** : documentation par composant, flux, module ou responsabilité.

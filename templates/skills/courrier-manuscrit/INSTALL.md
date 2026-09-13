@@ -20,7 +20,7 @@ La police n'est pas fournie avec la skill (les polices manuscrites sont souvent 
 4. **Renseigner la skill** : remplacer dans `template.html` (les deux occurrences dans le `@font-face` et les `font-family`) et dans la section « Police » du `SKILL.md` :
    - `<NOM_POLICE>` : le nom de famille interne de la police (visible dans l'aperçu de la police, ex. « Caveat ») ;
    - `<CHEMIN_POLICE>` / `<CHEMIN_POLICE_ENCODE_URL>` : le chemin absolu du fichier, encodé URL dans `template.html` (espaces = `%20`).
-5. **Répercuter dans le canon** : si la skill est installée depuis `98_configuration/skills/courrier-manuscrit/`, faire la modification dans cette copie canonique d'abord, puis la recopier chez l'agent.
+5. **Répercuter dans le canon** : si la skill est installée depuis `98_configuration/skills/courrier-manuscrit/`, faire la modification dans cette source canonique d'abord, puis la recopier chez l'agent.
 
 ## Installation par agent
 

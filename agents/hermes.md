@@ -14,7 +14,7 @@ Un agent autonome, distinct de Claude Code. Il **n'exécute pas** Harness ni les
 
 ## Ses frontières
 
-- Pas d'exécution de la skill `my-project-os` ni des hooks Claude Code : ces garde-fous sont, à ce stade, spécifiques au poste Mac.
+- Pas d'exécution des hooks Claude Code : ce garde-fou reste spécifique au poste Mac. L'offre de la skill `my-project-os` par Hermès est **vérifiée par exécution** (T-PLAN-14 lot 4, 2026-09-13, DEC-0052) : sur un projet jetable posé avec `98_configuration/skills/my-project-os/` et déclaré en `skills.external_dirs`, `scan_skill_commands()` la liste (`/my-project-os`) avec le `skill_dir` correct (aucune copie, aucun lien) et sa description complète, 29 Ko, non tronquée. C'était le point réellement incertain (taille atypique, pas de `platforms:`). Non observé dans cette même mesure, faute de credentials provisionnés sur le profil de test jetable (obstacle d'infrastructure du test, sans rapport avec le mécanisme évalué) : une session complète « Reprends le projet » de bout en bout, comparée au Mode 1. Détail de la mesure : « Comment Hermès reçoit les skills d'un projet » ci-dessous.
 - Mêmes règles de validation humaine que Claude Code sur les actions sensibles.
 - Il ne réorganise pas l'arborescence ni la stack sans validation.
 
@@ -52,7 +52,7 @@ Hermès supporte **MCP** et le standard ouvert **agentskills.io** (dossier + `SK
 1. **MCP partagé** : exposer la couche gouvernance + l'assistant via un serveur MCP commun aux deux agents.
 2. **Double skill** : publier une skill équivalente sur agentskills.io, consommable par Hermès.
 
-Tant que ce n'est pas fait, le contrat minimal d'Hermès est : **respecter la gouvernance Markdown**. La reprise à froid garantit qu'il peut le faire sans la skill `my-project-os` elle-même (celle-ci reste spécifique au poste Mac, voir « Ses frontières » ci-dessus).
+Tant que ce n'est pas fait, le contrat minimal d'Hermès est : **respecter la gouvernance Markdown**. La reprise à froid garantit qu'il peut le faire sans la skill `my-project-os` elle-même ; celle-ci lui est désormais offerte correctement une fois déclarée (T-PLAN-14 lot 4, voir « Ses frontières » ci-dessus), reste non observée en exécution complète pour la raison notée ci-dessus.
 
 **Premier cas concret réalisé** (brique Blue, 2026-07-12) : une skill *technique* (pas la skill assistant de méthode) portée dans `templates/skills/blue-app/` est installée à l'identique chez Hermès, Claude Code et Codex, preuve que le standard agentskills.io permet bien de partager une capacité entre les trois agents.
 
@@ -80,6 +80,8 @@ print(len(cmds), cmds.get('/<skill>', {}).get('skill_dir'))
 "
 ```
 
+**Preuve faite sur `my-project-os` le 2026-09-13** (T-PLAN-14 lot 4) : projet jetable posé par `init-project.sh` (donc avec `98_configuration/skills/my-project-os/SKILL.md` et les deux liens symboliques), copié sur le VPS, profil Hermès jetable créé (`hermes profile create`) avec `skills.external_dirs` pointé dessus. `scan_skill_commands()` a listé 54 skills dont `/my-project-os`, `skill_dir` égal au chemin du projet (pas de copie), description complète et non tronquée. Profil et projet de test supprimés après la mesure.
+
 ## Saisie de secrets hors-LLM : hook gateway `/secret` (cible DEC-0031, à valider en réel)
 
 La brique secrets VPS est SOPS + age (backend `sops` de `secrets.sh`, boîte `~/.config/secrets/secrets.env`). Pour ajouter une valeur depuis Telegram sans qu'elle ne transite par le LLM, la cible est un **hook de gateway** Hermès : un répertoire sous `~/.hermes/hooks/` (un `HOOK.yaml` + un `handler.py`) abonné à l'événement `command:secret`, qui intercepte `/secret NOM valeur` au niveau de la gateway Telegram, AVANT le LLM.
@@ -99,5 +101,5 @@ Protocole de validation obligatoire avant toute vraie valeur : poser d'abord un 
 
 - `docs/skills-portables.md` — le dispositif complet des skills de projet, dont le filtre `platforms:` et la déclaration `external_dirs` côté Hermès.
 - `agents/claude-code.md` — l'agent principal côté Mac.
-- `agents/meta-skill.md` — la skill que Claude Code exécute et qu'Hermès n'exécute pas encore.
+- `agents/meta-skill.md` — la skill, désormais offerte à Hermès une fois déclarée (T-PLAN-14 lot 4), exécution complète non encore observée en session réelle.
 - `docs/governance.md` — les règles communes aux deux agents.

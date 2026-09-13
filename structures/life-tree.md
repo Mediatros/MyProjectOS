@@ -9,6 +9,7 @@ MonProjet/
 ├── ECHEANCES.md        # dates importantes, délais, rendez-vous
 ├── CORRESPONDANCES.md  # registre des échanges (C-XXXX)
 ├── 00_inbox/ 01_context/ 03_documents/ 04_deliverables/   # dossiers Core
+├── 97_gouvernance/ 98_configuration/   # dossiers Core, présents dès la création (voir structures/core-tree.md)
 ├── 02_sujets/           # optionnel : organisation par sujets, redéfinit 02_work/ du Core pour Life
 │   ├── INDEX.md         # sujets suivis, un par ligne, renvoi vers le sous-dossier
 │   └── Sxx_NomDuSujet/  # un sous-dossier par sujet de fond (ex. S01_Succession, S02_Vente_Bien)

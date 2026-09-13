@@ -4,12 +4,12 @@
 
 ## Ce qu'il est
 
-L'agent de référence côté poste de travail. Il exécute la skill assistant (`skills/my-project-os/SKILL.md`), applique les rituels de session, et pilote la colonne vertébrale Code (Harness, Phase 5). C'est lui qui dogfoode la méthode sur ce repo.
+L'agent de référence côté poste de travail. Il exécute la skill assistant (`98_configuration/skills/my-project-os/SKILL.md`), applique les rituels de session, et pilote la colonne vertébrale Code (Harness, Phase 5). C'est lui qui dogfoode la méthode sur ce repo.
 
 ## Ce qu'il fait
 
 - **Rituels de session** : reprise à froid au démarrage, mises à jour pendant, clôture en fin de session (voir `docs/governance.md`).
-- **Skill assistant** : les quatre modes (reprise / orientation / explication / clôture).
+- **Skill assistant** : les sept modes (reprise / orientation / explication / clôture / cadrage / adoption / mise à jour de la méthode, voir `agents/meta-skill.md`).
 - **Volet Code** : gate `STACK_VALIDATION` avant tout code, `IMPACT_ANALYSIS` avant modification, exécution encadrée, recettes du kit de rails.
 - **Enforcement déterministe** : exécute les hooks (Phase 4) qui garantissent les règles non négociables.
 - **Git** : commits en français (`type: description`), jamais sans demande explicite.
@@ -28,4 +28,4 @@ L'agent de référence côté poste de travail. Il exécute la skill assistant (
 
 ## Relation avec Hermès
 
-Claude Code et Hermès partagent les mêmes fichiers Markdown via Syncthing. Hermès n'exécute pas la skill ni les hooks Claude Code : il consomme la couche gouvernance documentaire. La portabilité des garde-fous vers Hermès est traitée dans `agents/hermes.md` (reporté ROADMAP, Phase 7).
+Claude Code et Hermès partagent les mêmes fichiers Markdown via Syncthing. Hermès n'exécute pas les hooks Claude Code : il consomme la couche gouvernance documentaire. L'offre de la skill assistant à Hermès une fois déclarée est vérifiée par exécution (T-PLAN-14 lot 4, DEC-0052) ; la portabilité des garde-fous vers Hermès se réduit désormais aux hooks, traités dans `agents/hermes.md` (ROADMAP, Phase 7).

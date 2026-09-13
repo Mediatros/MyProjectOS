@@ -10,7 +10,7 @@ Un projet naît à partir des templates, posés par `scripts/init-project.sh` (o
 - Les templates des extensions choisies sont ajoutés (Life, Code, ou les deux pour Hybrid) ; l'extension Code ajoute sa propre section dans `AGENTS.md` au lieu d'un fichier séparé.
 - L'extension `knowledge` ne s'active que si le projet a assez de documentation pour justifier une navigation par niveaux et une analyse transverse.
 - Les dossiers numérotés sont créés à la demande, au moment où ils servent.
-- La skill assistant (`skills/my-project-os/SKILL.md`) est installée dans `.claude/skills/`, et les hooks d'enforcement dans `.claude/hooks/` (voir `docs/enforcement.md`).
+- La skill assistant (`templates/skills/my-project-os/SKILL.md`) est installée dans `98_configuration/skills/`, et les hooks d'enforcement dans `.claude/hooks/` (voir `docs/enforcement.md`).
 - Une copie de `scripts/check-project.sh` et une empreinte `VERSION` figée sont posées dans le projet : il reste auto-vérifiable même si le repo méthode disparaît ensuite.
 - `PROJECT.md` reste à renseigner (pourquoi, périmètre, objectifs, critères de réussite) : lui seul ne peut pas être automatisé.
 

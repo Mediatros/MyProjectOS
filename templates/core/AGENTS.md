@@ -18,23 +18,27 @@ Une information ne vit qu'à un seul endroit : état présent → `PROGRESS.md` 
 
 ## Rituels de session
 
-**Au démarrage** (lecture allégée, DEC-0051) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de lecture intégrale de ces trois derniers fichiers dans ce rituel ; le détail se lit normalement en dehors. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet).
+**Au démarrage** (lecture allégée) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de lecture intégrale de ces trois derniers fichiers dans ce rituel ; le détail se lit normalement en dehors. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet).
 
-**Pendant** : mettre à jour `PROGRESS.md` après toute avancée significative, logger dans `CHANGELOG.md`, documenter les décisions structurantes dans `DECISIONS.md`.
+**Pendant** : répondre d'abord à la demande de l'utilisateur ; la mise à jour de `PROGRESS.md` (après toute avancée significative), `CHANGELOG.md` et `DECISIONS.md` (décisions structurantes) suit, jamais avant la réponse.
 
-**En fin de session** : mettre à jour les fichiers Core concernés, produire un résumé (fait / reste / décisions / risques / prochaine action).
+**En fin de session** : produire d'abord un résumé (fait / reste / décisions / risques / prochaine action), puis mettre à jour les fichiers Core concernés — jamais l'inverse.
 
 ## Cycle de travail
 
 Une itération = **une seule** tâche de `TASKS.md` : reprise à froid → exécution → clôture des fichiers Core → contexte vidé (`/clear`). Quand la tâche est terminée et vérifiée, proposer la clôture plutôt qu'enchaîner. Une tâche doit tenir dans une session et porter un critère de succès vérifiable ; sinon, la découper avant de commencer. Une découverte en cours de route se note dans `TASKS.md` sans détourner l'itération.
 
-## Skills selon l'agent
+## Skills du projet
 
-Une skill disponible pour un agent ne l'est pas forcément pour un autre :
+Toutes les skills du projet, la skill assistant `my-project-os` comprise, vivent dans `98_configuration/skills/<skill>/` : seule source, elle voyage avec le projet. Chaque skill est au format ouvert Agent Skills (`SKILL.md` à frontmatter `name`/`description`), lisible sans outil.
 
-- Claude Code : skills projet dans `.claude/skills/` (dont `my-project-os`).
-- Hermès : skills de profil dans `~/.hermes/profiles/<profil>/skills/`.
-- Codex : pas de skills ; ce fichier fait foi.
+Un agent y accède par l'un de ces trois mécanismes, et seulement ceux-là :
+
+- **découverte native** : lien symbolique relatif depuis son dossier de skills vers la source (Claude Code `.claude/skills/`, Codex `.agents/skills/`, OpenCode qui lit ces deux dossiers) ;
+- **déclaration** : une ligne de configuration désignant le catalogue (Hermès `skills.external_dirs`) ;
+- **lecture directe** : un agent sans mécanisme lit `98_configuration/skills/<skill>/SKILL.md` directement, ce fichier faisant foi.
+
+Détail complet : `docs/skills-portables.md`.
 
 ## Actions nécessitant une validation humaine
 

@@ -118,7 +118,7 @@ else
     # Projet créé avant le manifest (méthode < 0.5.0) : liste par défaut.
     for _a in .claude/hooks/_lib.sh .claude/hooks/hook-pre-write.sh \
               .claude/hooks/hook-stop-progress.sh \
-              .claude/skills/my-project-os/SKILL.md \
+              98_configuration/skills/my-project-os/SKILL.md \
               scripts/check-project.sh VERSION; do
         [ -f "$TARGET/$_a" ] && printf '  %s\n' "$_a"
     done

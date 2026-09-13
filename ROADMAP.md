@@ -25,7 +25,7 @@ Reporté volontairement : priorité au socle Markdown manuel d'abord.
 
 ### Portabilité vers Hermès
 
-Hermès (Nous Research) est un agent autonome, pas Claude Code : il n'exécute pas le harness, il consomme les fichiers Markdown. Il supporte MCP et `agentskills.io`. À terme, exposer la couche gouvernance (skill assistant + règles) via un MCP partagé ou une double skill, pour qu'Hermès respecte les mêmes garde-fous.
+Hermès (Nous Research) est un agent autonome, pas Claude Code : il n'exécute pas le harness, il consomme les fichiers Markdown. Il supporte MCP et `agentskills.io`. Le format de la skill assistant est déjà partagé (`98_configuration/skills/`, DEC-0052), et son **offre** à Hermès une fois déclarée en `skills.external_dirs` est vérifiée par exécution (T-PLAN-14 lot 4, 2026-09-13). La portabilité des garde-fous se réduit désormais aux hooks Claude Code, qu'Hermès n'exécute pas et n'exécutera pas sans l'une des deux pistes ci-dessus (MCP partagé ou double skill).
 
 ### Outils complémentaires
 

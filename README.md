@@ -2,7 +2,7 @@
 
 **Une méthode d'organisation de projets assistée par IA, pour reprendre n'importe quel projet à froid, sans aucun historique de conversation.**
 
-> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.28.0**. Installable tel quel, réutilisable en tout ou partie.
+> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.29.0**. Installable tel quel, réutilisable en tout ou partie.
 
 Ce n'est pas un logiciel. C'est un système documentaire versionné : des fichiers Markdown, des rituels de session, des garde-fous exécutés par des hooks, et une skill qui guide l'agent. Il tient dans un dossier, se lit sur GitHub sans outil, et se met à jour comme un logiciel.
 
@@ -36,7 +36,7 @@ Les projets **Life** ajoutent : *quelle est la preuve ?* (`PREUVES.md`). Les pro
 
 - **Gouverner plusieurs agents avec un seul jeu de fichiers** : Claude Code, Codex, Hermès et OpenCode lisent les mêmes rituels (`AGENTS.md`), chacun avec son mécanisme d'installation de skills.
 - **Des règles tenues par du code, pas par des consignes** : ce qui est non négociable est un hook ou un check, avec preuve d'exécution avant d'être promu (`docs/enforcement.md`).
-- **Des décisions tracées** : 48 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites, seulement supersédées (`DECISIONS.md`).
+- **Des décisions tracées** : 52 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites, seulement supersédées (`DECISIONS.md`).
 - **Une méthode versionnée et propagée** : SemVer, `check-update.sh` dans chaque projet, mise à jour qui ne touche jamais au contenu de l'utilisateur (`docs/versioning.md`).
 - **Une boucle d'amélioration gouvernée** : une leçon monte d'un cran à la fois (correction locale → RETEX → procédure → skill → hook), par décision humaine.
 - **Le contexte comme ressource rare** : « le sommaire, pas tout le livre », lecture progressive, `PROGRESS.md` optimisé pour la reprise à froid.
@@ -65,7 +65,7 @@ Puis ouvrir le dossier avec Claude Code et dire « Reprends le projet ». Pour v
 ## Parcours de lecture
 
 - **10 minutes** : ce README, puis `examples/life-copropriete/PROGRESS.md` et `DECISIONS.md` pour voir à quoi ressemble un projet tenu.
-- **1 heure** : [Vision](docs/vision.md), [Principes](docs/principles.md), [Gouvernance](docs/governance.md), [Cycle de travail](docs/cycle-de-travail.md), puis `templates/core/AGENTS.md` (ce que lit réellement l'agent) et `skills/my-project-os/SKILL.md` (les 7 modes de l'assistant).
+- **1 heure** : [Vision](docs/vision.md), [Principes](docs/principles.md), [Gouvernance](docs/governance.md), [Cycle de travail](docs/cycle-de-travail.md), puis `templates/core/AGENTS.md` (ce que lit réellement l'agent) et `templates/skills/my-project-os/SKILL.md` (les 7 modes de l'assistant).
 - **Je veux l'adopter** : [Installation par un agent](docs/INSTALL-AGENT.md), [Enforcement](docs/enforcement.md), [Versionnement](docs/versioning.md), puis `DECISIONS.md` pour comprendre les choix avant de les remettre en cause.
 
 ## Architecture
@@ -110,8 +110,8 @@ MonProjet/
 ├── 02_work/           # travail actif (ou 02_sujets/ pour les projets Life)
 ├── 03_documents/      # PDF, emails, pièces jointes
 ├── 04_deliverables/   # livrables finaux
-├── 97_gouvernance/    # optionnel : droit local du projet (GOUVERNANCE_LOCALE.md)
-├── 98_configuration/  # optionnel : intégrations d'outils, handoff inter-agents, skills portables
+├── 97_gouvernance/    # présent dès la création, supprimable : droit local du projet (GOUVERNANCE_LOCALE.md)
+├── 98_configuration/  # présent dès la création : intégrations d'outils, handoff inter-agents, skills du projet (my-project-os comprise)
 └── 99_archive/        # zone froide : clôturé, obsolète, exclu des scans
 ```
 
@@ -177,8 +177,9 @@ Interdit absolu : **jamais transformer une réponse de modèle en règle du syst
 - **Hermès** (VPS) : consomme les fichiers Markdown sans exécuter les hooks ; reçoit les skills par déclaration `skills.external_dirs` (DEC-0040).
 - **Codex** : skills par lien symbolique relatif dans `.agents/skills/`.
 - **OpenCode** : découvre `.claude/skills/` et `.agents/skills/`.
+- **Agent futur, ou sans mécanisme de découverte natif** : lit directement `98_configuration/skills/<skill>/SKILL.md`, `AGENTS.md` le lui indique — c'est le repli qui rend le dispositif agnostique.
 
-Les skills de projet vivent dans `98_configuration/skills/<outil>/` (source canonique unique). Détail : [docs/skills-portables.md](docs/skills-portables.md). Les projets sont synchronisés entre machines par Syncthing : ne jamais modifier le même projet simultanément sur deux machines.
+Toutes les skills du projet, la skill assistant `my-project-os` comprise, vivent dans `98_configuration/skills/<skill>/` (source canonique unique). Détail : [docs/skills-portables.md](docs/skills-portables.md). Les projets sont synchronisés entre machines par Syncthing : ne jamais modifier le même projet simultanément sur deux machines.
 
 ## Structure de ce dépôt
 
@@ -189,13 +190,13 @@ MyProjectOS/
 ├── templates/
 │   ├── core/          # PROJECT, PROGRESS, CHANGELOG, TASKS, DECISIONS, AGENTS, CLAUDE (socle)
 │   ├── configuration/ # gabarits des dossiers 97_gouvernance/ et 98_configuration/
-│   └── extensions/    # life/, code/, knowledge/
+│   ├── extensions/    # life/, code/, knowledge/
+│   └── skills/        # skills distribuables : my-project-os (assistant), _squelette, blue-app, courrier-manuscrit...
 ├── structures/        # core-tree, life-tree, code-tree, knowledge-tree
 ├── agents/            # claude-code, hermes, meta-skill
-├── skills/            # my-project-os/SKILL.md (skill assistant installable)
 ├── examples/          # projets fictifs complets, Life et Code
-├── 97_gouvernance/    # vitrine du dossier optionnel « droit local du projet »
-├── 98_configuration/  # vitrine du dossier optionnel « intégrations et handoff »
+├── 97_gouvernance/    # vitrine du dossier « droit local du projet », supprimable
+├── 98_configuration/  # vitrine du dossier « intégrations, handoff et skills du projet »
 └── scripts/           # init-project.sh, check-project.sh, check-update.sh, check-secrets.sh, hooks/
 ```
 

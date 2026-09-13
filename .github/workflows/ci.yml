@@ -39,7 +39,10 @@ jobs:
           sh scripts/check-project.sh /tmp/p-full
           test -f /tmp/p-full/SUJETS.md
           test -f /tmp/p-full/.myprojectos/manifest
-          test -f /tmp/p-full/.claude/skills/my-project-os/SKILL.md
+          test -f /tmp/p-full/98_configuration/skills/my-project-os/SKILL.md
+          test -L /tmp/p-full/.claude/skills/my-project-os
+          test -L /tmp/p-full/.agents/skills/my-project-os
+          test -f /tmp/p-full/97_gouvernance/README.md
 
       - name: Greffe idempotente (--into-existing ne casse rien)
         run: |
@@ -48,11 +51,40 @@ jobs:
           grep -q "personnalisation locale" /tmp/p-full/.claude/hooks/hook-pre-write.sh
           sh scripts/check-project.sh /tmp/p-full
 
+      - name: Migration skill assistant (copie physique -> lien symbolique, T-PLAN-14 lot 2)
+        run: |
+          sh scripts/init-project.sh /tmp/p-migr --life
+          # Simule un projet créé avant le lot 2 : copie physique, sans lien, manifest à l'ancien chemin.
+          rm /tmp/p-migr/.claude/skills/my-project-os
+          mkdir -p /tmp/p-migr/.claude/skills/my-project-os
+          cp /tmp/p-migr/98_configuration/skills/my-project-os/SKILL.md /tmp/p-migr/.claude/skills/my-project-os/SKILL.md
+          rm -rf /tmp/p-migr/98_configuration/skills/my-project-os
+          sed 's#^98_configuration/skills/my-project-os/SKILL.md$#.claude/skills/my-project-os/SKILL.md#' \
+            /tmp/p-migr/.myprojectos/manifest > /tmp/p-migr/.myprojectos/manifest.tmp \
+            && mv /tmp/p-migr/.myprojectos/manifest.tmp /tmp/p-migr/.myprojectos/manifest
+          sed 's/^version=.*/version=0.25.1/' /tmp/p-migr/.myprojectos/manifest > /tmp/p-migr/.myprojectos/manifest.tmp \
+            && mv /tmp/p-migr/.myprojectos/manifest.tmp /tmp/p-migr/.myprojectos/manifest
+          sed 's/^version_methode: .*/version_methode: 0.25.1/' /tmp/p-migr/PROJECT.md > /tmp/p-migr/PROJECT.md.tmp \
+            && mv /tmp/p-migr/PROJECT.md.tmp /tmp/p-migr/PROJECT.md
+          rm -rf /tmp/p-migr/97_gouvernance
+          sh scripts/init-project.sh /tmp/p-migr --update-method
+          # L'ancienne copie est sauvegardée, jamais laissée en dossier réel à côté du lien.
+          test -f /tmp/p-migr/99_archive/methode-avant-v0.25.1/.claude/skills/my-project-os/SKILL.md
+          test -L /tmp/p-migr/.claude/skills/my-project-os
+          test -L /tmp/p-migr/.agents/skills/my-project-os
+          test -f /tmp/p-migr/98_configuration/skills/my-project-os/SKILL.md
+          test -f /tmp/p-migr/97_gouvernance/README.md
+          sh scripts/check-project.sh /tmp/p-migr
+
       - name: Scénario de mise à jour (check-update + --update-method)
         run: |
           sh scripts/init-project.sh /tmp/p-old --life
           sed 's/^version_methode: .*/version_methode: 0.2.0/' /tmp/p-old/PROJECT.md > /tmp/p-old/PROJECT.md.tmp \
             && mv /tmp/p-old/PROJECT.md.tmp /tmp/p-old/PROJECT.md
+          # Le manifest prime sur PROJECT.md pour la version de départ (Q9, T-PLAN-14) :
+          # simuler un projet réellement ancien exige de patcher aussi son manifest.
+          sed 's/^version=.*/version=0.2.0/' /tmp/p-old/.myprojectos/manifest > /tmp/p-old/.myprojectos/manifest.tmp \
+            && mv /tmp/p-old/.myprojectos/manifest.tmp /tmp/p-old/.myprojectos/manifest
           # Détection : une mise à jour doit être signalée (code 10).
           rc=0
           MYPROJECTOS_REPO_URL="$GITHUB_WORKSPACE" sh /tmp/p-old/scripts/check-update.sh /tmp/p-old || rc=$?
