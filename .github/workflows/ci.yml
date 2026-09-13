@@ -21,7 +21,10 @@ jobs:
 
   smoke:
     name: Tests de fumée
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,26 +43,48 @@ jobs:
 
       - name: Greffe idempotente (--into-existing ne casse rien)
         run: |
+          echo "# personnalisation locale" >> /tmp/p-full/.claude/hooks/hook-pre-write.sh
           sh scripts/init-project.sh /tmp/p-full --life --code --knowledge --into-existing
+          grep -q "personnalisation locale" /tmp/p-full/.claude/hooks/hook-pre-write.sh
           sh scripts/check-project.sh /tmp/p-full
 
       - name: Scénario de mise à jour (check-update + --update-method)
         run: |
           sh scripts/init-project.sh /tmp/p-old --life
-          sed -i 's/^version_methode: .*/version_methode: 0.2.0/' /tmp/p-old/PROJECT.md
+          sed 's/^version_methode: .*/version_methode: 0.2.0/' /tmp/p-old/PROJECT.md > /tmp/p-old/PROJECT.md.tmp \
+            && mv /tmp/p-old/PROJECT.md.tmp /tmp/p-old/PROJECT.md
           # Détection : une mise à jour doit être signalée (code 10).
           rc=0
           MYPROJECTOS_REPO_URL="$GITHUB_WORKSPACE" sh /tmp/p-old/scripts/check-update.sh /tmp/p-old || rc=$?
           test "$rc" -eq 10
           # Le contenu utilisateur ne doit jamais être touché par la mise à jour.
           echo "contenu utilisateur" > /tmp/p-old/00_inbox/note.md
+          # Artefact retiré de la méthode entre deux versions : la mise à jour doit
+          # le sauvegarder puis le supprimer, jamais le laisser orphelin (M10).
+          echo "artefact obsolete" > /tmp/p-old/scripts/artefact-obsolete.sh
+          printf '%s\n' "scripts/artefact-obsolete.sh" >> /tmp/p-old/.myprojectos/manifest
           sh scripts/init-project.sh /tmp/p-old --update-method
           grep -q "contenu utilisateur" /tmp/p-old/00_inbox/note.md
           # Les anciens artefacts sont sauvegardés avant remplacement.
           test -f /tmp/p-old/99_archive/methode-avant-v0.2.0/scripts/check-project.sh
+          test -f /tmp/p-old/99_archive/methode-avant-v0.2.0/scripts/artefact-obsolete.sh
+          test ! -f /tmp/p-old/scripts/artefact-obsolete.sh
           # Après mise à jour : plus rien à signaler (code 0) et projet cohérent.
           MYPROJECTOS_REPO_URL="$GITHUB_WORKSPACE" sh /tmp/p-old/scripts/check-update.sh /tmp/p-old
           sh scripts/check-project.sh /tmp/p-old
+
+      - name: Fusion des hooks sans python3, sortie non nulle explicite (I8)
+        run: |
+          sh scripts/init-project.sh /tmp/p-nopy --code
+          printf '{}' > /tmp/p-nopy/.claude/settings.json
+          mkdir -p /tmp/fakebin
+          for c in sh cp mkdir chmod sed mv rm grep head basename dirname date tr awk cat ls find; do
+            p=$(command -v "$c" 2>/dev/null) || continue
+            case "$p" in /*) ln -sf "$p" "/tmp/fakebin/$c" ;; esac
+          done
+          rc=0
+          PATH="/tmp/fakebin" sh scripts/init-project.sh /tmp/p-nopy --code --into-existing || rc=$?
+          test "$rc" -eq 1
 
       - name: Le repo méthode respecte sa propre gouvernance (dogfooding)
         run: sh scripts/check-project.sh .

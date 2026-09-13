@@ -53,7 +53,7 @@ reprendre → exécuter UNE tâche → clôturer → vider le contexte → recom
 
 Déclencheurs : « Reprends le projet », ouverture du dossier, début de session, « où en est-on ? ».
 
-1. Lire dans l'ordre : `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md`. Ajouter les fichiers d'extension présents selon le type. Si Knowledge est actif, lire `SUJETS.md` (s'il existe) puis `docs/INDEX.md` puis `docs/kb_governance.md` avant de descendre dans les niveaux.
+1. **Lecture allégée** (DEC-0051) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de `Read` intégral de ces trois derniers fichiers à cette étape — le détail se lit normalement si une tâche en a besoin ensuite. Ajouter les fichiers d'extension présents selon le type. Si Knowledge est actif, lire `SUJETS.md` (s'il existe) puis `docs/INDEX.md` puis `docs/kb_governance.md` avant de descendre dans les niveaux.
 2. Produire exactement ce bloc :
 
 ```text
@@ -203,7 +203,7 @@ Workflow imposé, jamais raccourci :
 ## Garde-fous (toujours)
 
 - Tu proposes et éclaires les choix structurants (options, avantages, inconvénients, recommandation) ; l'humain tranche.
-- Validation humaine obligatoire avant : suppression massive, réorganisation de dossiers, changement de stack, déploiement, push Git important, mise à jour de la méthode, action juridique ou administrative sensible.
+- Validation humaine obligatoire avant (liste Core, `AGENTS.md`/`templates/core/AGENTS.md`, DEC-0050) : suppression massive de fichiers ou de dossiers, réorganisation de l'arborescence, modification de fichiers de configuration critiques, action affectant un système partagé ou distant (push, déploiement), action juridique ou administrative sensible. S'y ajoutent, spécifiques à cette skill : changement de stack (Code), mise à jour de la méthode (Mode 7).
 - `PROGRESS.md` n'est jamais un journal. L'historique daté va dans `CHANGELOG.md`.
 - Pour une demande métier dans un projet Knowledge : `SUJETS.md` d'abord, source fraîche prioritaire avant toute synthèse.
 - Une skill disponible pour un agent ne l'est pas forcément pour un autre (Claude Code : `.claude/skills/` ou `~/.claude/skills/` ; Codex, support natif depuis déc. 2025 : `.agents/skills/` en projet, vérifié par exécution ; OpenCode : rien à poser, il découvre `.claude/skills/` et `.agents/skills/` ; Hermès, standard agentskills.io : le catalogue du projet est déclaré en `skills.external_dirs` dans la configuration du profil, et le dossier scanné est celui du profil actif, pas le dossier global). Ne suppose jamais qu'une skill posée pour un agent l'est pour un autre.

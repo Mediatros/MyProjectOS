@@ -13,7 +13,7 @@ Elle accompagne, elle n'enferme pas. Les règles vraiment non négociables ne re
 
 ### 1. Reprise
 Déclencheur : « Reprends le projet », ouverture d'un dossier de projet, début de session.
-Action : lire dans l'ordre `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md` (+ fichiers d'extension présents). Produire en sortie :
+Action : lecture allégée (DEC-0051, détail dans `docs/governance.md`) — `PROJECT.md` et `PROGRESS.md` en entier, `DECISIONS.md`/`CHANGELOG.md`/`TASKS.md` par extraction `grep` (+ fichiers d'extension présents). Produire en sortie :
 - **État actuel**
 - **Dernière action**
 - **Prochaine action**
@@ -57,7 +57,7 @@ Pour les projets Code, l'orientation arbitre selon l'ampleur du changement.
 | Exécution | Directe, encadrée par la recette du kit de rails | Parcours encadré (Harness, Phase 5) |
 | Validation | Tests + gate qualité du kit | `TEST_PLAN.md` + `RELEASE.md` |
 
-Règle de prudence : en cas de doute sur l'ampleur, choisir le parcours complet. Toute action sensible (changement de stack, suppression massive, déploiement, push important) passe par validation humaine, quel que soit le parcours.
+Règle de prudence : en cas de doute sur l'ampleur, choisir le parcours complet. Toute action sensible (changement de stack, suppression massive, déploiement, push important) passe par validation humaine, quel que soit le parcours — liste complète dans `docs/governance.md`.
 
 ## Frontières de la skill
 

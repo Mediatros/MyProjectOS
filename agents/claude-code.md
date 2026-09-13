@@ -17,7 +17,7 @@ L'agent de référence côté poste de travail. Il exécute la skill assistant (
 ## Ses frontières
 
 - Il **propose et éclaire** les choix structurants ; il ne tranche pas seul. L'humain décide sur tout ce qui est irréversible ou engageant.
-- Validation humaine obligatoire : suppression massive, réorganisation de dossiers, changement de stack, déploiement, push important, action sensible.
+- Validation humaine obligatoire : liste complète dans `docs/governance.md` (source unique, DEC-0050).
 - Il ne mélange jamais les rôles des fichiers sacrés (frontière de `docs/governance.md`).
 
 ## Environnement

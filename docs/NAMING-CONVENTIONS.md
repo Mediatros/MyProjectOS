@@ -33,6 +33,7 @@ Identifiants stables, jamais réutilisés ni renumérotés.
 | Fonctionnalités (Code) | `F-XXX` | `F-012` | `SPECS.md` |
 | Analyses d'impact (Code) | `IA-XXX` | `IA-005` | `IMPACT_ANALYSIS.md` |
 | Tâches | `Tx.y` (phase.tâche) | `T2.3` | `TASKS.md` |
+| Tâches liées à un plan ou un RETEX | `T-<CATEGORIE>-n` | `T-PLAN-12`, `T-RETEX-4` | `TASKS.md` |
 
 ### Règles
 
@@ -40,6 +41,7 @@ Identifiants stables, jamais réutilisés ni renumérotés.
 - `DEC-` : numérotation continue à l'échelle du projet. Une décision remplacée n'est pas supprimée, elle est marquée obsolète et une nouvelle `DEC-` la remplace.
 - `P-` : chaque preuve relie une affirmation à un document source unique.
 - Les références croisées citent l'identifiant : « voir DEC-0007 », « source P-0042 ».
+- Une tâche née d'un plan (`PLAN/`) ou d'un RETEX (`RETEX/`) garde l'identifiant de sa catégorie (`T-PLAN-12`, `T-RETEX-4`) plutôt qu'un `Tx.y` : elle reste traçable jusqu'à son origine même après plusieurs itérations. `Tx.y` reste le format par défaut pour une tâche de phase sans origine externe.
 
 ## Noms d'agents canoniques (handoff inter-agents)
 

@@ -18,7 +18,7 @@ Une information ne vit qu'à un seul endroit : état présent → `PROGRESS.md` 
 
 ## Rituels de session
 
-**Au démarrage**, lire dans l'ordre : `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md`. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet).
+**Au démarrage** (lecture allégée, DEC-0051) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de lecture intégrale de ces trois derniers fichiers dans ce rituel ; le détail se lit normalement en dehors. Puis produire : État actuel / Dernière action / Prochaine action / Points de vigilance. Si `SUJETS.md` existe à la racine, le lire avant `docs/INDEX.md` pour toute demande métier (il déclare la source fraîche prioritaire de chaque sujet).
 
 **Pendant** : mettre à jour `PROGRESS.md` après toute avancée significative, logger dans `CHANGELOG.md`, documenter les décisions structurantes dans `DECISIONS.md`.
 

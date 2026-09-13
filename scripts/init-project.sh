@@ -142,6 +142,25 @@ EOF_BACKUP
     done <<EOF_REFRESH
 $ARTEFACTS
 EOF_REFRESH
+    # Artefacts orphelins : présents dans l'ancien manifest, absents du nouveau
+    # (retirés de la méthode entre deux versions). Sauvegardés puis supprimés,
+    # jamais laissés en place sans être suivis par aucun manifest.
+    if [ -f "$TARGET/$MANIFEST_REL" ]; then
+        OLD_ARTEFACTS=$(grep -v '^#' "$TARGET/$MANIFEST_REL" | grep -v '^version=')
+    else
+        OLD_ARTEFACTS=""
+    fi
+    if [ -n "$OLD_ARTEFACTS" ]; then
+        printf '%s\n' "$OLD_ARTEFACTS" | while IFS= read -r _o; do
+            [ -n "$_o" ] || continue
+            printf '%s\n' "$ARTEFACTS" | grep -Fxq "$_o" && continue
+            [ -f "$TARGET/$_o" ] || continue
+            mkdir -p "$TARGET/$BACKUP_REL/$(dirname -- "$_o")"
+            cp "$TARGET/$_o" "$TARGET/$BACKUP_REL/$_o"
+            rm -f "$TARGET/$_o"
+            echo "  - $_o (retiré de la méthode, sauvegardé puis supprimé)"
+        done
+    fi
     sed "s#^version_methode:.*#version_methode: $OS_VERSION#" "$TARGET/PROJECT.md" > "$TARGET/PROJECT.md.tmp" \
         && mv "$TARGET/PROJECT.md.tmp" "$TARGET/PROJECT.md"
     write_manifest
@@ -316,18 +335,26 @@ fi
 # du dépôt MyProjectOS. Pour mettre à jour les hooks, relancer l'init.
 mkdir -p "$TARGET/.claude/hooks"
 for _h in _lib.sh hook-pre-write.sh hook-stop-progress.sh; do
+    if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/hooks/$_h" ]; then
+        echo "  = .claude/hooks/$_h (déjà présent, conservé ; --update-method pour rafraîchir)"
+        continue
+    fi
     cp "$REPO/scripts/hooks/$_h" "$TARGET/.claude/hooks/$_h"
     chmod +x "$TARGET/.claude/hooks/$_h"
+    echo "  + .claude/hooks/$_h"
 done
-echo "  + .claude/hooks/ (hooks copiés localement, autonomes)"
 
 # Garde-fou Git destructif (A1) : optionnel, projets Code/Hybrid uniquement.
 GIT_HOOK_WIRED=0
 if [ "$TYPE" = "Code" ] || [ "$TYPE" = "Hybrid" ]; then
-    cp "$REPO/scripts/hooks/hook-pre-git.sh" "$TARGET/.claude/hooks/hook-pre-git.sh"
-    chmod +x "$TARGET/.claude/hooks/hook-pre-git.sh"
     GIT_HOOK_WIRED=1
-    echo "  + .claude/hooks/hook-pre-git.sh (garde-fou Git destructif, Code/Hybrid)"
+    if [ "$WANT_MERGE" -eq 1 ] && [ -e "$TARGET/.claude/hooks/hook-pre-git.sh" ]; then
+        echo "  = .claude/hooks/hook-pre-git.sh (déjà présent, conservé ; --update-method pour rafraîchir)"
+    else
+        cp "$REPO/scripts/hooks/hook-pre-git.sh" "$TARGET/.claude/hooks/hook-pre-git.sh"
+        chmod +x "$TARGET/.claude/hooks/hook-pre-git.sh"
+        echo "  + .claude/hooks/hook-pre-git.sh (garde-fou Git destructif, Code/Hybrid)"
+    fi
 fi
 
 # --- Installation de la skill assistant --------------------------------------
@@ -340,6 +367,7 @@ else
 fi
 
 SETTINGS="$TARGET/.claude/settings.json"
+HOOKS_MERGE_PENDING=0
 HOOKS_BLOCK=$(cat <<'EOF'
 {
   "hooks": {
@@ -393,9 +421,10 @@ with open(path, "w") as f:
 PY
         echo "  ~ .claude/settings.json (hooks fusionnés sans écraser l'existant)"
     else
-        echo ""
-        echo "python3 absent : fusionne ce bloc hooks à la main dans $SETTINGS :"
-        echo "$HOOKS_BLOCK"
+        HOOKS_MERGE_PENDING=1
+        echo "" >&2
+        echo "python3 absent : fusion automatique impossible. Colle ce bloc hooks à la main dans $SETTINGS :" >&2
+        echo "$HOOKS_BLOCK" >&2
     fi
 else
 if [ "$GIT_HOOK_WIRED" -eq 1 ]; then
@@ -431,3 +460,7 @@ fi
 
 echo ""
 echo "Fait. Prochaine étape : renseigner PROJECT.md (pourquoi, périmètre, objectifs, critères de réussite)."
+
+if [ "$HOOKS_MERGE_PENDING" -eq 1 ]; then
+    exit 1
+fi

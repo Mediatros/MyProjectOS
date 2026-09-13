@@ -50,4 +50,4 @@ Séquence stricte. La réorganisation d'une arborescence est une **action sensib
 - Les rituels de session vivent dans l'`AGENTS.md` du projet (Codex et Hermès le lisent nativement ; Claude Code y arrive via `CLAUDE.md`).
 - Le rythme d'exécution est **une tâche par itération** : `docs/cycle-de-travail.md`.
 - Vérification à la demande : `sh scripts/check-project.sh`. Détection de mise à jour : `sh scripts/check-update.sh`.
-- Ce que tu ne fais jamais sans validation humaine : suppression massive, réorganisation, changement de stack, déploiement, push important, action juridique ou administrative sensible.
+- Ce que tu ne fais jamais sans validation humaine : liste complète dans `docs/governance.md` (source unique, DEC-0050).

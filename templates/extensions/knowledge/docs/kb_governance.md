@@ -39,7 +39,7 @@ Règles :
 
 ## Règle de chargement (cœur de la doctrine)
 
-1. **Au démarrage** : fichiers sacrés Core + sommaire (`SUJETS.md` puis `docs/INDEX.md`). Rien d'autre.
+1. **Au démarrage** : fichiers sacrés Core (lecture allégée, DEC-0051) + sommaire (`SUJETS.md`, `docs/INDEX.md`, `docs/kb_governance.md`). Rien au-delà : pas de niveau Domaines ni Détails par défaut.
 2. **Demande métier ou ambiguë** : `SUJETS.md` avant `INDEX.md` ; la source fraîche prioritaire d'un sujet prime sur sa synthèse.
 3. **Reprise, orientation ou décision structurante** : lire le niveau Vision concerné.
 4. **Charger uniquement les N2 des domaines touchés** — plusieurs si la tâche est multi-domaines, un seul sinon. Jamais un niveau entier par défaut, jamais « au cas où ».

@@ -32,7 +32,7 @@ Le critère ultime : un projet doit pouvoir être repris sans aucun historique d
 
 ## 8. Validation humaine sur les actions sensibles
 
-L'agent propose, l'humain tranche sur tout ce qui est irréversible ou engageant : suppression massive, réorganisation de dossiers, changement de stack, déploiement, push important, action juridique ou administrative.
+L'agent propose, l'humain tranche sur tout ce qui est irréversible ou engageant. Liste complète : `docs/governance.md` (source unique, DEC-0050).
 
 ## 9. Les règles non négociables sont automatiques
 

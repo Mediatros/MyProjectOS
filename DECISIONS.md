@@ -19,6 +19,32 @@
 
 ---
 
+### DEC-0051 — Lecture allégée au démarrage
+
+- **Date** : 2026-09-13.
+- **Contexte** : le rituel de reprise (Mode 1 de la skill assistant) lit intégralement les cinq fichiers sacrés à chaque démarrage de session. Mesuré sur ce dépôt : ~225 Ko chargés, alors qu'une bonne part de `DECISIONS.md` (décisions closes) et `CHANGELOG.md` (historique clos) n'entre dans aucun des quatre champs produits par le rituel (État actuel / Dernière action / Prochaine action / Points de vigilance). Proposition analysée le 2026-08-29 (avis Opus), restée en attente d'exécution (T-PLAN-12 lot 4).
+- **Options envisagées** :
+  - A. Statu quo : lecture intégrale des cinq fichiers à chaque reprise.
+  - B. Index séparé, maintenu à jour en parallèle des fichiers sacrés.
+  - C. Lecture partielle dérivée à la volée, jamais de fichier miroir : `PROJECT.md` et `PROGRESS.md` en entier (déjà des résumés courts, à jour par construction) ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre seulement) ; `CHANGELOG.md` par les N dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes seulement).
+- **Choix** : C.
+- **Raison** : B recrée exactement le défaut que le Core interdit (« une information ne vit qu'à un seul endroit ») en ajoutant une source à resynchroniser. C ne retire rien qui serve à la synthèse d'état : le format même du rituel ne demande ni l'historique clos ni les tâches déjà cochées. Mesure sur ce dépôt : ~225 Ko en lecture intégrale contre ~35 Ko en lecture dérivée (facteur ~6).
+- **Conséquences** : `templates/core/AGENTS.md`, `docs/governance.md`, `agents/meta-skill.md` et `skills/my-project-os/SKILL.md` (Mode 1, étape 1) prescrivent désormais l'extraction par `grep`/`head`, jamais un `Read` intégral de `DECISIONS.md`/`CHANGELOG.md`/`TASKS.md` au démarrage. **Garde-fou** : `PROGRESS.md` doit porter le miroir des refus actifs de l'utilisateur (ligne + pointeur `DEC-`), puisque `DECISIONS.md` n'est plus relu en entier à chaque reprise — un refus qui n'y figure pas peut être reproposé par erreur. `check-project.sh` et `check-iteration.sh` ne changent pas : leurs contrôles de cohérence continuent de lire les fichiers en entier, seule la lecture rituelle de l'agent change. Cette lecture allégée ne s'applique qu'au **rituel de démarrage** ; toute tâche qui a besoin du détail (chercher une décision précise, comprendre l'historique d'un sujet) lit le fichier normalement.
+- **Liens** : CHG-20260913-1200, DEC-0050, un plan de l'atelier §4, T-PLAN-12 lot 4.
+
+### DEC-0050 — Une autorité unique par règle transverse (canon vs référence)
+
+- **Date** : 2026-09-13.
+- **Contexte** : l'audit du 2026-09-10 (B6, B7, I9, I10, M13, M14) a constaté que le rituel de démarrage et la liste « actions nécessitant une validation humaine » étaient recopiés dans six à sept fichiers distincts (`docs/governance.md`, `CLAUDE.md` racine, `AGENTS.md` racine, `agents/claude-code.md`, `agents/meta-skill.md`, `docs/INSTALL-AGENT.md`, `templates/core/AGENTS.md`), avec des divergences accumulées silencieusement : listes de 4, 5 ou 6 items pour la même règle, présence ou absence de « changement de stack », rituel avec ou sans l'étape `check-update.sh` (DEC-0039). Le patron déjà correct de `templates/core/CLAUDE.md` (« `AGENTS.md` est la source unique... ce fichier ne duplique pas le contenu ») n'avait jamais été étendu au reste du canon.
+- **Options envisagées** :
+  - A. Statu quo, corriger chaque divergence au fil de l'eau — c'est le régime qui les a produites.
+  - B. Fusionner tous les fichiers en un seul — casse la distinction déjà voulue entre documentation du dépôt méthode, fiches d'agent et gabarit livré (autonome par construction dans `templates/`).
+  - C. Deux autorités déclarées selon le contexte : `docs/governance.md` fait foi pour ce dépôt (documentation et fichiers racine qui le lisent) ; `templates/core/AGENTS.md` fait foi pour tout projet livré, qui doit rester autonome sans dépendance à `docs/`. Tout autre fichier référence l'une des deux, ne recopie jamais.
+- **Choix** : C.
+- **Raison** : A a produit six formulations divergentes en quelques mois pour deux règles seulement. B casserait l'autonomie voulue des gabarits livrés. C généralise à l'ensemble du canon un patron déjà appliqué et correct ailleurs dans ce même dépôt, sans inventer de mécanisme nouveau.
+- **Conséquences** : `CLAUDE.md` racine ne recopie plus le rituel ni la liste de validation, il renvoie vers `AGENTS.md` (comme le fait déjà `templates/core/CLAUDE.md` pour tout projet livré). `AGENTS.md` racine renvoie vers `docs/governance.md` pour le détail complet du rituel. `agents/claude-code.md` et `docs/INSTALL-AGENT.md` renvoient à `docs/governance.md` au lieu de recopier la liste de validation. `docs/governance.md` devient la version complète et à jour : ajoute l'étape `check-update.sh` (B7), et une liste de validation à 5 items alignée sur `templates/core/AGENTS.md` (I10), avec l'addendum « l'extension Code ajoute : changement de stack technique ». `templates/extensions/knowledge/docs/kb_governance.md` est corrigé (B6) : sa règle « rien d'autre » excluait par erreur sa propre lecture, alors que le Mode 1 de la skill la prescrit. Toute nouvelle règle transverse future doit désigner son autorité dès sa création plutôt que d'être recopiée.
+- **Liens** : CHG-20260913-1200, DEC-0051, un plan de l'atelier (B6, B7, I9, I10, M13, M14), T-PLAN-12 lot 4.
+
 ### DEC-0049 — Identité de contribution : le titulaire du dépôt, jamais un agent (règle immuable)
 
 - **Date** : 2026-09-10 (arbitrage humainen session).

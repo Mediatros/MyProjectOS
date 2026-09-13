@@ -31,8 +31,11 @@ Le socle Core pose aussi `AGENTS.md` et `CLAUDE.md` à la racine de chaque proje
 
 ### Au démarrage
 
-Lire dans l'ordre : `PROJECT.md`, `PROGRESS.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS.md`.
+**Lecture allégée** (DEC-0051) : `PROJECT.md` et `PROGRESS.md` en entier ; `DECISIONS.md` par `grep "^### DEC-"` (identifiant + titre) ; `CHANGELOG.md` par les dernières entrées `CHG-` ; `TASKS.md` par `grep "\- \[ \]"` (tâches ouvertes). Jamais de `Read` intégral de ces trois derniers fichiers dans le rituel de reprise ; une tâche qui a besoin du détail les lit normalement en dehors du rituel.
+
 Puis produire : **État actuel / Dernière action / Prochaine action / Points de vigilance.**
+
+Une fois par session, avant de proposer l'itération : vérifier la version de la méthode (`sh scripts/check-update.sh`, DEC-0039). Silence total si le réseau manque ou si le projet est à jour ; en cas de retard, l'annoncer en une phrase et proposer le Mode 7 de la skill assistant, sans jamais appliquer de mise à jour dans le rituel lui-même.
 
 ### Pendant
 
@@ -55,12 +58,15 @@ Puis produire : **État actuel / Dernière action / Prochaine action / Points de
 
 ## Actions nécessitant une validation humaine
 
+Liste Core, valable pour tout projet (source : `templates/core/AGENTS.md`, DEC-0050) :
+
 - Suppression massive de fichiers ou de dossiers.
-- Réorganisation de l'arborescence d'un projet.
-- Changement de stack technique.
-- Déploiement.
-- Push Git important.
+- Réorganisation de l'arborescence du projet.
+- Modification de fichiers de configuration critiques.
+- Toute action affectant un système partagé ou distant (push, déploiement).
 - Toute action juridique ou administrative sensible.
+
+L'extension Code ajoute : changement de stack technique (gate `STACK_VALIDATION.md`).
 
 L'agent propose et explique ; l'humain tranche.
 
