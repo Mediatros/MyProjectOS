@@ -2,7 +2,7 @@
 
 **Une méthode d'organisation de projets assistée par IA, pour reprendre n'importe quel projet à froid, sans aucun historique de conversation.**
 
-> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.30.1**. Installable tel quel, réutilisable en tout ou partie.
+> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.30.2**. Installable tel quel, réutilisable en tout ou partie.
 
 Ce n'est pas un logiciel. C'est un système documentaire versionné : des fichiers Markdown, des rituels de session, des garde-fous exécutés par des hooks, et une skill qui guide l'agent. Il tient dans un dossier, se lit sur GitHub sans outil, et se met à jour comme un logiciel.
 
@@ -36,10 +36,27 @@ Les projets **Life** ajoutent : *quelle est la preuve ?* (`PREUVES.md`). Les pro
 
 - **Gouverner plusieurs agents avec un seul jeu de fichiers** : Claude Code, Codex, Hermès et OpenCode lisent les mêmes rituels (`AGENTS.md`), chacun avec son mécanisme d'installation de skills.
 - **Des règles tenues par du code, pas par des consignes** : ce qui est non négociable est un hook ou un check, avec preuve d'exécution avant d'être promu (`docs/enforcement.md`).
-- **Des décisions tracées** : 53 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites, seulement supersédées (`DECISIONS.md`).
+- **Des décisions tracées** : 53 décisions au format contexte / options / choix / raison / conséquences, jamais réécrites : une décision remplacée reste lisible (`DECISIONS.md`).
 - **Une méthode versionnée et propagée** : SemVer, `check-update.sh` dans chaque projet, mise à jour qui ne touche jamais au contenu de l'utilisateur (`docs/versioning.md`).
 - **Une boucle d'amélioration gouvernée** : une leçon monte d'un cran à la fois (correction locale → RETEX → procédure → skill → hook), par décision humaine.
 - **Le contexte comme ressource rare** : « le sommaire, pas tout le livre », lecture progressive, `PROGRESS.md` optimisé pour la reprise à froid.
+- **Une mémoire d'agent complète en Markdown** : contexte du moment, historique, faits établis, savoir-faire et oubli, sans base de données ni infrastructure ([docs/memoire-agent.md](docs/memoire-agent.md)).
+
+## Une mémoire d'agent, sans base de données
+
+Un agent IA n'a pas de mémoire : chaque session repart de zéro. La recherche sur les architectures d'agents (cadre CoALA) distingue quatre couches pour y remédier : ce que l'agent a sous les yeux, ce qui s'est passé, ce qui est établi, comment faire. MyProjectOS les couvre avec des fichiers Markdown que l'on lit, que l'on versionne et que l'on corrige à la main, et y ajoute une cinquième, l'oubli.
+
+| Couche | Rôle | Dans MyProjectOS |
+|---|---|---|
+| Contexte du moment (mémoire de travail) | Ce que l'agent a sous les yeux maintenant | Lecture allégée au démarrage : sommaire d'abord, détail sur demande |
+| Historique (mémoire épisodique) | Ce qui s'est passé | `CHANGELOG.md` (registre daté et figé), `PROGRESS.md` par sujet |
+| Faits établis (mémoire sémantique) | Ce qui est vrai | `DECISIONS.md` (jamais effacée : une décision remplacée reste lisible, une erreur se corrige par une note datée), `PREUVES.md` |
+| Savoir-faire (mémoire procédurale) | Comment faire | Skills du projet dans `98_configuration/skills/` |
+| Oubli | Ce qu'on laisse partir | `99_archive/` (zone froide, consultée sur demande), `PROGRESS.md` purgé en photo de l'instant |
+
+La mémoire d'un projet tient tout entière dans son dossier : il se déplace, se donne ou s'archive d'un bloc.
+
+**Pourquoi des fichiers plutôt qu'une base vectorielle ou un graphe ?** Parce que tout ce que l'agent « sait » doit pouvoir être relu, corrigé et contesté par un humain, sur GitHub, sans outil. Et parce que les règles non négociables sont tenues par des hooks, pas par la bonne volonté du modèle. Détail, y compris ce que la méthode choisit de ne pas faire : [docs/memoire-agent.md](docs/memoire-agent.md).
 
 ## Essayer en deux minutes
 
@@ -112,7 +129,7 @@ MonProjet/
 ├── 04_deliverables/   # livrables finaux
 ├── 97_gouvernance/    # présent dès la création, supprimable : droit local du projet (GOUVERNANCE_LOCALE.md)
 ├── 98_configuration/  # présent dès la création : intégrations d'outils, handoff inter-agents, skills du projet (my-project-os comprise)
-└── 99_archive/        # zone froide : clôturé, obsolète, exclu des scans
+└── 99_archive/        # zone froide : clôturé, obsolète, consulté sur demande, jamais chargé par la reprise
 ```
 
 ## Comment on travaille avec
@@ -149,7 +166,7 @@ Le registre complet est dans [DECISIONS.md](DECISIONS.md). Celles-ci expliquent 
 | DEC-0025 | Hooks copiés dans chaque projet, pas référencés à distance | Un projet Life avec des données sensibles ne change pas de comportement depuis l'extérieur |
 | DEC-0036 | Boucle de correction gouvernée, une montée de cran à la fois | Jamais transformer une réponse de modèle en règle du système |
 | DEC-0040 | Hermès reçoit les skills par déclaration, pas par copie | Supprimer le second exemplaire plutôt que surveiller sa dérive |
-| DEC-0041 | `99_archive/` zone froide, exclue des scans | On n'archive pas parce que c'est vieux, mais parce que c'est supersédé |
+| DEC-0041 | `99_archive/` zone froide, exclue des scans | On n'archive pas parce que c'est vieux, mais parce que c'est remplacé ou terminé |
 | DEC-0043 | Knowledge : « le sommaire, pas tout le livre » | Le contexte est une ressource rare ; charger le détail seulement quand l'action l'exige |
 | DEC-0048 | Atelier privé, vitrine publique générée | Faire évoluer la méthode librement, publier une version propre et sûre à chaque release |
 
@@ -211,6 +228,7 @@ MyProjectOS/
 - [Enforcement](docs/enforcement.md) : les trois couches, les hooks, le contrôle à la demande.
 - [Versionnement](docs/versioning.md) : numérotation, mise à jour des projets, publication d'une release.
 - [Skills portables](docs/skills-portables.md) : où vit une skill de projet, comment chaque agent l'installe.
+- [Mémoire d'agent](docs/memoire-agent.md) : les cinq couches de mémoire et leur équivalent en fichiers, ce que la méthode choisit de ne pas faire.
 - [Outils natifs](docs/OUTILS.md) : catalogue des outils qu'un projet peut activer.
 - [Conventions de nommage](docs/NAMING-CONVENTIONS.md) : fichiers, dossiers, identifiants.
 - [Glossaire](docs/glossary.md) : le vocabulaire commun.
