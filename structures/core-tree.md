@@ -11,7 +11,7 @@ MonProjet/
 ├── TASKS.md            # checklist d'actions (Tx.y)
 ├── DECISIONS.md        # décisions structurantes (DEC-XXXX)
 ├── AGENTS.md           # instructions d'opération pour les agents (rituels, garde-fous)
-├── CLAUDE.md           # renvoi vers AGENTS.md, pour que Claude Code le charge
+├── CLAUDE.md           # une seule ligne : @AGENTS.md (import chargé par Claude Code)
 ├── 00_inbox/           # zone temporaire, entrées non classées
 ├── 01_context/         # contexte stable du projet
 ├── 02_work/            # travail actif en cours
@@ -37,7 +37,15 @@ Voir `docs/governance.md` pour la frontière détaillée. En résumé :
 - `TASKS.md` : actions concrètes cochables.
 - `DECISIONS.md` : le pourquoi des choix structurants.
 
-`AGENTS.md` et `CLAUDE.md` ne sont pas des fichiers sacrés (pas de registre à tenir à jour), mais font partie du socle Core posé par `init-project.sh` sur tout type de projet : rituels de session, garde-fous, frontière des fichiers sacrés. Les extensions actives (Code...) ajoutent leur propre section dans `AGENTS.md` plutôt que de créer un fichier séparé.
+`AGENTS.md` et `CLAUDE.md` ne sont pas des fichiers sacrés (pas de registre à tenir à jour), mais forment la paire du socle Core posée par `init-project.sh` sur tout type de projet : `AGENTS.md` porte les rituels de session, garde-fous, frontière des fichiers sacrés ; `CLAUDE.md` ne contient que `@AGENTS.md` (DEC-0055, sens contrôlé par `check-project.sh`). Les extensions actives (Code...) ajoutent leur propre section dans `AGENTS.md` plutôt que de créer un fichier séparé.
+
+## Règles locales par dossier (facultatif)
+
+Un dossier de travail peut porter ses propres instructions d'opération, dans un `AGENTS.md` posé **dans ce dossier** (DEC-0054) : l'agent le reçoit dès qu'un de ses outils touche la zone, sans lecture manuelle.
+
+Cadre : la paire, comme à la racine, le contenu dans `AGENTS.md` et un `CLAUDE.md` réduit à `@AGENTS.md` (DEC-0055 : sans lui, Claude Code ignore le fichier de zone) ; **une seule descente** — racine + zone, jamais dans `02_sujets/` ni à l'intérieur d'une zone ; cible **8 000 caractères** ; aucune recopie d'une règle racine (**une consigne, une seule feuille**) ; jamais d'état, de décision ni d'historique (c'est le rôle des registres) ; pose **à la demande** — `init-project.sh` et `--update-method` n'en créent jamais, l'agent propose, l'humain valide (gabarit `templates/configuration/AGENTS_DOSSIER.md`).
+
+Dossiers éligibles : les zones de travail — `02_sujets/Sxx_…/` (Life), `05_specs/`, `src/` (Code). Jamais `03_documents/`, `99_archive/`, ni un dossier de dépendances. Une règle de gouvernance du projet (qui décide quoi) reste dans `97_gouvernance/` ; ce qui s'applique partout (ton, format de sortie, validations humaines) reste dans `AGENTS.md` racine, un fichier de zone ne pouvant pas gouverner une réponse produite sans jamais ouvrir la zone.
 
 ## Rôle des dossiers
 

@@ -6,7 +6,7 @@ De la création à l'archivage, les étapes par lesquelles passe un projet.
 
 Un projet naît à partir des templates, posés par `scripts/init-project.sh` (ou en une commande via `install.sh`, voir `README.md`). On choisit son **type** (Life, Code ou Hybrid), ce qui détermine les extensions activées.
 
-- Les cinq fichiers sacrés Core sont copiés depuis `templates/core/`, avec `AGENTS.md` et `CLAUDE.md` (rituels de session, garde-fous, frontière des fichiers sacrés).
+- Les cinq fichiers sacrés Core sont copiés depuis `templates/core/`, avec la paire `AGENTS.md` (rituels de session, garde-fous, frontière des fichiers sacrés) + `CLAUDE.md` (la seule ligne `@AGENTS.md`).
 - Les templates des extensions choisies sont ajoutés (Life, Code, ou les deux pour Hybrid) ; l'extension Code ajoute sa propre section dans `AGENTS.md` au lieu d'un fichier séparé.
 - L'extension `knowledge` ne s'active que si le projet a assez de documentation pour justifier une navigation par niveaux et une analyse transverse.
 - Les dossiers numérotés sont créés à la demande, au moment où ils servent.

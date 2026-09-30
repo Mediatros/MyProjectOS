@@ -287,6 +287,18 @@ create_gouvernance_readme() {
 }
 
 # --- Mode mise à jour : rafraîchir les artefacts méthode, rien d'autre ---------
+# Paire d'instructions (DEC-0055) : CLAUDE.md ne contient que la ligne @AGENTS.md.
+claude_md_conforme() {
+    [ "$(grep -v '^[[:space:]]*$' "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" = "@AGENTS.md" ]
+}
+# Ancien renvoi en prose du canon (avant v0.31.0), reconnu par sa phrase fixe :
+# la seule forme que --update-method remplace sans arbitrage humain.
+claude_md_ancien_renvoi() {
+    [ "$(wc -c < "$1" | tr -d ' ')" -lt 600 ] \
+        && grep -q "Ce fichier existe pour que Claude Code le charge automatiquement ; il ne duplique pas le contenu" "$1"
+}
+CLAUDE_MD_ALERTE="non conforme à la paire (contenu à fusionner dans AGENTS.md, puis CLAUDE.md réduit à la ligne @AGENTS.md ; voir la section « Socle agent » de check-project.sh)"
+
 if [ "$WANT_UPDATE" -eq 1 ]; then
     if [ ! -f "$TARGET/PROJECT.md" ]; then
         echo "Pas de PROJECT.md dans '$TARGET' : --update-method s'applique à un projet MyProjectOS existant." >&2
@@ -343,6 +355,19 @@ EOF_REFRESH
             rm -f "$TARGET/$_o"
             echo "  - $_o (retiré de la méthode, sauvegardé puis supprimé)"
         done
+    fi
+    echo "Paire d'instructions (AGENTS.md + CLAUDE.md) :"
+    if [ -f "$TARGET/CLAUDE.md" ] && claude_md_conforme "$TARGET/CLAUDE.md"; then
+        echo "  = CLAUDE.md (déjà réduit à @AGENTS.md)"
+    elif [ -f "$TARGET/CLAUDE.md" ] && [ -f "$TARGET/AGENTS.md" ] && claude_md_ancien_renvoi "$TARGET/CLAUDE.md"; then
+        mkdir -p "$TARGET/$BACKUP_REL"
+        cp "$TARGET/CLAUDE.md" "$TARGET/$BACKUP_REL/CLAUDE.md"
+        printf '%s\n' "@AGENTS.md" > "$TARGET/CLAUDE.md"
+        echo "  ~ CLAUDE.md (ancien renvoi en prose remplacé par @AGENTS.md, sauvegardé)"
+    elif [ -f "$TARGET/CLAUDE.md" ]; then
+        echo "  ! CLAUDE.md $CLAUDE_MD_ALERTE"
+    else
+        echo "  ! CLAUDE.md absent : le créer avec la seule ligne @AGENTS.md"
     fi
     echo "Skills du projet (source unique + liens par agent) :"
     link_myprojectos_skill_dirs
@@ -410,6 +435,8 @@ copy_template() {
         if [ "$_base" = "PROGRESS.md" ] && ! head -n 1 "$_dst" | grep -q '^---$'; then
             migrate_progress_frontmatter "$_src" "$_dst"
             echo "  ~ $_base (frontmatter ajouté, contenu conservé)"
+        elif [ "$_base" = "CLAUDE.md" ] && ! claude_md_conforme "$_dst"; then
+            echo "  ! $_base (déjà présent, conservé) : $CLAUDE_MD_ALERTE"
         else
             echo "  = $_base (déjà présent, conservé)"
         fi

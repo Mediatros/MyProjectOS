@@ -19,6 +19,40 @@
 
 ---
 
+### DEC-0055 — Paire d'instructions : `AGENTS.md` porte le contenu, `CLAUDE.md` ne contient que `@AGENTS.md`, partout, avec contrôle de dérive
+
+- **Date** : 2026-09-30
+- **Contexte** : le canon posait `AGENTS.md` (contenu) et un `CLAUDE.md` renvoi rédigé en prose, sans jamais contrôler leur sens : `check-project.sh` vérifiait leur seule présence, et les deux fichiers sont hors manifeste. Mesure du parc (un RETEX de l'atelier, reproduite sur le Mac le 2026-09-30) : 5 projets conformes sur 20 équipés, dérive encore active. La documentation Claude Code (`code.claude.com/docs/en/memory`, lue le 2026-09-30) établit que `CLAUDE.md` prime, qu'un `AGENTS.md` n'est lu qu'en l'absence de tout `CLAUDE.md` dans le dossier ou au-dessus (y compris en sous-dossier), qu'un renvoi en prose n'est suivi que si le modèle décide d'ouvrir le fichier, et qu'un import `@AGENTS.md` est chargé de façon déterministe, sans double lecture. Test du 2026-09-30 (Claude Code 2.1.285) : import racine chargé ; `AGENTS.md` de zone ignoré quand la racine a un `CLAUDE.md` ; chargé dès que la zone a sa propre paire. Détail : un plan de l'atelier §7.
+- **Options envisagées** :
+  - A. **`AGENTS.md` seul, sans `CLAUDE.md`** : les fichiers de zone fonctionnent seuls ; mais aucune règle pour Claude Code antérieur à 2.1.277, plugin `agents-md` désactivé ou première session après mise à jour.
+  - B. **`CLAUDE.md` lien symbolique** : fragile à travers Git, Syncthing et Windows ; l'édition par l'agent refuse d'écrire à travers le lien.
+  - C. **Renvoi en prose** (canon antérieur) : non déterministe, anti-patron selon la documentation.
+  - D. **Paire avec import** : `CLAUDE.md` = `@AGENTS.md`, à la racine et dans chaque zone.
+- **Choix** : option D, sans exception : **aucune** consigne propre à Claude sous l'import (la documentation l'autorise ; la méthode l'interdit pour garder un seul contenu et un contrôle mécanique). Une consigne propre à Claude Code va dans `AGENTS.md`, sous un titre « Claude Code ». `/init` et `/import` de Claude Code sont proscrits dans un projet MyProjectOS (ils recopient des instructions dans `CLAUDE.md`).
+- **Raison** : seule option qui sert les quatre profils d'adoptants (Claude Code seul, Codex seul, Hermès seul, les trois) quelle que soit la version de Claude Code ; une seule source de contenu ; règle vérifiable par une comparaison de texte.
+- **Conséquences** : `templates/core/CLAUDE.md` réduit à `@AGENTS.md` ; section « Paire d'instructions » dans `templates/core/AGENTS.md` ; DEC-0054 amendée (la zone porte la paire) ; `check-project.sh` §1bis passe de la présence au sens, à la racine et dans chaque zone (paire incomplète, `CLAUDE.md` qui porte du contenu, sens inversé, profondeur et taille des zones), en avertissement ; `check-project.sh` étant au manifeste, le contrôle atteint le parc par `--update-method`. Restent à faire : test versionné rejoué en CI, alerte en mode greffe d'`init-project.sh`, migration de l'atelier (dogfooding), documents et exemples, puis alignement du parc projet par projet sur GO. Rollback : revert du commit ; le contrôle n'émet que des avertissements.
+- **Liens** : un RETEX de l'atelier, un plan de l'atelier, DEC-0054, DEC-0019.
+
+### DEC-0054 — Règles locales par dossier : un `AGENTS.md` de zone, un seul niveau, à la demande
+
+- **Date** : 2026-09-29
+- **Contexte** : le canon ne connaît qu'un seul fichier d'instructions d'agent par projet, à la racine (`AGENTS.md` + renvoi `CLAUDE.md`). Conséquence : un agent qui travaille dans une zone (`02_sujets/Sxx_…/`, `05_specs/`, `src/`) n'a aucune règle propre à cette zone, et rien ne permet d'en écrire une sans gonfler le fichier racine commun à tout le projet. Une source externe (post X `@HermesWatcher`, 2026-09-29) a décrit ce motif ; sa lecture a montré que la brique d'exécution existe déjà : Hermes (`agent/subdirectory_hints.py`) et Claude Code chargent les fichiers d'instructions imbriqués **quand l'agent touche le dossier**. Manquaient donc côté méthode le cadre, le gabarit et le contrôle, pas le mécanisme. Constats complets : un RETEX de l'atelier.
+- **Options envisagées** :
+  - A. **Statu quo** : un seul `AGENTS.md` racine ; toute règle de zone y est écrite au niveau projet.
+  - B. **Fichier par extension** (Life / Code séparés) : écarté, c'est déjà l'inverse du canon — une extension ajoute une section dans `AGENTS.md`, elle ne crée pas de fichier.
+  - C. **Fichier de zone facultatif** : un `AGENTS.md` posé dans le dossier de travail concerné, chargé automatiquement à l'entrée dedans, créé seulement quand le besoin est démontré.
+- **Choix** : option C, avec sept modalités arrêtées le 2026-09-29 :
+  1. **Nom** : le contenu dans `AGENTS.md`, seul nom lu par Hermes, Claude Code et Codex, accompagné d'un `CLAUDE.md` réduit à la ligne `@AGENTS.md` (paire, DEC-0055). *Amendé le 2026-09-30 avant commit* : la version initiale excluait tout `CLAUDE.md` de dossier ; le test du 2026-09-30 a montré que Claude Code ignore alors l'`AGENTS.md` de zone, un `CLAUDE.md` existant à la racine.
+  2. **Profondeur** : **une seule descente** — racine + zone. Pas de fichier dans `02_sujets/` ni plus profond dans la zone.
+  3. **Dossiers éligibles** : les zones de travail — `02_sujets/Sxx_…/` (Life), `05_specs/`, `src/` (Code). Jamais `03_documents/`, `99_archive/`, ni un dossier de dépendances.
+  4. **Volume** : cible 8 000 caractères, jamais au-delà du seuil de prudence du contrôle (20 000). Un dépassement signale un mauvais découpage, pas un cas à supporter — l'agent tronque au-delà de son plafond sans le dire.
+  5. **Une consigne, une seule feuille** : le fichier de zone porte ce qui est propre à la zone, ou un renvoi vers la racine ; il ne recopie jamais une règle racine (une copie est de toute façon inerte, l'agent déduplique).
+  6. **Propriété** : opératoire (comment travailler ici) → fichier de zone ; gouvernance (qui décide quoi) → `97_gouvernance/` ; outils et skills → `98_configuration/` ; état et décisions → registres (`PROGRESS.md` de la zone, `DECISIONS.md`).
+  7. **Pose** : à la demande, jamais automatique — ni `init-project.sh` ni `--update-method` n'en créent ; l'agent propose quand le besoin est démontré, l'humain valide.
+- **Raison** : la règle de zone répond à un manque réel (aujourd'hui, aucune règle ne peut viser un sujet ou un dossier technique) sans imposer de structure d'avance : le fichier reste facultatif et ne s'ajoute que là où on travaille souvent. Le cadre est serré volontairement (nom unique, un niveau, plafond, zéro duplication) parce que le vrai risque de ce motif est la prolifération de fichiers d'instructions divergents — défaut déjà mesuré à la racine (voir un RETEX de l'atelier). Ce qui doit s'appliquer *toujours* (ton, format de sortie, validations humaines) reste à la racine : un fichier de zone ne peut pas gouverner une réponse produite sans jamais ouvrir la zone.
+- **Conséquences** : gabarit inerte `templates/configuration/AGENTS_DOSSIER.md` ; section dédiée dans `templates/core/AGENTS.md` ; cadre rappelé dans `structures/core-tree.md` et, par renvoi, dans `structures/code-tree.md` et `structures/life-tree.md` ; `docs/governance.md` (socle) et `docs/NAMING-CONVENTIONS.md`. Restent à faire, dans l'ordre : le contrôle de `scripts/check-project.sh` (fichier de zone trop gros ou dupliqué → avertissement, jamais bloquant) et le rituel de lecture dans la skill assistant — un cadre non contrôlé ne tient pas. La release (bump `VERSION`, entrée `CHG-`, ligne Releases, tag) est posée **quand la capacité est complète et vérifiée**, pas à mi-parcours. Rollback : les fichiers de zone sont de simples `.md` (suppression sans effet de bord) ; le canon se retire par revert du commit ; aucun projet existant n'est touché tant que la pose reste à la demande.
+- **Liens** : un RETEX de l'atelier (statut ouvert) ; entrée `CHG-` à poser avec la release.
+
 ### DEC-0053 — Progrès par sujet : un `PROGRESS.md` par sujet, le parent en porte une projection générée
 
 - **Date** : 2026-09-13.

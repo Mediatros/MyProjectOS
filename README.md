@@ -2,7 +2,7 @@
 
 **Une méthode d'organisation de projets assistée par IA, pour reprendre n'importe quel projet à froid, sans aucun historique de conversation.**
 
-> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.30.2**. Installable tel quel, réutilisable en tout ou partie.
+> Ce dépôt est la **vitrine publique** de MyProjectOS : templates, règles, scripts, skill assistant et exemples, régénérés à chaque release. La méthode est développée dans un atelier privé (retours d'expérience, plans, projets réels). Version courante : **0.31.0**. Installable tel quel, réutilisable en tout ou partie.
 
 Ce n'est pas un logiciel. C'est un système documentaire versionné : des fichiers Markdown, des rituels de session, des garde-fous exécutés par des hooks, et une skill qui guide l'agent. Il tient dans un dossier, se lit sur GitHub sans outil, et se met à jour comme un logiciel.
 
@@ -108,7 +108,7 @@ Obligatoires dans tout projet, avec une frontière stricte : **une information v
 | `TASKS.md` | File d'actions cochables, une tâche = une itération | Narratif, résultats détaillés |
 | `DECISIONS.md` | Pourquoi des choix structurants (`DEC-XXXX`), registre figé | Micro-choix d'exécution |
 
-Le socle pose aussi `AGENTS.md` et `CLAUDE.md` (rituels de session, garde-fous) : ce ne sont pas des registres.
+Le socle pose aussi la paire `AGENTS.md` (rituels de session, garde-fous) + `CLAUDE.md` (la seule ligne `@AGENTS.md`, pour Claude Code) : ce ne sont pas des registres.
 
 ### Les extensions
 

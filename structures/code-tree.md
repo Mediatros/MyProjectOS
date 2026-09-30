@@ -55,6 +55,7 @@ MonProjet/
 - **Gate stack** : `STACK_VALIDATION.md` au statut `validé` avant la première ligne de code (voir `docs/stack-validation-gate.md`).
 - **Avant de modifier** : remplir `IMPACT_ANALYSIS.md` (fichiers concernés, à ne pas toucher, risques, tests).
 - **Lisibilité agent** : un agent doit pouvoir déterminer rapidement où est la logique métier, les intégrations, les contrats API, les tests, et quels fichiers ne pas toucher.
+- **Règles locales par dossier** (DEC-0054) : `05_specs/` et `src/` peuvent porter leur propre `AGENTS.md` de zone (cadre : `structures/core-tree.md`). `09_scripts/` et les dossiers d'artefacts (`08_releases/`, `07_tests/`) n'en portent pas : règles rares, et le fichier de zone doit rester l'exception.
 
 **Cas Hybrid** : `02_work/` du socle Core est alors redéfini en `02_sujets/` par l'extension Life (organisation par sujets, voir `structures/life-tree.md`, DEC-0032) ; les dossiers ci-dessus (`05_specs/` à `09_scripts/`, `src/`) restent inchangés et couvrent le travail actif côté code.
 

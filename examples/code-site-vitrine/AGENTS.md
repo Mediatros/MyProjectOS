@@ -1,8 +1,16 @@
 # AGENTS.md — code-site-vitrine
 
 > Instructions d'opération pour les agents (Claude Code, Codex, Hermès, futurs agents) sur ce projet.
-> Fichier lu nativement par Codex. Claude Code le lit via le renvoi posé dans `CLAUDE.md`.
+> Fichier lu nativement par Codex et Hermès. Claude Code le charge par l'import `@AGENTS.md`, seule ligne de `CLAUDE.md`.
 > Les extensions actives (Code, Life...) ajoutent leurs propres sections plus bas dans ce fichier.
+
+## Paire d'instructions (`AGENTS.md` + `CLAUDE.md`)
+
+Partout où vivent des instructions d'agent (racine, dossier de zone), elles vont par paire : `AGENTS.md` porte **tout** le contenu, `CLAUDE.md` ne contient **que** la ligne `@AGENTS.md`. Une consigne propre à Claude Code va dans `AGENTS.md`, sous un titre « Claude Code ».
+
+- Ne jamais écrire dans `CLAUDE.md` au-delà de cette ligne ; toute consigne va dans `AGENTS.md`.
+- Ne pas lancer `/init` ni `/import` de Claude Code dans ce projet : ces commandes recopient des instructions dans `CLAUDE.md`.
+- Dérive contrôlée par `sh scripts/check-project.sh` (section « Socle agent ») : paire incomplète, `CLAUDE.md` qui porte du contenu, sens inversé.
 
 ## Fichiers sacrés
 

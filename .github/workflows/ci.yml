@@ -134,3 +134,6 @@ jobs:
 
       - name: Progrès par sujet (projection, sujet.sh, hook, contrôles)
         run: sh scripts/tests/test-progres-par-sujet.sh
+
+      - name: Paire AGENTS.md + CLAUDE.md (gabarit et contrôle de dérive, DEC-0055)
+        run: sh scripts/tests/test-socle-agent.sh

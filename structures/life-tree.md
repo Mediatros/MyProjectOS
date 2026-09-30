@@ -56,6 +56,8 @@ Le socle Core réserve `02_work/` au « travail actif en cours » (voir `structu
 - **Exemple réel** : deux projets Life ont chacun créé ce motif indépendamment avant qu'il ne soit canonisé ici (voir un RETEX de l'atelier).
 - **`02_sujets/` est un nom suggéré, pas imposé** (DEC-0033) : un projet peut choisir un autre nom pour ce même dossier (ex. `02_thematique/`) tant que c'est un choix explicite, consigné dans le `DECISIONS.md` du projet. `check-project.sh` et `hook-pre-write.sh` reconnaissent tout dossier racine `02_<nom>` (autre que `02_work/`) comme « déjà organisé » et n'avertissent plus une fois qu'il existe, quel que soit son nom exact. Seule la lecture d'un sujet par la skill assistant suppose de retrouver ce dossier (et son `INDEX.md`) via le `DECISIONS.md` du projet s'il ne s'appelle pas `02_sujets/`. `sync-progress.sh`, `sujet.sh` et les contrôles reconnaissent tout dossier `02_<nom>` de la même façon.
 
+- **Règles locales par dossier** (DEC-0054) : un dossier de sujet (`02_sujets/Sxx_…/`) peut porter son propre `AGENTS.md` de zone quand il a des règles à lui (format des notes du dossier, sources à citer, vocabulaire imposé) ; cadre et plafond dans `structures/core-tree.md`. `02_sujets/` lui-même n'en porte pas, ni aucun sous-dossier d'un sujet : une seule descente. Une règle qui vaut pour tous les sujets va dans `97_gouvernance/` ou dans l'`AGENTS.md` racine, pas répétée sujet par sujet.
+
 ## Règle de cohérence
 
 - Toute affirmation engageante dans `PROGRESS.md` ou une décision doit pointer vers une preuve (`P-XXXX`) ou être marquée « à confirmer ».

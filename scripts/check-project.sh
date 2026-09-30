@@ -133,15 +133,74 @@ for f in PROJECT PROGRESS CHANGELOG TASKS DECISIONS; do
     if [ -f "$TARGET/$f.md" ]; then ok "$f.md"; else fail "$f.md manquant"; fi
 done
 
-# --- 1bis. Socle agent (AGENTS.md/CLAUDE.md), tous types ---------------------
-# Posés par init-project.sh pour Core/Life/Code/Hybrid (DEC-0019) : garantissent
-# que Codex et Hermès Agent (qui ne lisent pas la config Claude Code) trouvent
-# des instructions à la racine. Pas des fichiers sacrés (pas de registre), donc
-# avertissement plutôt que blocage.
-echo "Socle agent (AGENTS.md/CLAUDE.md) :"
-for f in AGENTS.md CLAUDE.md; do
-    if [ -f "$TARGET/$f" ]; then ok "$f"; else warn "$f manquant : Codex et Hermès Agent n'auront aucune instruction à la racine"; fi
+# --- 1bis. Socle agent : paire AGENTS.md + CLAUDE.md, racine et zones ---------
+# Règle de la paire (DEC-0055) : partout où vivent des instructions d'agent,
+# AGENTS.md porte tout le contenu et CLAUDE.md ne contient que la ligne
+# @AGENTS.md. Claude Code lit CLAUDE.md en priorité et ignore un AGENTS.md
+# dès qu'un CLAUDE.md existe au-dessus : sans la paire, un fichier de zone est
+# muet pour lui. Codex ne lit que AGENTS.md. Contrôle de dérive, avertissement
+# seulement (le contenu appartient au projet).
+echo "Socle agent (paire AGENTS.md + CLAUDE.md) :"
+_socle_issue=0
+# Hors périmètre : dépendances, archives, dossiers cachés, 98_configuration/
+# (skills tierces). Dans l'atelier méthode, templates/ et examples/ sont des
+# gabarits, pas des instructions actives.
+_socle_skip=/dev/null/aucun
+[ -d "$TARGET/.myprojectos/publish" ] && _socle_skip="$TARGET/templates"
+_socle_skip2=/dev/null/aucun
+[ -d "$TARGET/.myprojectos/publish" ] && _socle_skip2="$TARGET/examples"
+_socle_dirs=$( { printf '%s\n' "$TARGET"; find "$TARGET" \( -name .git -o -name node_modules -o -name 99_archive -o -path "$TARGET/.*" \
+    -o -path "$TARGET/98_configuration" -o -path "$_socle_skip" -o -path "$_socle_skip2" \) -prune \
+    -o \( -name AGENTS.md -o -name CLAUDE.md \) -print 2>/dev/null | sed 's#/[^/]*$##'; } | sort -u)
+_socle_ifs=$IFS
+IFS='
+'
+for _d in $_socle_dirs; do
+    IFS=$_socle_ifs
+    _rel=${_d#"$TARGET"}; _rel=${_rel#/}
+    _lbl=${_rel:-racine}
+    _a="$_d/AGENTS.md"; _c="$_d/CLAUDE.md"
+    if [ ! -f "$_a" ] && [ ! -f "$_c" ]; then
+        warn "$_lbl : aucune instruction d'agent (ni AGENTS.md ni CLAUDE.md) : poser la paire depuis templates/core/"
+        _socle_issue=1
+        IFS='
+'
+        continue
+    fi
+    if [ ! -f "$_a" ]; then
+        warn "$_lbl : AGENTS.md manquant (Codex et Hermès sans instructions ; le CLAUDE.md doit le porter, puis se réduire à @AGENTS.md)"
+        _socle_issue=1
+    fi
+    if [ ! -f "$_c" ]; then
+        warn "$_lbl : CLAUDE.md manquant (paire incomplète : Claude Code ignore cet AGENTS.md dès qu'un CLAUDE.md existe au-dessus). Créer CLAUDE.md contenant @AGENTS.md"
+        _socle_issue=1
+    else
+        _body=$(grep -v '^[[:space:]]*$' "$_c" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        if [ "$_body" != "@AGENTS.md" ]; then
+            warn "$_lbl : CLAUDE.md porte autre chose que la ligne @AGENTS.md (dérive : le contenu va dans AGENTS.md)"
+            _socle_issue=1
+        fi
+    fi
+    if [ -f "$_a" ] && grep -qiE 'source (unique|de v[ée]rit[ée]).{0,40}CLAUDE\.md|lis(ez)?[^.]{0,40}CLAUDE\.md[^.]{0,20}(d.abord|en premier)' "$_a"; then
+        warn "$_lbl : AGENTS.md désigne CLAUDE.md comme source (sens inversé)"
+        _socle_issue=1
+    fi
+    if [ -n "$_rel" ]; then
+        case "$_rel" in
+            02_sujets) warn "02_sujets : pas de fichier d'instructions à ce niveau (zones = 02_sujets/Sxx_…/)"; _socle_issue=1 ;;
+            */*/*) warn "$_rel : fichier d'instructions trop profond (une seule descente, racine + zone)"; _socle_issue=1 ;;
+            */*) case "$_rel" in 02_sujets/*) : ;; *) warn "$_rel : fichier d'instructions trop profond (une seule descente, racine + zone)"; _socle_issue=1 ;; esac ;;
+        esac
+        if [ -f "$_a" ] && [ "$(wc -c < "$_a" | tr -d ' ')" -gt 8000 ]; then
+            warn "$_rel/AGENTS.md : plus de 8 000 caractères (cible : découper la zone)"
+            _socle_issue=1
+        fi
+    fi
+    IFS='
+'
 done
+IFS=$_socle_ifs
+[ "$_socle_issue" -eq 0 ] && ok "paire AGENTS.md + CLAUDE.md conforme partout ($(printf '%s\n' "$_socle_dirs" | wc -l | tr -d ' ') emplacement(s))"
 
 # --- 2. Extensions selon le type ---------------------------------------------
 case "$TYPE" in

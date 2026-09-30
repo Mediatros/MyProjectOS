@@ -25,7 +25,9 @@ Règle d'aiguillage unique. Une information ne vit qu'à un seul endroit.
 
 Les autres fichiers référencent par identifiant (« voir DEC-0003 »), ils ne recopient pas.
 
-Le socle Core pose aussi `AGENTS.md` et `CLAUDE.md` à la racine de chaque projet (tous types) : ces rituels y sont recopiés pour que l'agent les charge sans dépendre du repo méthode. Ce ne sont pas des fichiers sacrés (pas de registre à tenir à jour).
+Le socle Core pose aussi la paire `AGENTS.md` + `CLAUDE.md` à la racine de chaque projet (tous types) : ces rituels sont recopiés dans `AGENTS.md` pour que l'agent les charge sans dépendre du repo méthode, et `CLAUDE.md` ne contient que la ligne `@AGENTS.md`, qui les fait charger par Claude Code (DEC-0055). Ce ne sont pas des fichiers sacrés (pas de registre à tenir à jour), mais leur **sens** est contrôlé : la section « Socle agent » de `check-project.sh` signale une paire incomplète, un `CLAUDE.md` qui porte du contenu ou un `AGENTS.md` qui renvoie vers `CLAUDE.md`, à la racine comme dans les dossiers de zone.
+
+Un dossier de travail peut en plus porter ses propres règles d'opération, dans un `AGENTS.md` posé **dans ce dossier** (DEC-0054), chargé automatiquement à l'entrée dans la zone : une seule descente (racine + zone), cible 8 000 caractères, une consigne sur une seule feuille, jamais d'état ni de décision, pose à la demande. Cadre complet : `structures/core-tree.md`.
 
 ## Rituels de session
 

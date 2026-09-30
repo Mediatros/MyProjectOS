@@ -25,7 +25,7 @@ Dès que le projet a besoin de règles locales au-delà de ce que porte la gouve
 | Ça va ici | Ça va ailleurs |
 |---|---|
 | Règles de gouvernance du projet lui-même | Configuration technique des outils tiers → `98_configuration/` |
-| Compléments aux fichiers sacrés | Rituels et garde-fous génériques de la méthode → `AGENTS.md` |
+| Compléments aux fichiers sacrés | Rituels et garde-fous génériques de la méthode → `AGENTS.md` racine ; règle propre à **un seul dossier de travail** → paire `AGENTS.md` + `CLAUDE.md` de ce dossier |
 | Décisions de pilotage propres au projet | Contenu métier → dossiers `0X_` (01_context, 02_work...) |
 
 ## Ce dossier peut être supprimé

@@ -63,7 +63,8 @@ Séquence stricte. La réorganisation d'une arborescence est une **action sensib
 
 ## Après l'installation, dans tous les cas
 
-- Les rituels de session vivent dans l'`AGENTS.md` du projet (Codex et Hermès le lisent nativement ; Claude Code y arrive via `CLAUDE.md`).
+- Les rituels de session vivent dans l'`AGENTS.md` du projet. Codex et Hermès le lisent nativement ; Claude Code le charge par l'import `@AGENTS.md`, seule ligne de `CLAUDE.md` (DEC-0055). Vérifié le 2026-09-30 sur Claude Code 2.1.285 : `CLAUDE.md` prime sur `AGENTS.md`, et un `AGENTS.md` n'est lu directement (depuis 2.1.277) qu'en l'absence de tout `CLAUDE.md` dans le dossier ou au-dessus ; l'import fonctionne sur toutes les versions. À revérifier à chaque release (documentation : `code.claude.com/docs/en/memory`, section « AGENTS.md »).
+- Ne jamais écrire de contenu dans `CLAUDE.md`, ni lancer `/init` ou `/import` de Claude Code dans un projet MyProjectOS : ces commandes recopient des instructions dans `CLAUDE.md`.
 - Le rythme d'exécution est **une tâche par itération** : `docs/cycle-de-travail.md`.
 - Vérification à la demande : `sh scripts/check-project.sh`. Détection de mise à jour : `sh scripts/check-update.sh`.
 - Ce que tu ne fais jamais sans validation humaine : liste complète dans `docs/governance.md` (source unique, DEC-0050).
