@@ -19,6 +19,19 @@
 
 ---
 
+### DEC-0056 — Alignement de la paire proposé à chaque reprise, refus mémorisé par version de la méthode
+
+- **Date** : 2026-09-30
+- **Contexte** : DEC-0055 fait signaler les écarts de la paire `AGENTS.md` + `CLAUDE.md` par les scripts, qui ne réécrivent jamais un contenu. Test du 2026-09-30 sur quatre cas (adoption avec `AGENTS.md` seul ou `CLAUDE.md` seul, mise à jour sans l'un ou l'autre) : un `AGENTS.md` étranger sans les rituels de la méthode passait inaperçu, un `CLAUDE.md` manquant n'était pas recréé, et rien ne garantissait qu'un agent propose la correction. Demande de l'utilisateur : que l'assistant propose l'alignement en expliquant qu'il rend le projet agent-agnostique, le repropose à chaque reprise tant que l'écart demeure, et cesse sur refus explicite jusqu'à la prochaine mise à jour de MyProjectOS.
+- **Options envisagées** :
+  - A. **Mémoire propre à l'agent** (mémoire Claude Code) : invisible pour Codex et Hermès, qui reproposeraient.
+  - B. **Entrée `DEC-` dans le projet** (patron du refus de `02_sujets/`) : un refus définitif, alors que celui-ci doit tomber à la mise à jour suivante.
+  - C. **Fichier de préférences de la méthode** `.myprojectos/preferences`, clé `alignement-socle-agent=<version>`, écrit et lu par `check-project.sh`.
+- **Choix** : option C. `check-project.sh --socle` (contrôle rapide de la seule paire) rend 0 si conforme, 2 si l'alignement est à proposer, 3 si l'utilisateur l'a refusé pour la version installée ; `--socle-refus` consigne le refus. La skill assistant lance `--socle` à chaque reprise (Mode 1), après une adoption (Mode 6) et après une mise à jour (Mode 7), propose l'alignement avec l'explication agent-agnostique et la porte de sortie ; « pas maintenant » ne vaut pas refus durable. Le rituel de démarrage de référence (`docs/governance.md`) et le gabarit `AGENTS.md` portent la même étape, pour un agent sans la skill. Compléments de DEC-0055 : `--update-method` crée le `CLAUDE.md` manquant (`@AGENTS.md`, rien à perdre), nomme l'absence d'`AGENTS.md`, et le contrôle signale un `AGENTS.md` racine sans la section « Rituels de session ».
+- **Raison** : le refus doit être vu par tous les agents du projet, donc vivre dans un fichier du projet ; il doit tomber à la mise à jour, donc porter la version ; il doit être écrit de façon déterministe, donc par le script et non à la main.
+- **Conséquences** : `scripts/check-project.sh` (modes `--socle`, `--socle-refus`, détection des rituels absents), `scripts/init-project.sh`, skill `my-project-os` (étape 4 du Mode 1, étape 8 du Mode 6, étape 5 du Mode 7, section « Alignement de la paire d'instructions »), `docs/governance.md`, `templates/core/AGENTS.md`, test `scripts/tests/test-socle-agent.sh` (30 cas). Rollback : revert du commit ; un fichier `.myprojectos/preferences` laissé en place est inerte.
+- **Liens** : DEC-0055, DEC-0051 (rituel de démarrage), DEC-0039 (vérification de version à la reprise).
+
 ### DEC-0055 — Paire d'instructions : `AGENTS.md` porte le contenu, `CLAUDE.md` ne contient que `@AGENTS.md`, partout, avec contrôle de dérive
 
 - **Date** : 2026-09-30

@@ -10,7 +10,8 @@ Partout où vivent des instructions d'agent (racine, dossier de zone), elles von
 
 - Ne jamais écrire dans `CLAUDE.md` au-delà de cette ligne ; toute consigne va dans `AGENTS.md`.
 - Ne pas lancer `/init` ni `/import` de Claude Code dans ce projet : ces commandes recopient des instructions dans `CLAUDE.md`.
-- Dérive contrôlée par `sh scripts/check-project.sh` (section « Socle agent ») : paire incomplète, `CLAUDE.md` qui porte du contenu, sens inversé.
+- Dérive contrôlée par `sh scripts/check-project.sh` (section « Socle agent ») : paire incomplète, `CLAUDE.md` qui porte du contenu, sens inversé, `AGENTS.md` sans les rituels de la méthode.
+- À chaque reprise, `sh scripts/check-project.sh --socle` : sur un écart (code 2), proposer l'alignement (procédure : skill `my-project-os`), en expliquant qu'il rend le projet agent-agnostique. Sur refus explicite, `sh scripts/check-project.sh --socle-refus` le consigne jusqu'à la prochaine mise à jour de la méthode (code 3 : ne pas reproposer).
 
 ## Fichiers sacrés
 

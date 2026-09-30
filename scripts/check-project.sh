@@ -1,13 +1,24 @@
 #!/bin/sh
 # check-project.sh — vérifie la cohérence d'un projet MyProjectOS.
 # Usage : check-project.sh [chemin-projet]   (défaut : dossier courant)
+#         check-project.sh --socle [chemin]        contrôle rapide de la seule paire
+#                                                  AGENTS.md + CLAUDE.md (rituel de reprise)
+#         check-project.sh --socle-refus [chemin]  consigne le refus de l'alignement
+#                                                  jusqu'à la prochaine version de la méthode
 # Signale sans bloquer : fichiers sacrés manquants, extensions incomplètes,
 # PROGRESS périmé, placeholders non substitués, références DEC-/CHG- cassées.
 # POSIX sh. Aucune dépendance obligatoire (git facultatif).
 # Code de sortie : 0 si aucun problème, 1 si au moins un FAIL, 0 si seulement des WARN.
+# En --socle : 0 paire conforme, 2 alignement à proposer, 3 alignement refusé
+# pour la version courante (ne pas reproposer).
 
 set -u
 
+MODE=complet
+case "${1:-}" in
+    --socle) MODE=socle; shift ;;
+    --socle-refus) MODE=refus; shift ;;
+esac
 TARGET=${1:-.}
 STALE_DAYS=14
 REPO=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
@@ -80,6 +91,24 @@ if [ ! -f "$TARGET/PROJECT.md" ]; then
     exit 1
 fi
 
+# Préférences de l'utilisateur sur les propositions de l'assistant (DEC-0056) :
+# fichier lu par tout agent, pas une mémoire propre à l'un d'eux. Un refus vaut
+# pour la version de la méthode où il a été donné ; --update-method change la
+# version, la proposition revient.
+PREFS="$TARGET/.myprojectos/preferences"
+SOCLE_VER=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
+if [ "$MODE" = refus ]; then
+    mkdir -p "$TARGET/.myprojectos"
+    {
+        printf '%s\n' "# Préférences sur les propositions de l'assistant MyProjectOS : <clé>=<version de la méthode au refus>."
+        printf '%s\n' "# Le refus tombe à la prochaine mise à jour de la méthode. Supprimer une ligne pour réactiver la proposition."
+        grep -v '^#' "$PREFS" 2>/dev/null | grep -v '^alignement-socle-agent='
+        printf 'alignement-socle-agent=%s\n' "$SOCLE_VER"
+    } > "$PREFS.tmp" && mv "$PREFS.tmp" "$PREFS"
+    echo "Refus consigné (alignement-socle-agent=$SOCLE_VER dans .myprojectos/preferences) : l'assistant ne reproposera plus l'alignement de la paire avant la prochaine mise à jour de la méthode."
+    exit 0
+fi
+
 # Type du projet, lu dans le frontmatter de PROJECT.md.
 TYPE=$(sed -n 's/^type:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1)
 [ -n "$TYPE" ] || TYPE="(inconnu)"
@@ -112,6 +141,7 @@ fi
 # par DEC-0039 (un projet à neuf versions de retard s'entendait répondre que tout allait
 # bien). La détection amont est le rôle de check-update.sh, rappelé ici et déclenché
 # au rituel de reprise par la skill assistant.
+if [ "$MODE" = complet ]; then
 echo "Version de la méthode :"
 CUR=$(head -n 1 "$REPO/VERSION" 2>/dev/null | tr -d '[:space:]')
 PRJ=$(sed -n 's/^version_methode:[[:space:]]*//p' "$TARGET/PROJECT.md" | head -n 1 | tr -d '[:space:]')
@@ -132,6 +162,7 @@ echo "Fichiers sacrés Core :"
 for f in PROJECT PROGRESS CHANGELOG TASKS DECISIONS; do
     if [ -f "$TARGET/$f.md" ]; then ok "$f.md"; else fail "$f.md manquant"; fi
 done
+fi
 
 # --- 1bis. Socle agent : paire AGENTS.md + CLAUDE.md, racine et zones ---------
 # Règle de la paire (DEC-0055) : partout où vivent des instructions d'agent,
@@ -181,6 +212,10 @@ for _d in $_socle_dirs; do
             _socle_issue=1
         fi
     fi
+    if [ -z "$_rel" ] && [ -f "$_a" ] && ! grep -q '^## Rituels de session' "$_a"; then
+        warn "racine : AGENTS.md sans la section « Rituels de session » de la méthode (y fusionner le gabarit templates/core/AGENTS.md du dépôt méthode)"
+        _socle_issue=1
+    fi
     if [ -f "$_a" ] && grep -qiE 'source (unique|de v[ée]rit[ée]).{0,40}CLAUDE\.md|lis(ez)?[^.]{0,40}CLAUDE\.md[^.]{0,20}(d.abord|en premier)' "$_a"; then
         warn "$_lbl : AGENTS.md désigne CLAUDE.md comme source (sens inversé)"
         _socle_issue=1
@@ -201,6 +236,17 @@ for _d in $_socle_dirs; do
 done
 IFS=$_socle_ifs
 [ "$_socle_issue" -eq 0 ] && ok "paire AGENTS.md + CLAUDE.md conforme partout ($(printf '%s\n' "$_socle_dirs" | wc -l | tr -d ' ') emplacement(s))"
+_socle_refus=$(sed -n 's/^alignement-socle-agent=//p' "$PREFS" 2>/dev/null | tail -n 1)
+if [ "$_socle_issue" -eq 1 ]; then
+    if [ -n "$_socle_refus" ] && [ "$_socle_refus" = "$SOCLE_VER" ]; then
+        echo "  Alignement refusé pour v$_socle_refus (.myprojectos/preferences) : ne pas le reproposer avant la prochaine mise à jour de la méthode."
+        [ "$MODE" = socle ] && exit 3
+    else
+        echo "  Alignement à proposer (skill my-project-os). Refus durable : sh scripts/check-project.sh --socle-refus ."
+        [ "$MODE" = socle ] && exit 2
+    fi
+fi
+[ "$MODE" = socle ] && exit 0
 
 # --- 2. Extensions selon le type ---------------------------------------------
 case "$TYPE" in

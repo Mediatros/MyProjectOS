@@ -298,6 +298,7 @@ claude_md_ancien_renvoi() {
         && grep -q "Ce fichier existe pour que Claude Code le charge automatiquement ; il ne duplique pas le contenu" "$1"
 }
 CLAUDE_MD_ALERTE="non conforme à la paire (contenu à fusionner dans AGENTS.md, puis CLAUDE.md réduit à la ligne @AGENTS.md ; voir la section « Socle agent » de check-project.sh)"
+AGENTS_MD_ALERTE="sans les rituels de la méthode (section « Rituels de session » absente) : y fusionner le gabarit templates/core/AGENTS.md ; l'assistant le propose au démarrage"
 
 if [ "$WANT_UPDATE" -eq 1 ]; then
     if [ ! -f "$TARGET/PROJECT.md" ]; then
@@ -364,10 +365,18 @@ EOF_REFRESH
         cp "$TARGET/CLAUDE.md" "$TARGET/$BACKUP_REL/CLAUDE.md"
         printf '%s\n' "@AGENTS.md" > "$TARGET/CLAUDE.md"
         echo "  ~ CLAUDE.md (ancien renvoi en prose remplacé par @AGENTS.md, sauvegardé)"
+    elif [ -f "$TARGET/CLAUDE.md" ] && [ ! -f "$TARGET/AGENTS.md" ]; then
+        echo "  ! AGENTS.md absent et CLAUDE.md porte les instructions : Codex et Hermès n'ont aucune règle. Contenu à déplacer dans AGENTS.md, puis CLAUDE.md réduit à la ligne @AGENTS.md"
     elif [ -f "$TARGET/CLAUDE.md" ]; then
         echo "  ! CLAUDE.md $CLAUDE_MD_ALERTE"
+    elif [ -f "$TARGET/AGENTS.md" ]; then
+        printf '%s\n' "@AGENTS.md" > "$TARGET/CLAUDE.md"
+        echo "  + CLAUDE.md (@AGENTS.md : Claude Code charge désormais AGENTS.md)"
     else
-        echo "  ! CLAUDE.md absent : le créer avec la seule ligne @AGENTS.md"
+        echo "  ! ni AGENTS.md ni CLAUDE.md : poser la paire depuis templates/core/ du dépôt méthode"
+    fi
+    if [ -f "$TARGET/AGENTS.md" ] && ! grep -q '^## Rituels de session' "$TARGET/AGENTS.md"; then
+        echo "  ! AGENTS.md $AGENTS_MD_ALERTE"
     fi
     echo "Skills du projet (source unique + liens par agent) :"
     link_myprojectos_skill_dirs
@@ -437,6 +446,8 @@ copy_template() {
             echo "  ~ $_base (frontmatter ajouté, contenu conservé)"
         elif [ "$_base" = "CLAUDE.md" ] && ! claude_md_conforme "$_dst"; then
             echo "  ! $_base (déjà présent, conservé) : $CLAUDE_MD_ALERTE"
+        elif [ "$_base" = "AGENTS.md" ] && ! grep -q '^## Rituels de session' "$_dst"; then
+            echo "  ! $_base (déjà présent, conservé) : $AGENTS_MD_ALERTE"
         else
             echo "  = $_base (déjà présent, conservé)"
         fi

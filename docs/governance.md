@@ -41,6 +41,8 @@ Puis produire : **État actuel / Dernière action / Prochaine action / Points de
 
 Une fois par session, avant de proposer l'itération : vérifier la version de la méthode (`sh scripts/check-update.sh`, DEC-0039). Silence total si le réseau manque ou si le projet est à jour ; en cas de retard, l'annoncer en une phrase et proposer le Mode 7 de la skill assistant, sans jamais appliquer de mise à jour dans le rituel lui-même.
 
+À chaque reprise : vérifier la paire d'instructions (`sh scripts/check-project.sh --socle`, DEC-0056). Code 0 : silence. Code 2 : proposer l'alignement en expliquant qu'il rend le projet agent-agnostique (une seule source de règles, lue par tous les agents), et offrir la sortie « si tu ne veux plus que je te le propose, dis-le ». Code 3 : l'utilisateur a refusé pour la version installée, ne pas reproposer. Un refus explicite se consigne par `sh scripts/check-project.sh --socle-refus` dans `.myprojectos/preferences`, lu par tous les agents ; il tombe à la mise à jour suivante de la méthode.
+
 ### Pendant
 
 - Répondre d'abord à la demande de l'utilisateur ; la tenue des fichiers Core suit, jamais avant la réponse (DEC-0035).

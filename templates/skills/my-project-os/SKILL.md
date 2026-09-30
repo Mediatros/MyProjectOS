@@ -77,7 +77,18 @@ Points de vigilance : <problèmes ouverts, actions à valider>
    - **refus de l'utilisateur** → ne plus reproposer de la session, et le noter dans `PROGRESS.md` si le retard dépasse trois versions mineures.
    - Ne jamais appliquer une mise à jour de méthode dans le rituel de reprise : c'est une action validée, elle passe par le Mode 7.
 
-4. Proposer de démarrer l'itération sur la prochaine action, et rien d'autre. Rester court : ne pas recracher le contenu des fichiers, en faire la synthèse.
+4. **Vérifier la paire d'instructions**, à chaque reprise :
+
+   ```sh
+   sh scripts/check-project.sh --socle .
+   ```
+
+   - **code 0** (paire conforme) → ne rien dire.
+   - **code 2** (écart, aucun refus en cours) → après le bloc d'état, annoncer l'écart en une phrase, expliquer pourquoi l'aligner et proposer l'alignement (section « Alignement de la paire d'instructions »). Terminer en offrant la sortie : « Si tu ne veux plus que je te le propose, dis-le : je le note et je ne te le reproposerai plus jusqu'à la prochaine mise à jour de MyProjectOS. »
+   - **code 3** (refus consigné pour la version installée) → ne rien dire, sauf si l'utilisateur pose la question.
+   - « Pas maintenant » ou une réponse évasive n'est pas un refus durable : ne plus en parler de la session, reproposer à la reprise suivante. Seul un refus explicite (« ne me le propose plus », « ça ne m'intéresse pas ») se consigne, par `sh scripts/check-project.sh --socle-refus .`. Confirmer ensuite en une phrase : c'est noté dans `.myprojectos/preferences`, lu par tous les agents du projet, et la proposition reviendra après la prochaine mise à jour de la méthode.
+
+5. Proposer de démarrer l'itération sur la prochaine action, et rien d'autre. Rester court : ne pas recracher le contenu des fichiers, en faire la synthèse.
 
 ## Mode 2 — Orientation
 
@@ -185,6 +196,7 @@ Suivre le protocole `docs/INSTALL-AGENT.md` du dépôt méthode, section « Mét
 5. **Remplissage assisté** de `PROJECT.md` et `PROGRESS.md` depuis les traces, marqué « à confirmer », soumis à relecture.
 6. **Proposer le catalogue d'outils** : même déroulé qu'en Mode 5, étape 8 (`docs/OUTILS.md` ; cas le plus fréquent : Blue via `98_configuration/GOUVERNANCE_BLUE.md`), une fois `TASKS.md` peuplé. Si une règle de gouvernance propre au projet est apparue pendant l'inventaire ou la classification (étapes 1-2), proposer aussi `97_gouvernance/GOUVERNANCE_LOCALE.md`, même logique qu'en Mode 5.
 7. **Rapport** : entrée `CHG-` dans le `CHANGELOG.md` du projet, puis `sh scripts/check-project.sh` (zéro bloquant attendu).
+8. **Paire d'instructions** : un projet adopté arrive souvent avec son propre `CLAUDE.md` ou son propre `AGENTS.md`, que la greffe conserve en le signalant. Lancer `sh scripts/check-project.sh --socle .` et, sur un code 2, proposer tout de suite l'alignement (section « Alignement de la paire d'instructions ») : tant qu'il n'est pas fait, les agents ne suivent pas les mêmes règles.
 
 ## Mode 7 — Mise à jour de la méthode
 
@@ -203,14 +215,32 @@ Workflow imposé, jamais raccourci :
    ```
 
    Les anciens artefacts sont sauvegardés dans `99_archive/methode-avant-vX.Y.Z/`.
-5. **Vérifier et tracer** : `sh scripts/check-project.sh` sans bloquant, puis entrée `CHG-` dans le `CHANGELOG.md` du projet (« migration méthode vA.B.C → vX.Y.Z »).
+5. **Vérifier et tracer** : `sh scripts/check-project.sh` sans bloquant, puis entrée `CHG-` dans le `CHANGELOG.md` du projet (« migration méthode vA.B.C → vX.Y.Z »). La mise à jour change la version : un refus d'alignement consigné pour l'ancienne version ne vaut plus. Si `sh scripts/check-project.sh --socle .` rend le code 2, proposer l'alignement (section « Alignement de la paire d'instructions »), avec la même porte de sortie qu'au Mode 1.
 6. **Offrir le passage du parc de skills en mode portable**, une fois la mise à jour appliquée. Si le projet porte des skills ailleurs que dans `98_configuration/skills/` (dossiers d'agent, copies par agent, skills écrites pour une seule machine), le signaler et proposer la bascule, en expliquant le bénéfice en une phrase : une skill générique posée dans le catalogue devient utilisable par **tous** les agents du projet, avec une seule source à éditer et plus aucune copie qui dérive. Renvoyer vers `templates/skills/_squelette/` et vers le tableau de bord du parc (Mode 2). Si deux agents portent des variantes de la même skill, le dire : c'est le signal de les fusionner avant qu'elles ne divergent davantage. **Offrir, ne rien migrer d'autorité**, et ne pas reproposer à chaque session si l'utilisateur décline. Signaler aussi, une fois la mise à jour appliquée : une ancienne copie physique de `my-project-os` restée hors `98_configuration/skills/` au lieu du lien symbolique attendu ; un `AGENTS.md` de projet resté sur la formulation « Skills selon l'agent » au lieu de « Skills du projet » ; et, si la version de départ du projet était antérieure à `0.29.0`, l'absence de `97_gouvernance/README.md` (la migration ne le crée qu'une fois, au franchissement de ce seuil précis, pas à chaque mise à jour ultérieure).
+
+## Alignement de la paire d'instructions
+
+**Pourquoi le proposer, à dire en une ou deux phrases simples** : aligner la paire rend le projet **agent-agnostique**. Toutes les règles du projet vivent dans un seul fichier, `AGENTS.md`, que Codex, Hermès et les agents à venir lisent directement, et que Claude Code charge par la ligne `@AGENTS.md` de `CLAUDE.md`. Changer d'agent, en ajouter un ou passer du Mac au téléphone ne change plus les règles suivies. Sans alignement, chaque agent lit un fichier différent, applique une partie des règles, et rien ne le signale.
+
+**Procédure**, une fois l'accord donné :
+
+1. Sauvegarder les fichiers concernés dans `99_archive/socle-agent-avant-YYYY-MM-DD/`.
+2. Selon l'écart signalé par `check-project.sh --socle` :
+   - `CLAUDE.md` qui porte du contenu → fusionner ce contenu dans `AGENTS.md`, chaque consigne une seule fois, sans rien résumer.
+   - `AGENTS.md` absent → le créer avec ce contenu.
+   - `AGENTS.md` sans la section « Rituels de session » → y ajouter les sections de la méthode, reprises du gabarit `templates/core/AGENTS.md` du dépôt méthode (`https://raw.githubusercontent.com/Mediatros/MyProjectOS/main/templates/core/AGENTS.md`), en gardant les règles propres au projet.
+   - `AGENTS.md` qui désigne `CLAUDE.md` comme source → retirer ce renvoi, le contenu étant désormais dans `AGENTS.md`.
+   - dossier de zone sans paire complète → poser la paire, ou retirer le fichier si la zone n'a pas de règle propre.
+   Deux consignes contradictoires ne se tranchent pas en silence : les montrer, l'utilisateur choisit.
+3. Réduire `CLAUDE.md` à la seule ligne `@AGENTS.md`.
+4. Montrer le diff et obtenir la validation avant d'écrire. Aucune réécriture silencieuse.
+5. Vérifier : `sh scripts/check-project.sh --socle .` rend le code 0. Tracer par une entrée `CHG-` dans le `CHANGELOG.md` du projet.
 
 ## Garde-fous (toujours)
 
 - Tu proposes et éclaires les choix structurants (options, avantages, inconvénients, recommandation) ; l'humain tranche.
 - Validation humaine obligatoire avant (liste Core, `AGENTS.md`/`templates/core/AGENTS.md`, DEC-0050) : suppression massive de fichiers ou de dossiers, réorganisation de l'arborescence, modification de fichiers de configuration critiques, action affectant un système partagé ou distant (push, déploiement), action juridique ou administrative sensible. S'y ajoutent, spécifiques à cette skill : changement de stack (Code), mise à jour de la méthode (Mode 7).
-- Instructions d'agent : toujours la paire, à la racine comme dans un dossier de zone. `AGENTS.md` porte tout le contenu, `CLAUDE.md` ne contient que la ligne `@AGENTS.md`. Ne jamais écrire dans `CLAUDE.md` au-delà de cette ligne, ne jamais lancer `/init` ni `/import` de Claude Code dans le projet. Si `check-project.sh` ou `init-project.sh` signale un `CLAUDE.md` non conforme, proposer la fusion de son contenu dans `AGENTS.md` (sauvegarde puis diff soumis à l'humain) : c'est un arbitrage, jamais une réécriture silencieuse. Une paire de zone (`02_sujets/Sxx_…/`, `05_specs/`, `src/`) se charge seule quand l'agent travaille dans le dossier : ne pas la lire au démarrage ; proposer d'en créer une (gabarit `AGENTS_DOSSIER.md` du dépôt méthode) seulement quand une règle propre à la zone a déjà dû être répétée, et sur validation humaine.
+- Instructions d'agent : toujours la paire, à la racine comme dans un dossier de zone. `AGENTS.md` porte tout le contenu, `CLAUDE.md` ne contient que la ligne `@AGENTS.md`. Ne jamais écrire dans `CLAUDE.md` au-delà de cette ligne, ne jamais lancer `/init` ni `/import` de Claude Code dans le projet. Tout écart signalé se traite par la section « Alignement de la paire d'instructions » : un arbitrage proposé, jamais une réécriture silencieuse. Une paire de zone (`02_sujets/Sxx_…/`, `05_specs/`, `src/`) se charge seule quand l'agent travaille dans le dossier : ne pas la lire au démarrage ; proposer d'en créer une (gabarit `AGENTS_DOSSIER.md` du dépôt méthode) seulement quand une règle propre à la zone a déjà dû être répétée, et sur validation humaine.
 - `PROGRESS.md` n'est jamais un journal. L'historique daté va dans `CHANGELOG.md`. Dans un projet organisé par sujets, le bloc « sujets » du `PROGRESS.md` racine est généré : ne jamais l'éditer à la main, corriger l'en-tête du sujet concerné (DEC-0053).
 - Pour une demande métier dans un projet Knowledge : `SUJETS.md` d'abord, source fraîche prioritaire avant toute synthèse.
 - Une skill disponible pour un agent ne l'est pas forcément pour un autre (Claude Code : `.claude/skills/` ou `~/.claude/skills/` ; Codex, support natif depuis déc. 2025 : `.agents/skills/` en projet, vérifié par exécution ; OpenCode : rien à poser, il découvre `.claude/skills/` et `.agents/skills/` ; Hermès, standard agentskills.io : le catalogue du projet est déclaré en `skills.external_dirs` dans la configuration du profil, et le dossier scanné est celui du profil actif, pas le dossier global). Ne suppose jamais qu'une skill posée pour un agent l'est pour un autre. Une skill de projet ne se double jamais dans le dossier personnel d'un agent (ex. `~/.claude/skills/<même nom>`) : elle masquerait silencieusement la source du projet, Claude Code exécutant la copie personnelle avant celle du projet (cas réel corrigé une fois : une copie globale datée du 3 août masquait la copie projet). Un agent sans mécanisme de découverte natif se rabat sur la lecture directe : il lit `98_configuration/skills/<skill>/SKILL.md` quand `AGENTS.md` le lui indique.
